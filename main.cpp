@@ -2,11 +2,79 @@
 #include <iostream>
 #include "RtAudio.h"
 
+class RtAudioError : public std::runtime_error
+{
+public:
+  enum Type
+  {
+    WARNING,
+    DEBUG_WARNING,
+    UNSPECIFIED,
+    NO_DEVICES_FOUND,
+    INVALID_DEVICE,
+    MEMORY_ERROR,
+    INVALID_PARAMETER,
+    INVALID_USE,
+    DRIVER_ERROR,
+    SYSTEM_ERROR,
+    THREAD_ERROR
+  };
+
+  RtAudioError(const std::string &message,
+               Type type = RtAudioError::UNSPECIFIED)
+      : std::runtime_error(message), type_(type) {}
+
+  virtual void printMessage(void) const
+  {
+    std::cerr << '\n'
+              << what() << "\n\n";
+  }
+
+  virtual const Type &getType(void) const { return type_; }
+
+  virtual const std::string getMessage(void) const
+  {
+    return std::string(what());
+  }
+
+protected:
+  Type type_;
+};
+
+// Two-channel sawtooth wave generator.
+int saw(void *outputBuffer, void *inputBuffer, unsigned int nBufferFrames,
+        double streamTime, RtAudioStreamStatus status, void *userData)
+{
+  unsigned int i, j;
+  double *buffer = (double *)outputBuffer;
+  double *lastValues = (double *)userData;
+  if (status)
+    std::cout << "Stream underflow detected!" << std::endl;
+  // Write interleaved audio data.
+  for (i = 0; i < nBufferFrames; i++)
+  {
+    for (j = 0; j < 2; j++)
+    {
+      *buffer++ = lastValues[j];
+      lastValues[j] += 0.005 * (j + 1 + (j * 0.1));
+      if (lastValues[j] >= 1.0)
+        lastValues[j] -= 2.0;
+    }
+  }
+  return 0;
+}
+
 class TestRtAudio
 {
 public:
   TestRtAudio(RtAudio::Api api = RtAudio::Api::UNSPECIFIED, RtAudioErrorCallback &&errorCallback = 0) : audio{api, std::move(errorCallback)}
   {
+  }
+
+  ~TestRtAudio()
+  {
+    if (audio.isStreamOpen())
+      audio.closeStream();
   }
 
   static void coutListApis()
@@ -60,6 +128,47 @@ public:
     return;
   }
 
+
+  void playSaw(int deviceId = -1)
+  {
+    if (deviceId == -1)
+    {
+      deviceId = audio.getDefaultOutputDevice();
+    }
+    RtAudio::StreamParameters parameters;
+    parameters.deviceId = audio.getDefaultOutputDevice();
+    parameters.nChannels = 2;
+    parameters.firstChannel = 0;
+    unsigned int sampleRate = 44100;
+    unsigned int bufferFrames = 256; // 256 sample frames
+    double data[2] = {0, 0};
+    try
+    {
+      audio.openStream(&parameters, NULL, RTAUDIO_FLOAT64,
+                       sampleRate, &bufferFrames, &saw, (void *)&data);
+      audio.startStream();
+    }
+    catch (RtAudioError &e)
+    {
+      e.printMessage();
+      exit(0);
+    }
+
+    char input;
+    std::cout << "\nPlaying ... press <enter> to quit.\n";
+    std::cin.get(input);
+    try
+    {
+      // Stop the stream
+      audio.stopStream();
+    }
+    catch (RtAudioError &e)
+    {
+      e.printMessage();
+    }
+  }
+
+
 private:
   RtAudio audio;
 
@@ -80,6 +189,7 @@ private:
     else
       return "No natively supported data formats(?)!";
   }
+
 };
 
 int main()
@@ -87,6 +197,6 @@ int main()
   TestRtAudio::coutListApis();
   TestRtAudio tra;
   tra.coutDevicesInfo();
-
+  tra.playSaw();
   return 0;
 }
