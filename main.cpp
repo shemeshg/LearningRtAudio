@@ -64,6 +64,7 @@ int saw(void *outputBuffer, void *inputBuffer, unsigned int nBufferFrames,
   return 0;
 }
 
+
 class TestRtAudio
 {
 public:
@@ -136,7 +137,7 @@ public:
       deviceId = audio.getDefaultOutputDevice();
     }
     RtAudio::StreamParameters parameters;
-    parameters.deviceId = audio.getDefaultOutputDevice();
+    parameters.deviceId = deviceId;
     parameters.nChannels = 2;
     parameters.firstChannel = 0;
     unsigned int sampleRate = 44100;
@@ -157,6 +158,7 @@ public:
     char input;
     std::cout << "\nPlaying ... press <enter> to quit.\n";
     std::cin.get(input);
+
     try
     {
       // Stop the stream
