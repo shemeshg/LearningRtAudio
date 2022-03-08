@@ -68,8 +68,8 @@ int sawWave(void *outputBuffer, void *inputBuffer, unsigned int nBufferFrames,
 int sinWave(void *outputBuffer, void *inputBuffer, unsigned int nBufferFrames,
             double streamTime, RtAudioStreamStatus status, void *userData)
 {
-  static float frequency = 100.0;
-  static int phaseCounter = 0;
+  static double frequency = 100.0;
+  static double currentPhase = 0;
   static int monitorCounter = 0;
 
   unsigned int i, j;
@@ -86,20 +86,20 @@ int sinWave(void *outputBuffer, void *inputBuffer, unsigned int nBufferFrames,
     for (j = 0; j < 2; j++)
     {
       *buffer++ = lastValues[j];
-      const float currentPhase=(2 * M_PI * (float)(phaseCounter + i)  * frequency) / 44100.0;
+      const double phaseStep = (2.0 * M_PI * frequency) / 44100.0;
       lastValues[j] = sin(currentPhase);
-
+      currentPhase=currentPhase+phaseStep;
       
       if(j == 0 && monitorCounter <2000){
-        std::cout<<phaseCounter + i<<","<<lastValues[j]<<"\n";
+        std::cout<<monitorCounter<<","<<lastValues[j]<<","<<currentPhase<<","<<frequency<<"\n";
 
         monitorCounter++;
       }
 
     }
   }
-  frequency=frequency+100;
-  phaseCounter = phaseCounter + i;
+  frequency=frequency+1;
+
   
   return 0;
 }
