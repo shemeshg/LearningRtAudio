@@ -44,7 +44,7 @@ protected:
 
 // Two-channel sawtooth wave generator.
 int sawWave(void *outputBuffer, void *inputBuffer, unsigned int nBufferFrames,
-        double streamTime, RtAudioStreamStatus status, void *userData)
+            double streamTime, RtAudioStreamStatus status, void *userData)
 {
   unsigned int i, j;
   double *buffer = (double *)outputBuffer;
@@ -65,35 +65,42 @@ int sawWave(void *outputBuffer, void *inputBuffer, unsigned int nBufferFrames,
   return 0;
 }
 
-
-
 int sinWave(void *outputBuffer, void *inputBuffer, unsigned int nBufferFrames,
-        double streamTime, RtAudioStreamStatus status, void *userData)
+            double streamTime, RtAudioStreamStatus status, void *userData)
 {
-  static int mysineCounter=0;
+  static float frequency = 100.0;
+  static int phaseCounter = 0;
+  static int monitorCounter = 0;
+
   unsigned int i, j;
   double *buffer = (double *)outputBuffer;
   double *lastValues = (double *)userData;
+
+
   if (status)
     std::cout << "Stream underflow detected!" << std::endl;
 
-
-
   // Write interleaved audio data.
   for (i = 0; i < nBufferFrames; i++)
-  {   
+  {
     for (j = 0; j < 2; j++)
     {
-      *buffer++ = lastValues[j];      
-      lastValues[j] =sin(( 2 * (float)(mysineCounter + i )*M_PI* 800.0 )  /44100.0);    
-      if(lastValues[j] == 0 ) {
-        mysineCounter=0;
-      }   
-      //if (lastValues[j] >= 1.0)
-      //  lastValues[j] -= 2.0;
+      *buffer++ = lastValues[j];
+      const float currentPhase=(2 * M_PI * (float)(phaseCounter + i)  * frequency) / 44100.0;
+      lastValues[j] = sin(currentPhase);
+
+      
+      if(j == 0 && monitorCounter <2000){
+        std::cout<<phaseCounter + i<<","<<lastValues[j]<<"\n";
+
+        monitorCounter++;
+      }
+
     }
   }
-   mysineCounter= mysineCounter + i;
+  frequency=frequency+100;
+  phaseCounter = phaseCounter + i;
+  
   return 0;
 }
 
@@ -161,8 +168,7 @@ public:
     return;
   }
 
-
-  void playSaw(int deviceId = -1)
+  void playSin(int deviceId = -1)
   {
     if (deviceId == -1)
     {
@@ -188,7 +194,7 @@ public:
     }
 
     char input;
-    std::cout << "\nPlaying ... press <enter> to quit.\n";
+    //std::cout << "\nPlaying ... press <enter> to quit.\n";
     std::cin.get(input);
 
     try
@@ -201,7 +207,6 @@ public:
       e.printMessage();
     }
   }
-
 
 private:
   RtAudio audio;
@@ -223,14 +228,13 @@ private:
     else
       return "No natively supported data formats(?)!";
   }
-
 };
 
 int main()
 {
-  TestRtAudio::coutListApis();
+  //TestRtAudio::coutListApis();
   TestRtAudio tra;
-  tra.coutDevicesInfo();
-  tra.playSaw(2);
+  //tra.coutDevicesInfo();
+  tra.playSin(2);
   return 0;
 }
