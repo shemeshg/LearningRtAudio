@@ -1,6 +1,7 @@
 
 #include <iostream>
 #include <cmath>
+#include <sndfile.hh>
 #include "RtAudio.h"
 
 class RtAudioError : public std::runtime_error
@@ -76,7 +77,6 @@ int sinWave(void *outputBuffer, void *inputBuffer, unsigned int nBufferFrames,
   double *buffer = (double *)outputBuffer;
   double *lastValues = (double *)userData;
 
-
   if (status)
     std::cout << "Stream underflow detected!" << std::endl;
 
@@ -84,29 +84,28 @@ int sinWave(void *outputBuffer, void *inputBuffer, unsigned int nBufferFrames,
   for (i = 0; i < nBufferFrames; i++)
   {
     const double phaseStep = (2.0 * M_PI * frequency) / 44100.0;
-    currentPhase=currentPhase+phaseStep;
-    if (currentPhase > 2.0 * M_PI ){
-      currentPhase = currentPhase - 2.0 * M_PI; 
+    currentPhase = currentPhase + phaseStep;
+    if (currentPhase > 2.0 * M_PI)
+    {
+      currentPhase = currentPhase - 2.0 * M_PI;
     }
 
     for (j = 0; j < 2; j++)
     {
       *buffer++ = lastValues[j];
-      
+
       lastValues[j] = sin(currentPhase);
-      
-      
-      if(j == 0 && monitorCounter <2000){
-        std::cout<<monitorCounter<<","<<lastValues[j]<<","<<currentPhase<<","<<frequency<<"\n";
+
+      if (j == 0 && monitorCounter < 2000)
+      {
+        std::cout << monitorCounter << "," << lastValues[j] << "," << currentPhase << "," << frequency << "\n";
 
         monitorCounter++;
       }
-
     }
   }
-  frequency=frequency+100;
+  frequency = frequency + 100;
 
-  
   return 0;
 }
 
@@ -174,6 +173,22 @@ public:
     return;
   }
 
+  #define		BUFFER_LEN		1024
+  void playWavFile(int deviceId = -1, std::string fname = "//Volumes//TEMP/DeleteME//tmp//file_example_WAV_1MG.wav")
+  {
+    static short buffer[BUFFER_LEN];
+
+    SndfileHandle file;
+
+    file = SndfileHandle(fname);
+
+    std::cout<<"Opened file"<<fname<<"\n";
+    std::cout<<"    Sample rate : " << file.samplerate()<<"\n";
+    std::cout<<"    Channels : " << file.channels()<<"\n";
+
+    file.read(buffer, BUFFER_LEN);
+  }
+
   void playSin(int deviceId = -1)
   {
     if (deviceId == -1)
@@ -200,7 +215,7 @@ public:
     }
 
     char input;
-    //std::cout << "\nPlaying ... press <enter> to quit.\n";
+    // std::cout << "\nPlaying ... press <enter> to quit.\n";
     std::cin.get(input);
 
     try
@@ -238,9 +253,10 @@ private:
 
 int main()
 {
-  //TestRtAudio::coutListApis();
+  // TestRtAudio::coutListApis();
   TestRtAudio tra;
-  //tra.coutDevicesInfo();
-  tra.playSin(2);
+  // tra.coutDevicesInfo();
+  // tra.playSin(2);
+  tra.playWavFile();
   return 0;
 }
