@@ -83,12 +83,18 @@ int sinWave(void *outputBuffer, void *inputBuffer, unsigned int nBufferFrames,
   // Write interleaved audio data.
   for (i = 0; i < nBufferFrames; i++)
   {
+    const double phaseStep = (2.0 * M_PI * frequency) / 44100.0;
+    currentPhase=currentPhase+phaseStep;
+    if (currentPhase > 2.0 * M_PI ){
+      currentPhase = currentPhase - 2.0 * M_PI; 
+    }
+
     for (j = 0; j < 2; j++)
     {
       *buffer++ = lastValues[j];
-      const double phaseStep = (2.0 * M_PI * frequency) / 44100.0;
+      
       lastValues[j] = sin(currentPhase);
-      currentPhase=currentPhase+phaseStep;
+      
       
       if(j == 0 && monitorCounter <2000){
         std::cout<<monitorCounter<<","<<lastValues[j]<<","<<currentPhase<<","<<frequency<<"\n";
@@ -98,7 +104,7 @@ int sinWave(void *outputBuffer, void *inputBuffer, unsigned int nBufferFrames,
 
     }
   }
-  frequency=frequency+1;
+  frequency=frequency+100;
 
   
   return 0;
