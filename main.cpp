@@ -1,5 +1,6 @@
 
 #include <iostream>
+#include <cmath>
 #include "RtAudio.h"
 
 class RtAudioError : public std::runtime_error
@@ -42,7 +43,7 @@ protected:
 };
 
 // Two-channel sawtooth wave generator.
-int saw(void *outputBuffer, void *inputBuffer, unsigned int nBufferFrames,
+int sawWave(void *outputBuffer, void *inputBuffer, unsigned int nBufferFrames,
         double streamTime, RtAudioStreamStatus status, void *userData)
 {
   unsigned int i, j;
@@ -64,6 +65,37 @@ int saw(void *outputBuffer, void *inputBuffer, unsigned int nBufferFrames,
   return 0;
 }
 
+
+
+int sinWave(void *outputBuffer, void *inputBuffer, unsigned int nBufferFrames,
+        double streamTime, RtAudioStreamStatus status, void *userData)
+{
+  static int mysineCounter=0;
+  unsigned int i, j;
+  double *buffer = (double *)outputBuffer;
+  double *lastValues = (double *)userData;
+  if (status)
+    std::cout << "Stream underflow detected!" << std::endl;
+
+
+
+  // Write interleaved audio data.
+  for (i = 0; i < nBufferFrames; i++)
+  {   
+    for (j = 0; j < 2; j++)
+    {
+      *buffer++ = lastValues[j];      
+      lastValues[j] =sin(( 2 * (float)(mysineCounter + i )*M_PI* 800.0 )  /44100.0);    
+      if(lastValues[j] == 0 ) {
+        mysineCounter=0;
+      }   
+      //if (lastValues[j] >= 1.0)
+      //  lastValues[j] -= 2.0;
+    }
+  }
+   mysineCounter= mysineCounter + i;
+  return 0;
+}
 
 class TestRtAudio
 {
@@ -146,7 +178,7 @@ public:
     try
     {
       audio.openStream(&parameters, NULL, RTAUDIO_FLOAT64,
-                       sampleRate, &bufferFrames, &saw, (void *)&data);
+                       sampleRate, &bufferFrames, &sinWave, (void *)&data);
       audio.startStream();
     }
     catch (RtAudioError &e)
@@ -199,6 +231,6 @@ int main()
   TestRtAudio::coutListApis();
   TestRtAudio tra;
   tra.coutDevicesInfo();
-  tra.playSaw();
+  tra.playSaw(2);
   return 0;
 }
