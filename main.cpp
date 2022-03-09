@@ -66,34 +66,34 @@ int sawWave(void *outputBuffer, void *inputBuffer, unsigned int nBufferFrames,
   return 0;
 }
 
-int fplay( void *outputBuffer, void *inputBuffer, unsigned int nBufferFrames,
-         double streamTime, RtAudioStreamStatus status, void *userData )
+int fplay(void *outputBuffer, void *inputBuffer, unsigned int nBufferFrames,
+          double streamTime, RtAudioStreamStatus status, void *userData)
 {
-
 
   double *buffer = (double *)outputBuffer;
 
-  // ok, i know this is not the best way to do file i/o in the audio thread, but 
-  // this is just for demonstration purposes ... 
-  SndfileHandle *sndfile = reinterpret_cast<SndfileHandle*>(userData);
+  // ok, i know this is not the best way to do file i/o in the audio thread, but
+  // this is just for demonstration purposes ...
+  SndfileHandle *sndfile = reinterpret_cast<SndfileHandle *>(userData);
 
   // Error handling !
-  if ( status ){
+  if (status)
+  {
     std::cout << "Stream underflow detected!" << std::endl;
   }
 
-  int icount=0;
-  if ( (icount=sndfile->readf(buffer, nBufferFrames)) != nBufferFrames){
-    buffer=buffer+icount;
-    sndfile->seek(0,0);
+  int icount = 0;
+  if ((icount = sndfile->readf(buffer, nBufferFrames)) != nBufferFrames)
+  {
+    buffer = buffer + icount;
+    sndfile->seek(0, 0);
     sndfile->readf(buffer, icount);
-       
-    //std::cout << icount << " " << "Loop back\n" << std::endl;
+
+    // std::cout << icount << " " << "Loop back\n" << std::endl;
   }
 
   return 0;
 }
-
 
 int sinWave(void *outputBuffer, void *inputBuffer, unsigned int nBufferFrames,
             double streamTime, RtAudioStreamStatus status, void *userData)
@@ -202,25 +202,18 @@ public:
     return;
   }
 
-  #define		BUFFER_LEN		1024
   void playWavFile(int deviceId = -1)
-  {  
-    std::string fname = "//Volumes//TEMP/DeleteME//tmp//file_example_WAV_1MG.wav";
-    fname = "//Volumes//TEMP//DeleteME//tmp//sample-player//slow-drum-loop.wav";  
+  {
+    std::string fname =  "//Volumes//TEMP//DeleteME//tmp//sample-player//slow-drum-loop.wav";
+    
     SndfileHandle file;
-
     file = SndfileHandle(fname);
 
-    std::cout<<"Opened file"<<fname<<"\n";
-    std::cout<<"    Sample rate : " << file.samplerate()<<"\n";
-    std::cout<<"    Channels : " << file.channels()<<"\n";
+    std::cout << "Opened file" << fname << "\n";
+    std::cout << "    Sample rate : " << file.samplerate() << "\n";
+    std::cout << "    Channels : " << file.channels() << "\n";
 
-    
-    /*
-    static short buffer[BUFFER_LEN];    
-    file.read(buffer, BUFFER_LEN);
-    */
- if (deviceId == -1)
+    if (deviceId == -1)
     {
       deviceId = audio.getDefaultOutputDevice();
     }
@@ -255,7 +248,7 @@ public:
     catch (RtAudioError &e)
     {
       e.printMessage();
-    }   
+    }
   }
 
   void playSin(int deviceId = -1)
