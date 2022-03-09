@@ -174,8 +174,10 @@ public:
   }
 
   #define		BUFFER_LEN		1024
-  void playWavFile(int deviceId = -1, std::string fname = "//Volumes//TEMP/DeleteME//tmp//file_example_WAV_1MG.wav")
-  {    
+  void playWavFile(int deviceId = -1)
+  {  
+    std::string fname = "//Volumes//TEMP/DeleteME//tmp//file_example_WAV_1MG.wav";
+    fname = "//Volumes//TEMP//DeleteME//tmp//sample-player//slow-drum-loop.wav";  
     SndfileHandle file;
 
     file = SndfileHandle(fname);
