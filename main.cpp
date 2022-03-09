@@ -66,6 +66,41 @@ int sawWave(void *outputBuffer, void *inputBuffer, unsigned int nBufferFrames,
   return 0;
 }
 
+int fplay( void *outputBuffer, void *inputBuffer, unsigned int nBufferFrames,
+         double streamTime, RtAudioStreamStatus status, void *userData )
+{
+
+
+  int16_t *buffer = (int16_t *) outputBuffer;
+
+  // ok, i know this is not the best way to do file i/o in the audio thread, but 
+  // this is just for demonstration purposes ... 
+  SndfileHandle *sndfile = reinterpret_cast<SndfileHandle*>(userData);
+
+  // Error handling !
+  if ( status ){
+    std::cout << "Stream underflow detected!" << std::endl;
+  }
+
+
+  // 'readf()' liest frames
+  // 'read()' liest einzelne Samples !
+  // ACHTUNG! Frames != Samples
+  // ein Frame = Samples für alle Kanäle
+  // d.h. |Samples| = Kanäle * Frames !
+
+
+
+  if (sndfile->readf(buffer, nBufferFrames)){
+    std::cout << "yes\n" << std::endl;
+  } else {
+    std::cout << "no\n" << std::endl;
+  }
+
+  return 0;
+}
+
+
 int sinWave(void *outputBuffer, void *inputBuffer, unsigned int nBufferFrames,
             double streamTime, RtAudioStreamStatus status, void *userData)
 {
@@ -186,8 +221,47 @@ public:
     std::cout<<"    Sample rate : " << file.samplerate()<<"\n";
     std::cout<<"    Channels : " << file.channels()<<"\n";
 
-    static short buffer[BUFFER_LEN];
+    
+    /*
+    static short buffer[BUFFER_LEN];    
     file.read(buffer, BUFFER_LEN);
+    */
+ if (deviceId == -1)
+    {
+      deviceId = audio.getDefaultOutputDevice();
+    }
+    RtAudio::StreamParameters parameters;
+    parameters.deviceId = deviceId;
+    parameters.nChannels = 2;
+    parameters.firstChannel = 0;
+    unsigned int sampleRate = 44100;
+    unsigned int bufferFrames = 256; // 256 sample frames
+    double data[2] = {0, 0};
+    try
+    {
+      audio.openStream(&parameters, NULL, RTAUDIO_FLOAT64,
+                       sampleRate, &bufferFrames, &fplay, (void *)&file);
+      audio.startStream();
+    }
+    catch (RtAudioError &e)
+    {
+      e.printMessage();
+      exit(0);
+    }
+
+    char input;
+    // std::cout << "\nPlaying ... press <enter> to quit.\n";
+    std::cin.get(input);
+
+    try
+    {
+      // Stop the stream
+      audio.stopStream();
+    }
+    catch (RtAudioError &e)
+    {
+      e.printMessage();
+    }   
   }
 
   void playSin(int deviceId = -1)
