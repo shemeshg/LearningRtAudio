@@ -71,12 +71,8 @@ int fplay(void *outputBuffer, void *inputBuffer, unsigned int nBufferFrames,
 {
 
   double *buffer = (double *)outputBuffer;
-
-  // ok, i know this is not the best way to do file i/o in the audio thread, but
-  // this is just for demonstration purposes ...
   SndfileHandle *sndfile = reinterpret_cast<SndfileHandle *>(userData);
 
-  // Error handling !
   if (status)
   {
     std::cout << "Stream underflow detected!" << std::endl;
