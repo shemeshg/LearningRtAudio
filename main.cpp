@@ -71,7 +71,7 @@ int fplay( void *outputBuffer, void *inputBuffer, unsigned int nBufferFrames,
 {
 
 
-  int16_t *buffer = (int16_t *) outputBuffer;
+  double *buffer = (double *)outputBuffer;
 
   // ok, i know this is not the best way to do file i/o in the audio thread, but 
   // this is just for demonstration purposes ... 
@@ -91,10 +91,9 @@ int fplay( void *outputBuffer, void *inputBuffer, unsigned int nBufferFrames,
 
 
 
-  if (sndfile->readf(buffer, nBufferFrames)){
-    std::cout << "yes\n" << std::endl;
-  } else {
-    std::cout << "no\n" << std::endl;
+  if ( ! (sndfile->readf(buffer, nBufferFrames))){    
+    sndfile->seek(0,0);
+    std::cout << "Loop back\n" << std::endl;
   }
 
   return 0;
