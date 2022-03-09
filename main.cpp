@@ -82,18 +82,13 @@ int fplay( void *outputBuffer, void *inputBuffer, unsigned int nBufferFrames,
     std::cout << "Stream underflow detected!" << std::endl;
   }
 
-
-  // 'readf()' liest frames
-  // 'read()' liest einzelne Samples !
-  // ACHTUNG! Frames != Samples
-  // ein Frame = Samples für alle Kanäle
-  // d.h. |Samples| = Kanäle * Frames !
-
-
-
-  if ( ! (sndfile->readf(buffer, nBufferFrames))){    
+  int icount=0;
+  if ( (icount=sndfile->readf(buffer, nBufferFrames)) != nBufferFrames){
+    buffer=buffer+icount;
     sndfile->seek(0,0);
-    std::cout << "Loop back\n" << std::endl;
+    sndfile->readf(buffer, icount);
+       
+    //std::cout << icount << " " << "Loop back\n" << std::endl;
   }
 
   return 0;
