@@ -175,9 +175,7 @@ public:
 
   #define		BUFFER_LEN		1024
   void playWavFile(int deviceId = -1, std::string fname = "//Volumes//TEMP/DeleteME//tmp//file_example_WAV_1MG.wav")
-  {
-    static short buffer[BUFFER_LEN];
-
+  {    
     SndfileHandle file;
 
     file = SndfileHandle(fname);
@@ -186,6 +184,7 @@ public:
     std::cout<<"    Sample rate : " << file.samplerate()<<"\n";
     std::cout<<"    Channels : " << file.channels()<<"\n";
 
+    static short buffer[BUFFER_LEN];
     file.read(buffer, BUFFER_LEN);
   }
 
