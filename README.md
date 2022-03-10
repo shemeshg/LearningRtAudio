@@ -6,7 +6,7 @@ https://learn.bela.io/tutorials/c-plus-plus-for-real-time-audio-programming/real
 
 For now developing on local computer until having the actual Bela device...
 
-Also found this tutorial that I might learn more after Bela IO
+Also found this tutorial that might extend my undestanding on this subject later on.
 
 https://people.carleton.edu/~jellinge/cs312_w2020/week7_3.html
 
