@@ -70,21 +70,13 @@ public:
     return;
   }
 
-  void playWavFile(int deviceId = -1)
+  void playRtAudioCallback(RtAudioCallback callback, void *userData, int deviceId = -1)
   {
-    std::string fname =  "//Volumes//TEMP//DeleteME//tmp//sample-player//slow-drum-loop.wav";
-    
-    SndfileHandle file;
-    file = SndfileHandle(fname);
-
-    std::cout << "Opened file" << fname << "\n";
-    std::cout << "    Sample rate : " << file.samplerate() << "\n";
-    std::cout << "    Channels : " << file.channels() << "\n";
-
     if (deviceId == -1)
     {
       deviceId = audio.getDefaultOutputDevice();
     }
+
     RtAudio::StreamParameters parameters;
     parameters.deviceId = deviceId;
     parameters.nChannels = 2;
@@ -95,7 +87,7 @@ public:
     try
     {
       audio.openStream(&parameters, NULL, RTAUDIO_FLOAT64,
-                       sampleRate, &bufferFrames, &fplay, (void *)&file);
+                       sampleRate, &bufferFrames, callback, userData);
       audio.startStream();
     }
     catch (RtAudioError &e)
@@ -119,44 +111,24 @@ public:
     }
   }
 
-  void playSin(int deviceId = -1)
+  void playWavFile(int deviceId = -1)
   {
-    if (deviceId == -1)
-    {
-      deviceId = audio.getDefaultOutputDevice();
-    }
-    RtAudio::StreamParameters parameters;
-    parameters.deviceId = deviceId;
-    parameters.nChannels = 2;
-    parameters.firstChannel = 0;
-    unsigned int sampleRate = 44100;
-    unsigned int bufferFrames = 256; // 256 sample frames
+    std::string fname = "//Volumes//TEMP//DeleteME//tmp//sample-player//slow-drum-loop.wav";
+
+    SndfileHandle file;
+    file = SndfileHandle(fname);
+
+    std::cout << "Opened file" << fname << "\n";
+    std::cout << "    Sample rate : " << file.samplerate() << "\n";
+    std::cout << "    Channels : " << file.channels() << "\n";
+
+    playRtAudioCallback(&fplay, (void *)&file, deviceId);
+  }
+
+  void playSin(int deviceId = -1)
+  {    
     double data[2] = {0, 0};
-    try
-    {
-      audio.openStream(&parameters, NULL, RTAUDIO_FLOAT64,
-                       sampleRate, &bufferFrames, &sinWave, (void *)&data);
-      audio.startStream();
-    }
-    catch (RtAudioError &e)
-    {
-      e.printMessage();
-      exit(0);
-    }
-
-    char input;
-    // std::cout << "\nPlaying ... press <enter> to quit.\n";
-    std::cin.get(input);
-
-    try
-    {
-      // Stop the stream
-      audio.stopStream();
-    }
-    catch (RtAudioError &e)
-    {
-      e.printMessage();
-    }
+    playRtAudioCallback(&sinWave, (void *)&data, deviceId);  
   }
 
 private:
@@ -186,7 +158,7 @@ int main()
   // TestRtAudio::coutListApis();
   TestRtAudio tra;
   // tra.coutDevicesInfo();
-  // tra.playSin(2);
-  tra.playWavFile();
+  tra.playSin(2);
+  //tra.playWavFile();
   return 0;
 }

@@ -86,7 +86,7 @@ int sinWave(void *outputBuffer, void *inputBuffer, unsigned int nBufferFrames,
       }
     }
   }
-  frequency = frequency + 100;
+  frequency = frequency + 3;
 
   return 0;
 }
