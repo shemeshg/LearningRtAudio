@@ -22,11 +22,33 @@ public:
     gWavetable = NULL;
   }
 
+  void scopeLog(double *buffer, unsigned int &nBufferFrames, int channels = 2, int rowsCount = 2000)
+  {
+    static int i = 0;
+    int bufferPosition = 0;
+    if (i < rowsCount)
+    {
+      
+      for (int frameCount = 0; frameCount < nBufferFrames && i < rowsCount;frameCount++)
+      {
+        std::cout << i;
+        for (int ch = 0; ch < channels; ch++)
+        {
+          std::cout << "," << buffer[bufferPosition++];
+        }
+        std::cout << "\n";
+        i++;
+      }
+    }
+  }
+
   int render(void *outputBuffer, void *inputBuffer, unsigned int &nBufferFrames,
              double &streamTime, RtAudioStreamStatus &status)
   {
 
     double *buffer = (double *)outputBuffer;
+    int bufferPosition = 0;
+
     static double gReadPointer = 0; // Position of the last frame we played
 
     if (status)
@@ -35,15 +57,15 @@ public:
     const double phaseStep = gWavetableLength * (gFrequency / 44100.0);
     for (unsigned int i = 0; i < nBufferFrames; i++)
     {
-      *buffer++ = gAmplitude * this->gWavetable[(int)gReadPointer];
-      *buffer++ = gAmplitude * this->gWavetable[(int)gReadPointer];
+      buffer[bufferPosition++] = gAmplitude * this->gWavetable[(int)gReadPointer];
+      buffer[bufferPosition++] = gAmplitude * this->gWavetable[(int)gReadPointer];
       gReadPointer = gReadPointer + phaseStep;
       if (gReadPointer >= gWavetableLength)
       {
         gReadPointer -= gWavetableLength;
       }
     }
-
+    scopeLog(buffer, nBufferFrames);
     return 0;
   }
 
