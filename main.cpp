@@ -7,7 +7,6 @@
 #include "RtAudioCallbacks.hpp"
 #include "WaveTableCallback.hpp"
 
-
 class TestRtAudio
 {
 public:
@@ -85,7 +84,7 @@ public:
     parameters.firstChannel = 0;
     unsigned int sampleRate = 44100;
     unsigned int bufferFrames = 256; // 256 sample frames
-    double data[2] = {0, 0};
+
     try
     {
       audio.openStream(&parameters, NULL, RTAUDIO_FLOAT64,
@@ -97,11 +96,10 @@ public:
       e.printMessage();
       exit(0);
     }
+  }
 
-    char input;
-    // std::cout << "\nPlaying ... press <enter> to quit.\n";
-    std::cin.get(input);
-
+  void stopStream()
+  {
     try
     {
       // Stop the stream
@@ -127,10 +125,10 @@ public:
     playRtAudioCallback(&fplay, (void *)&file, deviceId);
   }
 
-  RtWaveTableCallback rtWaveTableCallback=RtWaveTableCallback(16);
+  RtWaveTableCallback rtWaveTableCallback = RtWaveTableCallback(16);
   void playWavTable(int deviceId = -1)
-  {                    
-    playRtAudioCallback(&waveTable ,(void *)&rtWaveTableCallback, deviceId);
+  {
+    playRtAudioCallback(&waveTable, (void *)&rtWaveTableCallback, deviceId);
   }
 
   void playSin(int deviceId = -1)
@@ -165,9 +163,15 @@ int main()
 {
   // TestRtAudio::coutListApis();
   TestRtAudio tra;
-  //tra.coutDevicesInfo();
-  // tra.playSin(2);
-  // tra.playWavFile();
+  // tra.coutDevicesInfo();
+  //  tra.playSin(2);
+  //  tra.playWavFile();
   tra.playWavTable(2);
+  char input;
+  // std::cout << "\nPlaying ... press <enter> to quit.\n";
+  std::cin.get(input);
+  tra.rtWaveTableCallback.gFrequency = 440;
+  std::cin.get(input);
+  tra.stopStream();
   return 0;
 }
