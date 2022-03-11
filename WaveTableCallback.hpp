@@ -7,44 +7,41 @@ class RtWaveTableCallback
 public:
   int gWavetableLength = ARRAY_LEN; // The length of the buffer in frames
   float gWavetable[ARRAY_LEN];      // Buffer that holds the wavetable
-  int gReadPointer = 0;             // Position of the last frame we played
+  
 
-  float gAmplitude = 0.2;   // Amplitude of the playback
+  float gAmplitude = 0.5;   // Amplitude of the playback
   float gFrequency = 220.0; // Frequency (TODO: not implemented yet)
 
   RtWaveTableCallback<ARRAY_LEN>()
   {
-    setup();
+    setup(); 
   }
 
   int render(void *outputBuffer, void *inputBuffer, unsigned int &nBufferFrames,
               double &streamTime, RtAudioStreamStatus &status)
   {
-    static double frequency = 100.0;
-
-    unsigned int i, j;
+    
     double *buffer = (double *)outputBuffer;
+    static int gReadPointer = 0;             // Position of the last frame we played
 
     if (status)
       std::cout << "Stream underflow detected!" << std::endl;
-
-    // Write interleaved audio data.
-    for (i = 0; i < nBufferFrames; i++)
-    {
-       *buffer++ =  this->gWavetable[i];    
+    
+    for (unsigned int i = 0; i < nBufferFrames; i++)
+    {   
+       *buffer++ =   this->gWavetable[gReadPointer];
+       *buffer++ =   this->gWavetable[gReadPointer++];
+       if(gReadPointer == gWavetableLength){
+         gReadPointer=0;
+       }   
+       
     }
     
 
     return 0;
   }
 
-  void coutGWavetable()
-  {
-    for (unsigned int n = 0; n < gWavetableLength; n++)
-    {
-      std::cout << n / 2 << "," << gWavetable[n++] << "," << gWavetable[n] << "\n";
-    }
-  }
+
 
 private:
   void setup()
@@ -52,13 +49,16 @@ private:
     // Generate a triangle waveform (ramp from -1 to 1, then 1 to -1)
     // and store it in the buffer. Notice: generating the wavetable does
     // not depend on the audio sample rate (why not?)
-    for (unsigned int n = 0; n < gWavetableLength / 2; n++)
+    int singleChannelLen = gWavetableLength /2; 
+    for (unsigned int n = 0; n < singleChannelLen / 2; n++)
     {
-      gWavetable[n] = -1.0 + 4.0 * (float)n / (float)gWavetableLength;
+      gWavetable[n * 2] = -1.0 + 4.0 * (float)n / (float)singleChannelLen;
+      gWavetable[n * 2 + 1] = gWavetable[n * 2];
     }
-    for (unsigned int n = gWavetableLength / 2; n < gWavetableLength; n++)
+    for (unsigned int n = singleChannelLen / 2; n < singleChannelLen; n++)
     {
-      gWavetable[n] = 1.0 - 4.0 * (float)(n - gWavetableLength / 2) / (float)gWavetableLength;
+      gWavetable[n * 2] = 1.0 - 4.0 * (float)(n - singleChannelLen / 2) / (float)singleChannelLen;
+      gWavetable[n * 2 + 1] = gWavetable[n * 2];
     }
   }
 };

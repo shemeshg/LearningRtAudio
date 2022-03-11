@@ -127,11 +127,9 @@ public:
     playRtAudioCallback(&fplay, (void *)&file, deviceId);
   }
 
+  RtWaveTableCallback<512> rtWaveTableCallback;
   void playWavTable(int deviceId = -1)
-  {
-    const int gWavetableLength = 512;
-    RtWaveTableCallback<gWavetableLength> rtWaveTableCallback;
-    
+  {                    
     playRtAudioCallback(&waveTable ,(void *)&rtWaveTableCallback, deviceId);
   }
 
@@ -167,9 +165,9 @@ int main()
 {
   // TestRtAudio::coutListApis();
   TestRtAudio tra;
-  // tra.coutDevicesInfo();
+  //tra.coutDevicesInfo();
   // tra.playSin(2);
   // tra.playWavFile();
-  tra.playWavTable();
+  tra.playWavTable(2);
   return 0;
 }
