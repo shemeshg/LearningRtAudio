@@ -22,17 +22,19 @@ public:
   {
     
     double *buffer = (double *)outputBuffer;
-    static int gReadPointer = 0;             // Position of the last frame we played
+    static double gReadPointer = 0;             // Position of the last frame we played
 
     if (status)
       std::cout << "Stream underflow detected!" << std::endl;
     
+    const double phaseStep = 2 * gWavetableLength * (gFrequency/ 44100.0);
     for (unsigned int i = 0; i < nBufferFrames; i++)
     {   
-       *buffer++ =   this->gWavetable[gReadPointer];
-       *buffer++ =   this->gWavetable[gReadPointer++];
-       if(gReadPointer == gWavetableLength){
-         gReadPointer=0;
+       *buffer++ =   this->gWavetable[(int)gReadPointer];
+       *buffer++ =   this->gWavetable[(int)gReadPointer];
+       gReadPointer=gReadPointer+phaseStep;
+       if(gReadPointer >= gWavetableLength){
+         gReadPointer-=gWavetableLength;
        }   
        
     }
