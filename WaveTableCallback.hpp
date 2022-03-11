@@ -1,19 +1,25 @@
 #pragma once
 
-template <int ARRAY_LEN>
-
 class RtWaveTableCallback
 {
 public:
-  int gWavetableLength = ARRAY_LEN; // The length of the buffer in frames
-  float gWavetable[ARRAY_LEN];      // Buffer that holds the wavetable
+  int gWavetableLength; // The length of the buffer in frames
+  float *gWavetable;    // Buffer that holds the wavetable
 
   float gAmplitude = 0.5;   // Amplitude of the playback
   float gFrequency = 220.0; // Frequency (TODO: not implemented yet)
 
-  RtWaveTableCallback<ARRAY_LEN>()
+  RtWaveTableCallback(int gWavetableLength) : gWavetableLength{gWavetableLength}
   {
+    gWavetable = (float *)std::calloc(gWavetableLength, sizeof(float));
+    assert(gWavetable);
     setup();
+  }
+
+  ~RtWaveTableCallback()
+  {
+    free(gWavetable);
+    gWavetable = NULL;
   }
 
   int render(void *outputBuffer, void *inputBuffer, unsigned int &nBufferFrames,
@@ -65,6 +71,6 @@ int waveTable(void *outputBuffer, void *inputBuffer, unsigned int nBufferFrames,
               double streamTime, RtAudioStreamStatus status, void *userData)
 {
 
-  RtWaveTableCallback<512> *userDataCasted = (RtWaveTableCallback<512> *)userData;
+  RtWaveTableCallback *userDataCasted = (RtWaveTableCallback *)userData;
   return userDataCasted->render(outputBuffer, inputBuffer, nBufferFrames, streamTime, status);
 }
