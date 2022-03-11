@@ -5,6 +5,8 @@
 #include "RtAudio.h"
 #include "RtAudioError.h"
 #include "RtAudioCallbacks.hpp"
+#include "WaveTableCallback.hpp"
+
 
 class TestRtAudio
 {
@@ -125,10 +127,18 @@ public:
     playRtAudioCallback(&fplay, (void *)&file, deviceId);
   }
 
+  void playWavTable(int deviceId = -1)
+  {
+    const int gWavetableLength = 512;
+    RtWaveTableCallback<gWavetableLength> rtWaveTableCallback;
+    
+    playRtAudioCallback(&waveTable ,(void *)&rtWaveTableCallback, deviceId);
+  }
+
   void playSin(int deviceId = -1)
-  {    
+  {
     double data[2] = {0, 0};
-    playRtAudioCallback(&sinWave, (void *)&data, deviceId);  
+    playRtAudioCallback(&sinWave, (void *)&data, deviceId);
   }
 
 private:
@@ -158,7 +168,8 @@ int main()
   // TestRtAudio::coutListApis();
   TestRtAudio tra;
   // tra.coutDevicesInfo();
-  tra.playSin(2);
-  //tra.playWavFile();
+  // tra.playSin(2);
+  // tra.playWavFile();
+  tra.playWavTable();
   return 0;
 }
