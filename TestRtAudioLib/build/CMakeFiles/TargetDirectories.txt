@@ -1,0 +1,6 @@
+/Volumes/TEMP/developTestingTechnology/RtAudio/LearningRtAudio/TestRtAudioLib/build/CMakeFiles/TestRtAudioLib.dir
+/Volumes/TEMP/developTestingTechnology/RtAudio/LearningRtAudio/TestRtAudioLib/build/CMakeFiles/edit_cache.dir
+/Volumes/TEMP/developTestingTechnology/RtAudio/LearningRtAudio/TestRtAudioLib/build/CMakeFiles/rebuild_cache.dir
+/Volumes/TEMP/developTestingTechnology/RtAudio/LearningRtAudio/TestRtAudioLib/build/RtAudioLib/CMakeFiles/RtAudioLib.dir
+/Volumes/TEMP/developTestingTechnology/RtAudio/LearningRtAudio/TestRtAudioLib/build/RtAudioLib/CMakeFiles/edit_cache.dir
+/Volumes/TEMP/developTestingTechnology/RtAudio/LearningRtAudio/TestRtAudioLib/build/RtAudioLib/CMakeFiles/rebuild_cache.dir

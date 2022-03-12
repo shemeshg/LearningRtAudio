@@ -1,0 +1,2 @@
+/usr/bin/ar qc libRtAudioLib.a CMakeFiles/RtAudioLib.dir/RtAudio.cpp.o
+/usr/bin/ranlib libRtAudioLib.a

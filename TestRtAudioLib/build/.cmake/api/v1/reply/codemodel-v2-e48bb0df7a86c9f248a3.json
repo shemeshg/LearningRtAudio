@@ -1,0 +1,102 @@
+{
+	"configurations" : 
+	[
+		{
+			"directories" : 
+			[
+				{
+					"build" : ".",
+					"childIndexes" : 
+					[
+						1
+					],
+					"jsonFile" : "directory-.-Debug-f5ebdc15457944623624.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.0.0"
+					},
+					"projectIndex" : 0,
+					"source" : ".",
+					"targetIndexes" : 
+					[
+						1
+					]
+				},
+				{
+					"build" : "RtAudioLib",
+					"jsonFile" : "directory-RtAudioLib-Debug-04fd3aaec56ed68b5460.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.0.0"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 1,
+					"source" : "RtAudioLib",
+					"targetIndexes" : 
+					[
+						0
+					]
+				}
+			],
+			"name" : "Debug",
+			"projects" : 
+			[
+				{
+					"childIndexes" : 
+					[
+						1
+					],
+					"directoryIndexes" : 
+					[
+						0
+					],
+					"name" : "TestRtAudioLib",
+					"targetIndexes" : 
+					[
+						1
+					]
+				},
+				{
+					"directoryIndexes" : 
+					[
+						1
+					],
+					"name" : "RtAudioLib",
+					"parentIndex" : 0,
+					"targetIndexes" : 
+					[
+						0
+					]
+				}
+			],
+			"targets" : 
+			[
+				{
+					"directoryIndex" : 1,
+					"id" : "RtAudioLib::@83775d1809638363de9a",
+					"jsonFile" : "target-RtAudioLib-Debug-1a4208a9ae77b577ecd0.json",
+					"name" : "RtAudioLib",
+					"projectIndex" : 1
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "TestRtAudioLib::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-TestRtAudioLib-Debug-981f9d4b0217e4b8d417.json",
+					"name" : "TestRtAudioLib",
+					"projectIndex" : 0
+				}
+			]
+		}
+	],
+	"kind" : "codemodel",
+	"paths" : 
+	{
+		"build" : "/Volumes/TEMP/developTestingTechnology/RtAudio/LearningRtAudio/TestRtAudioLib/build",
+		"source" : "/Volumes/TEMP/developTestingTechnology/RtAudio/LearningRtAudio/TestRtAudioLib"
+	},
+	"version" : 
+	{
+		"major" : 2,
+		"minor" : 3
+	}
+}

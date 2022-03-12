@@ -1,0 +1,2 @@
+/usr/bin/ar qc libTestRtAudioLib.a CMakeFiles/TestRtAudioLib.dir/TestRtAudio.cpp.o CMakeFiles/TestRtAudioLib.dir/waveTable.cpp.o CMakeFiles/TestRtAudioLib.dir/WaveTableCallback.cpp.o
+/usr/bin/ranlib libTestRtAudioLib.a

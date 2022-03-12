@@ -6,7 +6,10 @@ set(CMAKE_CXX_STANDARD 17)
 
 set(TestRtAudioLib_SRCS
   TestRtAudio.cpp  
-  TestRtAudio.h
+  waveTable.h 
+  waveTable.cpp
+  WaveTableCallback.h 
+  WaveTableCallback.cpp
 )
 
 add_subdirectory(RtAudioLib)
