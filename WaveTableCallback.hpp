@@ -14,7 +14,7 @@ public:
   {
     gWavetable = (float *)std::calloc(gWavetableLength * 2, sizeof(float));
     assert(gWavetable);
-    setupTriangle();
+    setupSine();
   }
 
   ~RtWaveTableCallback()
@@ -72,8 +72,21 @@ public:
 
       gReadPointer = nextGReadPointer;
     }
-    // scopeLog(buffer, nBufferFrames);
+    //scopeLog(buffer, nBufferFrames);
     return 0;
+  }
+
+  void setupSine(){
+
+    for (unsigned int n = 0; n < gWavetableLength; n++)
+    {
+      gWavetable[n * gChannelsCount] = sin((2.0 * M_PI )* ((float)n/(float)gWavetableLength));
+
+      for (unsigned int i = 1; i < gChannelsCount; i++)
+      {
+        gWavetable[n * gChannelsCount + i] = gWavetable[n * gChannelsCount];
+      }      
+    }
   }
 
   void setupTriangle()

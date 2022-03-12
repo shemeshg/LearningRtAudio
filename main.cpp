@@ -125,7 +125,7 @@ public:
     playRtAudioCallback(&fplay, (void *)&file, deviceId);
   }
 
-  RtWaveTableCallback rtWaveTableCallback = RtWaveTableCallback(8);
+  RtWaveTableCallback rtWaveTableCallback = RtWaveTableCallback(256);
   void playWavTable(int deviceId = -1)
   {
     playRtAudioCallback(&waveTable, (void *)&rtWaveTableCallback, deviceId);
@@ -166,6 +166,7 @@ int main()
   // tra.coutDevicesInfo();
   //  tra.playSin(2);
   //  tra.playWavFile();
+  tra.rtWaveTableCallback.setupSine();
   tra.playWavTable(2);
   char input;
   // std::cout << "\nPlaying ... press <enter> to quit.\n";
