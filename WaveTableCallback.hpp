@@ -8,6 +8,7 @@ public:
 
   float gAmplitude = 0.5;   // Amplitude of the playback
   float gFrequency = 220.0; // Frequency (TODO: not implemented yet)
+  const int gChannelsCount = 2;
 
   RtWaveTableCallback(int gWavetableLength) : gWavetableLength{gWavetableLength}
   {
@@ -28,8 +29,8 @@ public:
     int bufferPosition = 0;
     if (i < rowsCount)
     {
-      
-      for (int frameCount = 0; frameCount < nBufferFrames && i < rowsCount;frameCount++)
+
+      for (int frameCount = 0; frameCount < nBufferFrames && i < rowsCount; frameCount++)
       {
         std::cout << i;
         for (int ch = 0; ch < channels; ch++)
@@ -57,34 +58,33 @@ public:
     const double phaseStep = gWavetableLength * (gFrequency / 44100.0);
     for (unsigned int i = 0; i < nBufferFrames; i++)
     {
-      const int currentGReadPointer = (int)gReadPointer;
-      // 2 channels
-      float nextGReadPointer =  gReadPointer + phaseStep ;
+
+      float nextGReadPointer = gReadPointer + phaseStep;
       if (nextGReadPointer >= gWavetableLength)
       {
-        nextGReadPointer -= gWavetableLength ;
+        nextGReadPointer -= gWavetableLength;
       }
-      
-   
-      buffer[bufferPosition++] = gAmplitude * getLinearRegPos(gReadPointer, currentGReadPointer, 0);
-      buffer[bufferPosition++] = gAmplitude * getLinearRegPos(gReadPointer, currentGReadPointer, 1);
-      gReadPointer = nextGReadPointer;
 
+      buffer[bufferPosition++] = gAmplitude * getLinearRegPos(gReadPointer, 0);
+      buffer[bufferPosition++] = gAmplitude * getLinearRegPos(gReadPointer, 1);
+      gReadPointer = nextGReadPointer;
     }
     //scopeLog(buffer, nBufferFrames);
     return 0;
   }
 
 private:
-  float getLinearRegPos(double gReadPointer, int currentGReadPointer, int chid){
-          float currentGReadRemainder = gReadPointer - (int)gReadPointer;
-      int  nextGReadPointerInt = currentGReadPointer + 1 >= gWavetableLength ? 0 : currentGReadPointer + 1;
-      
+  float getLinearRegPos(double gReadPointer, int chid)
+  {
+    const int currentGReadPointer = (int)gReadPointer;
+    float currentGReadRemainder = gReadPointer - (int)gReadPointer;
+    int nextGReadPointerInt = currentGReadPointer + 1 >= gWavetableLength ? 0 : currentGReadPointer + 1;
 
-      float ch1=this->gWavetable[currentGReadPointer * 2 + chid ] + 
-            currentGReadRemainder * (this->gWavetable[nextGReadPointerInt * 2 + chid ]  - this->gWavetable[currentGReadPointer * 2 + chid ] );
+    float ch = this->gWavetable[currentGReadPointer * gChannelsCount + chid] +
+                currentGReadRemainder * 
+                (this->gWavetable[nextGReadPointerInt * gChannelsCount + chid] - this->gWavetable[currentGReadPointer * gChannelsCount + chid]);
 
-      return ch1;
+    return ch;
   }
 
   void setup()
@@ -95,13 +95,18 @@ private:
 
     for (unsigned int n = 0; n < gWavetableLength / 2; n++)
     {
-      gWavetable[n * 2] = -1.0 + 4.0 * (float)n / (float)gWavetableLength;
-      gWavetable[n * 2 + 1] = gWavetable[n * 2];
+      gWavetable[n * gChannelsCount] = -1.0 + 4.0 * (float)n / (float)gWavetableLength;
+      for (unsigned int i=1;i<gChannelsCount;i++){
+        gWavetable[n * gChannelsCount + i] = gWavetable[n * gChannelsCount];
+      }
+      
     }
     for (unsigned int n = gWavetableLength / 2; n < gWavetableLength; n++)
     {
-      gWavetable[n * 2] = 1.0 - 4.0 * (float)(n - gWavetableLength / 2) / (float)gWavetableLength;
-      gWavetable[n * 2 + 1] = gWavetable[n * 2];
+      gWavetable[n * gChannelsCount] = 1.0 - 4.0 * (float)(n - gWavetableLength / 2) / (float)gWavetableLength;
+      for (unsigned int i=1;i<gChannelsCount;i++){
+        gWavetable[n * gChannelsCount + i] = gWavetable[n * gChannelsCount];
+      }
     }
   }
 };
