@@ -14,7 +14,7 @@ public:
   {
     gWavetable = (float *)std::calloc(gWavetableLength * 2, sizeof(float));
     assert(gWavetable);
-    setup();
+    setupTriangle();
   }
 
   ~RtWaveTableCallback()
@@ -76,21 +76,7 @@ public:
     return 0;
   }
 
-private:
-  float getLinearInterpolation(double gReadPointer, int chid)
-  {
-    const int currentGReadPointer = (int)gReadPointer;
-    float currentGReadRemainder = gReadPointer - (int)gReadPointer;
-    int nextGReadPointerInt = currentGReadPointer + 1 >= gWavetableLength ? 0 : currentGReadPointer + 1;
-
-    float ch = this->gWavetable[currentGReadPointer * gChannelsCount + chid] +
-               currentGReadRemainder *
-                   (this->gWavetable[nextGReadPointerInt * gChannelsCount + chid] - this->gWavetable[currentGReadPointer * gChannelsCount + chid]);
-
-    return ch;
-  }
-
-  void setup()
+  void setupTriangle()
   {
     // Generate a triangle waveform (ramp from -1 to 1, then 1 to -1)
     // and store it in the buffer. Notice: generating the wavetable does
@@ -113,6 +99,22 @@ private:
       }
     }
   }
+
+private:
+  float getLinearInterpolation(double gReadPointer, int chid)
+  {
+    const int currentGReadPointer = (int)gReadPointer;
+    float currentGReadRemainder = gReadPointer - (int)gReadPointer;
+    int nextGReadPointerInt = currentGReadPointer + 1 >= gWavetableLength ? 0 : currentGReadPointer + 1;
+
+    float ch = this->gWavetable[currentGReadPointer * gChannelsCount + chid] +
+               currentGReadRemainder *
+                   (this->gWavetable[nextGReadPointerInt * gChannelsCount + chid] - this->gWavetable[currentGReadPointer * gChannelsCount + chid]);
+
+    return ch;
+  }
+
+
 };
 
 int waveTable(void *outputBuffer, void *inputBuffer, unsigned int nBufferFrames,
