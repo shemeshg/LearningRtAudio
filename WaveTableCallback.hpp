@@ -57,13 +57,17 @@ public:
     const double phaseStep = gWavetableLength * (gFrequency / 44100.0);
     for (unsigned int i = 0; i < nBufferFrames; i++)
     {
-      buffer[bufferPosition++] = gAmplitude * this->gWavetable[(int)gReadPointer];
-      buffer[bufferPosition++] = gAmplitude * this->gWavetable[(int)gReadPointer];
-      gReadPointer = gReadPointer + phaseStep;
-      if (gReadPointer >= gWavetableLength)
+      const int currentGReadPointer = (int)gReadPointer;
+      float nextGReadPointer =  gReadPointer + phaseStep;
+      if (nextGReadPointer >= gWavetableLength)
       {
-        gReadPointer -= gWavetableLength;
+        nextGReadPointer -= gWavetableLength;
       }
+
+      buffer[bufferPosition++] = gAmplitude * this->gWavetable[currentGReadPointer];
+      buffer[bufferPosition++] = gAmplitude * this->gWavetable[currentGReadPointer];
+      gReadPointer = nextGReadPointer;
+
     }
     scopeLog(buffer, nBufferFrames);
     return 0;
