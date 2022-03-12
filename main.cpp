@@ -83,7 +83,7 @@ public:
     parameters.nChannels = 2;
     parameters.firstChannel = 0;
     unsigned int sampleRate = 44100;
-    unsigned int bufferFrames = 256; // 256 sample frames
+    unsigned int bufferFrames = 512; // 256 sample frames
 
     try
     {
