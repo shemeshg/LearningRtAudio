@@ -2,7 +2,7 @@
 #define GUISLIDER_H
 
 #include <QWidget>
-
+#include "WaveTableCallback.h"
 
 namespace Ui { class GuiSlider; }
 
@@ -12,7 +12,7 @@ class GuiSlider : public QWidget
     Q_OBJECT
 
 public:
-    GuiSlider(const QString &name,int val, int min, int max,QWidget *parent = nullptr);
+    GuiSlider(RtGuiSlider &rtg,QWidget *parent = nullptr);
     ~GuiSlider();
 
 private slots:
@@ -25,5 +25,6 @@ private slots:
 
 private:
     Ui::GuiSlider *ui;
+    RtGuiSlider &rtg;
 };
 #endif // GUISLIDER_H
