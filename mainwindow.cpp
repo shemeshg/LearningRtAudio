@@ -11,11 +11,13 @@ MainWindow::MainWindow(QWidget *parent)
     tra.rtWaveTableCallback.setupSine();
     tra.playWavTable(2);
 
-    GuiSlider *g=new GuiSlider(tra.rtWaveTableCallback.rtGuiSlider.at(0));
+    for (RtGuiSlider &rts : tra.rtWaveTableCallback.rtGuiSlider) {
+        GuiSlider *g=new GuiSlider(rts);
+        ui->verticalLayout->addWidget(g);
+        g->show();
+    }
 
-    ui->verticalLayout->addWidget(g);
-    g->show();
-    ui->label->setText("added");
+    ui->label->setText("Sliders:");
 }
 
 MainWindow::~MainWindow()
