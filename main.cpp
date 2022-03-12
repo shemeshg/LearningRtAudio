@@ -125,7 +125,7 @@ public:
     playRtAudioCallback(&fplay, (void *)&file, deviceId);
   }
 
-  RtWaveTableCallback rtWaveTableCallback = RtWaveTableCallback(16);
+  RtWaveTableCallback rtWaveTableCallback = RtWaveTableCallback(8);
   void playWavTable(int deviceId = -1)
   {
     playRtAudioCallback(&waveTable, (void *)&rtWaveTableCallback, deviceId);
