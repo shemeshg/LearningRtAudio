@@ -6,11 +6,8 @@ set(CMAKE_CXX_STANDARD 17)
 include(CTest)
 enable_testing()
 
-
+add_subdirectory(main)
 add_subdirectory(TestRtAudioLib)
-
-add_executable(classTest main.cpp)
-target_link_libraries (classTest PUBLIC  TestRtAudioLib ${LINKLIBS})
 
 set(CPACK_PROJECT_NAME ${PROJECT_NAME})
 set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})
