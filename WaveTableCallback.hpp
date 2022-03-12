@@ -64,10 +64,10 @@ public:
       {
         nextGReadPointer -= gWavetableLength ;
       }
-      //std::cout<<nextGReadPointer<<" "<<gWavetableLength<<"\n";
-
-      buffer[bufferPosition++] = gAmplitude * this->gWavetable[currentGReadPointer * 2  ];
-      buffer[bufferPosition++] = gAmplitude * this->gWavetable[currentGReadPointer * 2  + 1];
+      
+   
+      buffer[bufferPosition++] = gAmplitude * getLinearRegPos(gReadPointer, currentGReadPointer, 0);
+      buffer[bufferPosition++] = gAmplitude * getLinearRegPos(gReadPointer, currentGReadPointer, 1);
       gReadPointer = nextGReadPointer;
 
     }
@@ -76,6 +76,17 @@ public:
   }
 
 private:
+  float getLinearRegPos(double gReadPointer, int currentGReadPointer, int chid){
+          float currentGReadRemainder = gReadPointer - (int)gReadPointer;
+      int  nextGReadPointerInt = currentGReadPointer + 1 >= gWavetableLength ? 0 : currentGReadPointer + 1;
+      
+
+      float ch1=this->gWavetable[currentGReadPointer * 2 + chid ] + 
+            currentGReadRemainder * (this->gWavetable[nextGReadPointerInt * 2 + chid ]  - this->gWavetable[currentGReadPointer * 2 + chid ] );
+
+      return ch1;
+  }
+
   void setup()
   {
     // Generate a triangle waveform (ramp from -1 to 1, then 1 to -1)
