@@ -65,8 +65,8 @@ public:
         nextGReadPointer -= gWavetableLength;
       }
 
-      buffer[bufferPosition++] = gAmplitude * getLinearRegPos(gReadPointer, 0);
-      buffer[bufferPosition++] = gAmplitude * getLinearRegPos(gReadPointer, 1);
+      buffer[bufferPosition++] = gAmplitude * getLinearInterpolation(gReadPointer, 0);
+      buffer[bufferPosition++] = gAmplitude * getLinearInterpolation(gReadPointer, 1);
       gReadPointer = nextGReadPointer;
     }
     //scopeLog(buffer, nBufferFrames);
@@ -74,7 +74,7 @@ public:
   }
 
 private:
-  float getLinearRegPos(double gReadPointer, int chid)
+  float getLinearInterpolation(double gReadPointer, int chid)
   {
     const int currentGReadPointer = (int)gReadPointer;
     float currentGReadRemainder = gReadPointer - (int)gReadPointer;
