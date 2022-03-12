@@ -65,11 +65,14 @@ public:
         nextGReadPointer -= gWavetableLength;
       }
 
-      buffer[bufferPosition++] = gAmplitude * getLinearInterpolation(gReadPointer, 0);
-      buffer[bufferPosition++] = gAmplitude * getLinearInterpolation(gReadPointer, 1);
+      for (unsigned chIdx = 0; chIdx < gChannelsCount; chIdx++)
+      {
+        buffer[bufferPosition++] = gAmplitude * getLinearInterpolation(gReadPointer, chIdx);
+      }
+
       gReadPointer = nextGReadPointer;
     }
-    //scopeLog(buffer, nBufferFrames);
+    // scopeLog(buffer, nBufferFrames);
     return 0;
   }
 
@@ -81,8 +84,8 @@ private:
     int nextGReadPointerInt = currentGReadPointer + 1 >= gWavetableLength ? 0 : currentGReadPointer + 1;
 
     float ch = this->gWavetable[currentGReadPointer * gChannelsCount + chid] +
-                currentGReadRemainder * 
-                (this->gWavetable[nextGReadPointerInt * gChannelsCount + chid] - this->gWavetable[currentGReadPointer * gChannelsCount + chid]);
+               currentGReadRemainder *
+                   (this->gWavetable[nextGReadPointerInt * gChannelsCount + chid] - this->gWavetable[currentGReadPointer * gChannelsCount + chid]);
 
     return ch;
   }
@@ -96,15 +99,16 @@ private:
     for (unsigned int n = 0; n < gWavetableLength / 2; n++)
     {
       gWavetable[n * gChannelsCount] = -1.0 + 4.0 * (float)n / (float)gWavetableLength;
-      for (unsigned int i=1;i<gChannelsCount;i++){
+      for (unsigned int i = 1; i < gChannelsCount; i++)
+      {
         gWavetable[n * gChannelsCount + i] = gWavetable[n * gChannelsCount];
       }
-      
     }
     for (unsigned int n = gWavetableLength / 2; n < gWavetableLength; n++)
     {
       gWavetable[n * gChannelsCount] = 1.0 - 4.0 * (float)(n - gWavetableLength / 2) / (float)gWavetableLength;
-      for (unsigned int i=1;i<gChannelsCount;i++){
+      for (unsigned int i = 1; i < gChannelsCount; i++)
+      {
         gWavetable[n * gChannelsCount + i] = gWavetable[n * gChannelsCount];
       }
     }
