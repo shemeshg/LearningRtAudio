@@ -23,7 +23,7 @@ public:
   int gWavetableLength; // The length of the buffer in frames
   float *gWavetable;    // Buffer that holds the wavetable
 
-  float gAmplitude = 0.5;   // Amplitude of the playback
+  float gAmplitudeDb = -20;   // Amplitude of the playback
   float gFrequency = 220.0; // Frequency (TODO: not implemented yet)
   const int gChannelsCount = 2;
 
