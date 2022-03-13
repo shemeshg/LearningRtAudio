@@ -7,8 +7,7 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
 {
-    ui->setupUi(this);
-    tra.rtWaveTableCallback.setupSine();
+    ui->setupUi(this);   
     tra.playWavTable(2);
 
     for (RtGuiSlider &rts : tra.rtWaveTableCallback.rtGuiSlider) {

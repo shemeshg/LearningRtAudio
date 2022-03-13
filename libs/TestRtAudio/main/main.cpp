@@ -12,10 +12,9 @@ int main()
   tra.playWavTable(2);
   char input;
   // std::cout << "\nPlaying ... press <enter> to quit.\n";
-  std::cin.get(input);
-  //tra.rtWaveTableCallback.gFrequency = 440;
-  tra.rtWaveTableCallback.rtGuiSlider.at(0).val = 440;
-  std::cin.get(input);
+  std::cin.get(input);  
+  //tra.rtWaveTableCallback.rtGuiSlider.at(0).val = 440;
+  //std::cin.get(input);
   tra.stopStream();
   return 0;
 }

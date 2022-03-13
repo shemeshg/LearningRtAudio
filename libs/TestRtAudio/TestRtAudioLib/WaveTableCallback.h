@@ -82,6 +82,9 @@ public:
   std::vector<RtGuiSlider> rtGuiSlider;
   std::vector<std::unique_ptr<OscWaveTableSine>> Oscs;
   
+  float detuneOscsAmount = 0;
+  float detuneFrequency = 400;
+  float detuneAmplitudeDb = -10;
 
   RtWaveTableCallback();
 

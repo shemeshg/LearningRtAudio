@@ -65,17 +65,20 @@ RtWaveTableCallback::RtWaveTableCallback()
 
   auto oscSine2 = std::make_unique<OscWaveTableSine>();
   oscSine2->setupWaveTable();
-  oscSine2->gFrequency=300;
+  
   
 
-  RtGuiSlider rs("Frequency", oscSine->gFrequency, 200, 5000, 1);
-  RtGuiSlider rs2("Amplitude Db", oscSine->gAmplitudeDb, -40, 0, 0.1);
+  RtGuiSlider rs("Frequency", detuneFrequency, 50, 5000, 1);
+  RtGuiSlider rs2("Amplitude Db", detuneAmplitudeDb, -40, 0, 0.1);
+  RtGuiSlider rs3("detuneOscs", detuneOscsAmount, 0, 100, 0.1);
+  
 
   Oscs.push_back(std::move(oscSine));
   Oscs.push_back(std::move(oscSine2));
 
   rtGuiSlider.push_back(std::move(rs));
   rtGuiSlider.push_back(std::move(rs2));
+  rtGuiSlider.push_back(std::move(rs3));
 }
 
 void OscWaveTable::setupWaveTable()
@@ -138,6 +141,12 @@ int RtWaveTableCallback::render(void *outputBuffer, void *inputBuffer, unsigned 
 
   if (status)
     std::cout << "Stream underflow detected!" << std::endl;
+
+  Oscs.at(0)->gFrequency = detuneFrequency + detuneOscsAmount;
+  Oscs.at(0)->gAmplitudeDb = detuneAmplitudeDb;
+  
+  Oscs.at(1)->gFrequency = detuneFrequency - detuneOscsAmount;
+  Oscs.at(1)->gAmplitudeDb = detuneAmplitudeDb;
 
   Oscs.at(0)->render(buffer, nBufferFrames, OscWaveTable::RenderMode::setBuffer);
   Oscs.at(1)->render(buffer, nBufferFrames, OscWaveTable::RenderMode::addBuffer);
