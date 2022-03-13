@@ -8,7 +8,7 @@ int main()
   // tra.coutDevicesInfo();
   //  tra.playSin(2);
   //  tra.playWavFile();
-  tra.rtWaveTableCallback.setupSine();
+  
   tra.playWavTable(2);
   char input;
   // std::cout << "\nPlaying ... press <enter> to quit.\n";

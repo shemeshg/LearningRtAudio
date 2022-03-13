@@ -20,7 +20,7 @@ public:
 
   void stopStream();
 
-  RtWaveTableCallback rtWaveTableCallback = RtWaveTableCallback(256);
+  RtWaveTableCallback rtWaveTableCallback = RtWaveTableCallback();
   void playWavTable(int deviceId = -1);
 
 private:
