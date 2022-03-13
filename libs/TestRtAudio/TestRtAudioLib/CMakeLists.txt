@@ -10,6 +10,8 @@ set(TestRtAudioLib_SRCS
   waveTable.cpp
   WaveTableCallback.h 
   WaveTableCallback.cpp
+  RangeUtils.h
+  RangeUtils.cpp
 )
 
 add_subdirectory(RtAudioLib)

@@ -7,8 +7,10 @@ RtWaveTableCallback::RtWaveTableCallback(int gWavetableLength) : gWavetableLengt
   assert(gWavetable);
   setupSine();
 
-  RtGuiSlider rs("gFrequency", gFrequency, 50, 5000, 0.5);
+  RtGuiSlider rs("Frequency", gFrequency, 200, 5000, 1);
+  RtGuiSlider rs2("Amplitude", gAmplitude, 0, 1, 0.1);
   rtGuiSlider.push_back(std::move(rs));
+  rtGuiSlider.push_back(std::move(rs2));
 }
 
 RtWaveTableCallback::~RtWaveTableCallback()

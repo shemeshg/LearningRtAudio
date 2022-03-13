@@ -33,7 +33,7 @@ void MainWindow::on_pushButton_clicked()
 
 
 
-    qDebug()<<"Task added";
+    qDebug()<<"Clicked";
 
 }
 
