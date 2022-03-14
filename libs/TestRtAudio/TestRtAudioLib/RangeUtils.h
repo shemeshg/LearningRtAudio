@@ -21,24 +21,30 @@ public:
     double next = midiNoteIntToFrequency(noteNumber + 1);
     double reminder = noteNumber - (int)noteNumber;
 
-    double logScaleIntNoteNumber = midiNoteToFrequency((int)noteNumber);
-    double logScaleStep = midiNoteToFrequency((int)noteNumber+1) - logScaleIntNoteNumber;
-    double logScaleRemain = midiNoteToFrequency(noteNumber) - logScaleIntNoteNumber;
+    double logScaleIntNoteNumber = midiLogScaleToFrequency((int)noteNumber);
+    double logScaleStep = midiLogScaleToFrequency((int)noteNumber + 1) - logScaleIntNoteNumber;
+    double logScaleRemain = midiLogScaleToFrequency(noteNumber) - logScaleIntNoteNumber;
 
-    return curr + (next - curr) * (logScaleRemain/logScaleStep);
+    return curr + (next - curr) * (logScaleRemain / logScaleStep);
   }
 
 private:
+  const int baseNoteMidiNumber = 69;
+  float midiLogScaleToFrequency(float noteNumber)
+  {
+    return scale.at(0) * pow(2.0, (noteNumber - baseNoteMidiNumber) / (float)scale.size());
+  };
+
   float midiNoteIntToFrequency(float noteNumber)
   {
     int scaleLen = scale.size();
-    double dOctave = (noteNumber - 69) / scaleLen;
+    double dOctave = (noteNumber - baseNoteMidiNumber) / scaleLen;
     int octave = (int)dOctave;
     if (dOctave < 0)
     {
       octave = (int)dOctave - 1;
     }
-    int mod = ((int)noteNumber - 69) % scaleLen;
+    int mod = ((int)noteNumber - baseNoteMidiNumber) % scaleLen;
     if (mod < 0)
     {
       mod += scaleLen;
