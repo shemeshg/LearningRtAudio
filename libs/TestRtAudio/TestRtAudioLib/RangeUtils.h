@@ -15,12 +15,17 @@ class CustomMidiScale
 public:
   // Equal temperament
   std::vector<double> scale{440.00, 466.16, 493.88, 523.25, 554.37, 587.33, 622.25, 659.25, 698.46, 739.99, 783.99, 830.61};
-  float midiNoteToFrequency(float noteNumber)
+  float cMidiNoteToFrequency(float noteNumber)
   {
     double curr = midiNoteIntToFrequency(noteNumber);
     double next = midiNoteIntToFrequency(noteNumber + 1);
     double reminder = noteNumber - (int)noteNumber;
-    return curr + (next - curr) * (pow(4, reminder) / 4);
+
+    double logScaleIntNoteNumber = midiNoteToFrequency((int)noteNumber);
+    double logScaleStep = midiNoteToFrequency((int)noteNumber+1) - logScaleIntNoteNumber;
+    double logScaleRemain = midiNoteToFrequency(noteNumber) - logScaleIntNoteNumber;
+
+    return curr + (next - curr) * (logScaleRemain/logScaleStep);
   }
 
 private:
