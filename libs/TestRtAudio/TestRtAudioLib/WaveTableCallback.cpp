@@ -1,5 +1,7 @@
-#include "WaveTableCallback.h"
 #include <cassert>
+#include "WaveTableCallback.h"
+#include "RangeUtils.h"
+
 
 
 RtWaveTableCallback::RtWaveTableCallback()
@@ -54,7 +56,7 @@ int RtWaveTableCallback::render(void *outputBuffer, void *inputBuffer, unsigned 
   if (status)
     std::cout << "Stream underflow detected!" << std::endl;
 
-  float detuneFrequency = 440.0*pow(2.0,(detuneNoteNumber-60)/12.0);
+  float detuneFrequency = midiNoteToFrequency(detuneNoteNumber);
   Oscs.at(0)->gFrequency = detuneFrequency + detuneOscsAmount;
   Oscs.at(0)->gAmplitudeDb = detuneAmplitudeDb;
   
