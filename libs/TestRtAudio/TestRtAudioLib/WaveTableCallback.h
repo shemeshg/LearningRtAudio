@@ -3,6 +3,7 @@
 #include <iostream>
 #include <vector>
 #include "RtAudio.h"
+#include "OscWaveTable.h"
 
 class RtGuiSlider
 {
@@ -17,71 +18,13 @@ public:
   }
 };
 
-class OscWaveTable
-{
-public:
-  int gWavetableLength = 512; // The length of the buffer in frames
-  float *gWavetable;          // Buffer that holds the wavetable
-
-  float gAmplitudeDb = -10; // Amplitude of the playback
-  float gFrequency = 220.0; // Frequency (TODO: not implemented yet)
-  const int gChannelsCount = 2;
-
-  double gReadPointer = 0;
-
-  float gAmplitude()
-  {
-    return pow(10.0, gAmplitudeDb / 20.0);
-  }
-
-  double phaseStep()
-  {
-    return gWavetableLength * (gFrequency / 44100.0);
-  }
-
-  float nextGReadPointer()
-  {
-    float p = gReadPointer + phaseStep();
-    if (p >= gWavetableLength)
-    {
-      p -= gWavetableLength;
-    }
-    return p;
-  }
-
-  OscWaveTable();
-  virtual void setupWaveTable() = 0;
-  virtual ~OscWaveTable();
-
-  float getLinearInterpolation(int chid);
-
-  enum RenderMode { setBuffer, addBuffer };
-
-  int render(double *buffer ,  unsigned int &nBufferFrames, RenderMode renderMode );
-
-  
-};
-
-class OscWaveTableSine : public OscWaveTable
-{
-  public:
-  OscWaveTableSine() : OscWaveTable() {}
-  void setupWaveTable() override;
-};
-
-class OscWaveTableTiangle : public OscWaveTable
-{
-  public:
-  OscWaveTableTiangle() : OscWaveTable() {}
-  void setupWaveTable() override;
-};
 
 class RtWaveTableCallback
 {
 public:
   std::vector<RtGuiSlider> rtGuiSlider;
   std::vector<std::unique_ptr<OscWaveTableSine>> Oscs;
-  
+
   float detuneOscsAmount = 0;
   float detuneFrequency = 400;
   float detuneAmplitudeDb = -10;
