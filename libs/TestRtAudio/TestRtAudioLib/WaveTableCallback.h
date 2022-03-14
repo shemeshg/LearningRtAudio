@@ -26,7 +26,8 @@ public:
   std::vector<std::unique_ptr<OscWaveTableSine>> Oscs;
 
   float detuneOscsAmount = 0;
-  float detuneFrequency = 400;
+  float detunePitch = 0;
+
   float detuneAmplitudeDb = -10;
 
   RtWaveTableCallback();

@@ -7,14 +7,10 @@ RtWaveTableCallback::RtWaveTableCallback()
   auto oscSine = std::make_unique<OscWaveTableSine>();
   auto oscSine2 = std::make_unique<OscWaveTableSine>();
  
-  
-  
-
-  RtGuiSlider rs("Frequency", detuneFrequency, 50, 5000, 1);
+  RtGuiSlider rs("Frequency", detunePitch, -12, 24, 1);
   RtGuiSlider rs2("Amplitude Db", detuneAmplitudeDb, -40, 0, 0.1);
   RtGuiSlider rs3("detuneOscs", detuneOscsAmount, 0, 100, 0.1);
   
-
   Oscs.push_back(std::move(oscSine));
   Oscs.push_back(std::move(oscSine2));
 
@@ -58,6 +54,7 @@ int RtWaveTableCallback::render(void *outputBuffer, void *inputBuffer, unsigned 
   if (status)
     std::cout << "Stream underflow detected!" << std::endl;
 
+  float detuneFrequency = 110.0*pow(2.0,detunePitch/12.0);
   Oscs.at(0)->gFrequency = detuneFrequency + detuneOscsAmount;
   Oscs.at(0)->gAmplitudeDb = detuneAmplitudeDb;
   
