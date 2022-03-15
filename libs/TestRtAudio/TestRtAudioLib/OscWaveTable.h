@@ -63,7 +63,7 @@ class OscWaveTableAddative : public OscWaveTable
 {
 public:
   // Levels 0..1 NOT DBs
-  std::vector<float> harmoniesLevels{1,0.5,0.25,0};
+  std::vector<float> harmoniesLevels{0.5,0,0,0};
 
   OscWaveTableAddative() : OscWaveTable() {
     setupWaveTable();

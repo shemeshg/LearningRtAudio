@@ -19,7 +19,7 @@ public:
   }
 
   virtual ~RtGuiControl(){}
-  
+
    void virtual setVal(float v) = 0;
 
 };
@@ -40,7 +40,6 @@ public:
 
    void setVal(float v) override{
     val = v;
-    std::cout<<"Parent "<<val<<"\n";
   }
 
 };
@@ -61,7 +60,6 @@ public:
 
    void setVal(float v) override{
     val = v;
-    std::cout<<"DID "<<val<<"\n";
     owt.setupWaveTable();
   }
 
