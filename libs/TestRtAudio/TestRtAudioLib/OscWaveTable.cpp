@@ -7,6 +7,27 @@ void OscWaveTable::setupWaveTable()
   return;
 }
 
+void OscWaveTableAddative::setupWaveTable()
+{
+  for (unsigned int n = 0; n < gWavetableLength; n++)
+  {
+    
+    const float fondamental = (2.0 * M_PI) * ((float)n / (float)gWavetableLength);
+    gWavetable[n * gChannelsCount] =     
+      harmoniesLevels[0] * sin(fondamental * 1) +
+      harmoniesLevels[1] * sin(fondamental * 2) +
+      harmoniesLevels[2] * sin(fondamental * 3) +
+      harmoniesLevels[3] * sin(fondamental * 4);
+    
+    
+
+    for (unsigned int i = 1; i < gChannelsCount; i++)
+    {
+      gWavetable[n * gChannelsCount + i] = gWavetable[n * gChannelsCount];
+    }
+  }
+}
+
 void OscWaveTableSine::setupWaveTable()
 {
   for (unsigned int n = 0; n < gWavetableLength; n++)

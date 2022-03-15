@@ -10,8 +10,8 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);   
     tra.playWavTable(2);
 
-    for (RtGuiSlider &rts : tra.rtWaveTableCallback.rtGuiSlider) {
-        GuiSlider *g=new GuiSlider(rts);
+    for (auto &rts : tra.rtWaveTableCallback.rtGuiSlider) {
+        GuiSlider *g=new GuiSlider(*rts);
         ui->verticalLayout->addWidget(g);
         g->show();
     }

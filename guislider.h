@@ -12,7 +12,7 @@ class GuiSlider : public QWidget
     Q_OBJECT
 
 public:
-    GuiSlider(RtGuiSlider &rtg,QWidget *parent = nullptr);
+    GuiSlider(RtGuiControl &rtg,QWidget *parent = nullptr);
     ~GuiSlider();
 
 private slots:
@@ -25,6 +25,6 @@ private slots:
 
 private:
     Ui::GuiSlider *ui;
-    RtGuiSlider &rtg;
+    RtGuiControl &rtg;
 };
 #endif // GUISLIDER_H

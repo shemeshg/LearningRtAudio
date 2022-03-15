@@ -1,5 +1,6 @@
 #pragma once
 #include <cmath>
+#include <vector>
 
 class OscWaveTable
 {
@@ -53,6 +54,18 @@ class OscWaveTableSine : public OscWaveTable
 {
 public:
   OscWaveTableSine() : OscWaveTable() {
+    setupWaveTable();
+  }
+  void setupWaveTable() override;
+};
+
+class OscWaveTableAddative : public OscWaveTable
+{
+public:
+  // Levels 0..1 NOT DBs
+  std::vector<float> harmoniesLevels{1,0.5,0.25,0};
+
+  OscWaveTableAddative() : OscWaveTable() {
     setupWaveTable();
   }
   void setupWaveTable() override;

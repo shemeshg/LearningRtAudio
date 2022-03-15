@@ -4,7 +4,27 @@
 #include "RtAudio.h"
 #include "OscWaveTable.h"
 
-class RtGuiSlider
+class RtGuiControl
+{
+public:
+  float &val;
+  float min;
+  float max;
+  float step;
+  std::string name;
+
+  RtGuiControl(std::string name, float &val, float min, float max, float step) : 
+      name(name), val(val), min(min), max(max), step(step)
+  {
+  }
+
+  virtual ~RtGuiControl(){}
+  
+   void virtual setVal(float v) = 0;
+
+};
+
+class RtGuiSlider: public RtGuiControl
 {
 public:
   float &val;
@@ -14,36 +34,49 @@ public:
   std::string name;
 
   RtGuiSlider(std::string name, float &val, float min, float max, float step) : 
-      name(name), val(val), min(min), max(max), step(step)
+      RtGuiControl{name, val, min, max, step}, val{val}
   {
   }
 
-  virtual void setVal(float v){
+   void setVal(float v) override{
     val = v;
+    std::cout<<"Parent "<<val<<"\n";
   }
 
 };
 
-
-class RtGuiSliderRefreshTableSetter: RtGuiSlider {
-  public:
+class RtGuiSliderRefreshTableSetter: public RtGuiControl
+{
+public:
+  float &val;
+  float min;
+  float max;
+  float step;
+  std::string name;
   OscWaveTable &owt;
   RtGuiSliderRefreshTableSetter(OscWaveTable &owt, std::string name, float &val, float min, float max, float step) : 
-      RtGuiSlider{name, val, min, max, step},owt{owt}{
+      RtGuiControl{name, val, min, max, step},owt{owt}, val{val}
+  {
+  }
 
-      }   
-  void setVal(float v) override{
+   void setVal(float v) override{
     val = v;
+    std::cout<<"DID "<<val<<"\n";
     owt.setupWaveTable();
-  }         
+  }
+
+
+
 };
+
+
 
 
 class RtWaveTableCallback
 {
 public:
-  std::vector<RtGuiSlider> rtGuiSlider;
-  std::vector<std::unique_ptr<OscWaveTableSine>> Oscs;
+  std::vector<std::unique_ptr<RtGuiControl>> rtGuiSlider;
+  std::vector<std::unique_ptr<OscWaveTable>> Oscs;
 
   float detuneOscsAmount = 0;
   float detuneNoteNumber = 60;

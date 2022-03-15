@@ -6,19 +6,30 @@
 
 RtWaveTableCallback::RtWaveTableCallback()
 {
-  auto oscSine = std::make_unique<OscWaveTableSine>();
-  auto oscSine2 = std::make_unique<OscWaveTableSine>();
+  auto oscSine = std::make_unique<OscWaveTableAddative>();
+  auto oscSine2 = std::make_unique<OscWaveTableAddative>();
  
-  RtGuiSlider rs("Note Number", detuneNoteNumber, 21, 108, 1);
-  RtGuiSlider rs2("Amplitude Db", detuneAmplitudeDb, -40, 0, 0.1);
-  RtGuiSlider rs3("detuneOscs", detuneOscsAmount, 0, 100, 0.1);
   
+  //RtGuiControl *s = &rs;
+  std::unique_ptr<RtGuiControl> rs1(new RtGuiSlider("Note Number", detuneNoteNumber, 21, 108, 1));
+  std::unique_ptr<RtGuiControl> rs2(new RtGuiSlider("Amplitude Db", detuneAmplitudeDb, -40, 0, 0.1));
+  std::unique_ptr<RtGuiControl> rs3(new RtGuiSlider("detuneOscs", detuneOscsAmount, 0, 100, 0.1));
+
+  std::unique_ptr<RtGuiControl> hm1(new RtGuiSliderRefreshTableSetter(*oscSine, "harminic 2", oscSine->harmoniesLevels.at(1), 0, 1, 0.1));
+
+
   Oscs.push_back(std::move(oscSine));
   Oscs.push_back(std::move(oscSine2));
 
-  rtGuiSlider.push_back(std::move(rs));
+  rtGuiSlider.push_back(std::move(rs1));
   rtGuiSlider.push_back(std::move(rs2));
   rtGuiSlider.push_back(std::move(rs3));
+
+  rtGuiSlider.push_back(std::move(hm1));
+  
+
+  //rtGuiSlider.push_back(std::move(hm2));
+  //rtGuiSlider.push_back(std::move(hm3));
 }
 
 
