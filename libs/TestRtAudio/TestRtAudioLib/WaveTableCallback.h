@@ -50,6 +50,8 @@ public:
 
   float detuneAmplitudeDb = -10;
 
+  bool doScopelog=false;
+
   RtWaveTableCallback();
 
   ~RtWaveTableCallback();

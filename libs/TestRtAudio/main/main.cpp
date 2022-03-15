@@ -9,6 +9,7 @@ int main()
   TestRtAudio tra;
   
   tra.playWavTable(2);
+  tra.rtWaveTableCallback.doScopelog=false;
   char input;
   // std::cout << "\nPlaying ... press <enter> to quit.\n";
   std::cin.get(input);  
