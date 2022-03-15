@@ -12,9 +12,30 @@ public:
   float max;
   float step;
   std::string name;
-  RtGuiSlider(std::string name, float &val, float min, float max, float step) : name(name), val(val), min(min), max(max), step(step)
+
+  RtGuiSlider(std::string name, float &val, float min, float max, float step) : 
+      name(name), val(val), min(min), max(max), step(step)
   {
   }
+
+  virtual void setVal(float v){
+    val = v;
+  }
+
+};
+
+
+class RtGuiSliderRefreshTableSetter: RtGuiSlider {
+  public:
+  OscWaveTable &owt;
+  RtGuiSliderRefreshTableSetter(OscWaveTable &owt, std::string name, float &val, float min, float max, float step) : 
+      RtGuiSlider{name, val, min, max, step},owt{owt}{
+
+      }   
+  void setVal(float v) override{
+    val = v;
+    owt.setupWaveTable();
+  }         
 };
 
 

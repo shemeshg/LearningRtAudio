@@ -13,3 +13,8 @@ float constrainRange(float x, float min_val, float max_val)
     return max_val;
   return x;
 }
+
+float midiNoteToFrequency(float noteNumber)
+{
+  return 440.0 * pow(2.0, (noteNumber - 69) / 12.0);
+};

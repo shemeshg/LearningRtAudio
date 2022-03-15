@@ -32,7 +32,7 @@ void GuiSlider::on_lineEdit_editingFinished()
 {
     float val=(int)ui->lineEdit->text().toFloat();
     ui->horizontalSlider->setValue(rescaleRange(val, rtg.min, rtg.max, 0,(float)INT_MAX));
-    rtg.val = val;
+    rtg.setVal( val);
 }
 
 
@@ -42,7 +42,7 @@ void GuiSlider::on_horizontalSlider_sliderMoved(int position)
     val=int(val/rtg.step) * rtg.step;
     val=constrainRange(val,rtg.min,rtg.max);
     ui->lineEdit->setText(QString::number(val));
-    rtg.val = val;
+    rtg.setVal( val);
 }
 
 
