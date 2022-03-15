@@ -54,7 +54,7 @@ public:
 
   ~RtWaveTableCallback();
 
-  void scopeLog(double *buffer, unsigned int &nBufferFrames, int channels = 2, int rowsCount = 2000);
+  void scopeLog(double *buffer, unsigned int &nBufferFrames, int channels = 2, int rowsCount = 22050);
 
   int render(void *outputBuffer, void *inputBuffer, unsigned int &nBufferFrames,
              double &streamTime, RtAudioStreamStatus &status);

@@ -66,7 +66,7 @@ int RtWaveTableCallback::render(void *outputBuffer, void *inputBuffer, unsigned 
   Oscs.at(0)->render(buffer, nBufferFrames, OscWaveTable::RenderMode::setBuffer);
   Oscs.at(1)->render(buffer, nBufferFrames, OscWaveTable::RenderMode::addBuffer);
 
-  // scopeLog(buffer, nBufferFrames);
+  scopeLog(buffer, nBufferFrames);
   return 0;
 }
 

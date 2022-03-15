@@ -15,11 +15,11 @@ void OscWaveTableSine::setupWaveTable()
 
     gWavetable[n * gChannelsCount] = sin(fondamental);
     /*
-     0.5 * sin(fondamental) +
-                                    pow(0.5, 2) * sin(fondamental * 2) +
-                                    pow(0.5, 3) * sin(fondamental * 3) +
-                                    pow(0.5, 4) * sin(fondamental * 4);
-   */
+    0.5 * sin(fondamental) +
+        pow(0.5, 2) * sin(fondamental * 2) +
+        pow(0.5, 3) * sin(fondamental * 3) +
+        pow(0.5, 4) * sin(fondamental * 4);
+        */
 
     for (unsigned int i = 1; i < gChannelsCount; i++)
     {
@@ -64,8 +64,6 @@ OscWaveTable::~OscWaveTable()
   gWavetable = NULL;
 }
 
-
-
 int OscWaveTable::render(double *buffer, unsigned int &nBufferFrames, RenderMode renderMode)
 {
   int bufferPosition = 0;
@@ -75,12 +73,15 @@ int OscWaveTable::render(double *buffer, unsigned int &nBufferFrames, RenderMode
   {
     for (unsigned chIdx = 0; chIdx < gChannelsCount; chIdx++)
     {
-      if (renderMode==RenderMode::setBuffer){
+      if (renderMode == RenderMode::setBuffer)
+      {
         buffer[bufferPosition] = _gAmplitude * getLinearInterpolation(chIdx);
-      } else {
+      }
+      else
+      {
         buffer[bufferPosition] += _gAmplitude * getLinearInterpolation(chIdx);
       }
-      
+
       bufferPosition++;
     }
 
