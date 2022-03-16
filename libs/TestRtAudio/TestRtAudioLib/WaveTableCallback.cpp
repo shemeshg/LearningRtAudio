@@ -18,7 +18,7 @@ RtWaveTableCallback::RtWaveTableCallback()
 
   for (unsigned int i = 0; i < oscSine->harmoniesLevels.size(); i++)
   {
-    std::unique_ptr<RtGuiControl> hm1(new RtGuiSliderRefreshTableSetter(*oscSine, "harminic " + std::to_string(i), oscSine->harmoniesLevels.at(i), 0, 1, 0.1));
+    std::unique_ptr<RtGuiControl> hm1(new RtGuiSliderRefreshTableSetter(*oscSine, "harminic " + std::to_string(i), oscSine->harmoniesLevels.at(i), -1, 1, 0.1));
     rtGuiSlider.push_back(std::move(hm1));
   }
 
