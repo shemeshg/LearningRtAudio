@@ -9,7 +9,7 @@ RtWaveTableCallback::RtWaveTableCallback()
   // auto oscSine2 = std::make_unique<OscWaveTableAddative>();
 
   // RtGuiControl *s = &rs;
-  std::unique_ptr<RtGuiControl> rs1(new RtGuiSlider("Note Number", detuneNoteNumber, 21, 108, 1));
+  std::unique_ptr<RtGuiControl> rs1(new RtGuiSliderRefreshTableSetter(*oscSine,"Note Number", detuneNoteNumber, 21, 108, 1));
   std::unique_ptr<RtGuiControl> rs2(new RtGuiSlider("Amplitude Db", detuneAmplitudeDb, -40, 0, 0.1));
   std::unique_ptr<RtGuiControl> rs3(new RtGuiSlider("detuneOscs", detuneOscsAmount, 0, 100, 0.1));
 
