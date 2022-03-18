@@ -5,7 +5,8 @@
 
 RtWaveTableCallback::RtWaveTableCallback()
 {
-  auto oscSine = std::make_unique<OscWaveTableAddative>();
+  auto oscSine = std::make_unique<OscWaveTableAddative>(sampleRate);
+
   // auto oscSine2 = std::make_unique<OscWaveTableAddative>();
 
   std::unique_ptr<RtGuiControl> rs1(new RtGuiSliderRefreshTableSetter(*oscSine,"Note Number", detuneNoteNumber, 21, 108, 1));
@@ -82,3 +83,18 @@ int RtWaveTableCallback::render(void *outputBuffer, void *inputBuffer, unsigned 
 
   return 0;
 }
+
+
+  void RtWaveTableCallback::setupStreamParameters(RtAudio &audio, int deviceId){
+    if (deviceId == -1)
+    {
+      deviceId = audio.getDefaultOutputDevice();
+    }
+
+    streamParameters.deviceId = deviceId;
+    streamParameters.nChannels = 2;
+    streamParameters.firstChannel = 0;
+
+    RtAudio::DeviceInfo info = audio.getDeviceInfo(deviceId);
+    sampleRate = info.preferredSampleRate;    
+  }

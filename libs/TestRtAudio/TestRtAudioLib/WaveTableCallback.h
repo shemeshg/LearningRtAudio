@@ -91,4 +91,9 @@ public:
 
   int render(void *outputBuffer, void *inputBuffer, unsigned int &nBufferFrames,
              double &streamTime, RtAudioStreamStatus &status);
+
+  void setupStreamParameters(RtAudio &audio, int deviceId = -1);
+  unsigned int bufferFrames = 512; 
+  unsigned int sampleRate = 44100;
+  RtAudio::StreamParameters streamParameters;             
 };

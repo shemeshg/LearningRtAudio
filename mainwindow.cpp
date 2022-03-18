@@ -8,7 +8,8 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);   
-    tra.playWavTable(2);
+    tra.setupStreamParameters(2);
+    tra.playWavTable();
 
     for (auto &rts : tra.rtWaveTableCallback.rtGuiSlider) {
         GuiSlider *g=new GuiSlider(*rts);

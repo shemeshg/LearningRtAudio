@@ -16,7 +16,7 @@ void OscWaveTableAddative::setupWaveTable()
     gWavetable[n * gChannelsCount] = harmoniesLevels[0] * sin(fondamental * 1); 
       
     for(unsigned int i=1;i<harmoniesLevels.size();i++){
-      if (((float)gFrequency * (i+ 1) )> (44100/ 2)){        
+      if (((float)gFrequency * (i+ 1) )> (sampleRate/ 2)){        
         break;
       }
       gWavetable[n * gChannelsCount] +=  harmoniesLevels[i] * sin(fondamental * (i+ 1));
@@ -77,7 +77,7 @@ void OscWaveTableTiangle::setupWaveTable()
   }
 }
 
-OscWaveTable::OscWaveTable()
+OscWaveTable::OscWaveTable(unsigned int sampleRate):sampleRate{sampleRate}
 {
   gWavetable = (float *)std::calloc(gWavetableLength * 2, sizeof(float));
   assert(gWavetable);

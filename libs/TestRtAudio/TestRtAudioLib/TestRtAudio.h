@@ -16,15 +16,21 @@ public:
 
   void coutDevicesInfo();
 
-  void playRtAudioCallback(RtAudioCallback callback, void *userData, int deviceId = -1);
+  void playRtAudioCallback(RtAudioCallback callback, void *userData);
 
   void stopStream();
 
   RtWaveTableCallback rtWaveTableCallback = RtWaveTableCallback();
-  void playWavTable(int deviceId = -1);
+  void playWavTable();
+
+  void setupStreamParameters(int deviceId = -1){
+    rtWaveTableCallback.setupStreamParameters(audio,deviceId);
+  }
 
 private:
-  RtAudio audio;
+  
 
+  RtAudio audio;
+  
   std::string const nativeFormatStr(RtAudioFormat const &i);
 };

@@ -63,24 +63,17 @@
     return;
   }
 
-  void TestRtAudio::playRtAudioCallback(RtAudioCallback callback, void *userData, int deviceId)
+
+
+  void TestRtAudio::playRtAudioCallback(RtAudioCallback callback, void *userData)
   {
-    if (deviceId == -1)
-    {
-      deviceId = audio.getDefaultOutputDevice();
-    }
-
-    RtAudio::StreamParameters parameters;
-    parameters.deviceId = deviceId;
-    parameters.nChannels = 2;
-    parameters.firstChannel = 0;
-    unsigned int sampleRate = 44100;
-    unsigned int bufferFrames = 512; // 256 sample frames
-
+    RtWaveTableCallback *userDataCasted = (RtWaveTableCallback *)userData;
+    
     try
     {
-      audio.openStream(&parameters, NULL, RTAUDIO_FLOAT64,
-                       sampleRate, &bufferFrames, callback, userData);
+      
+      audio.openStream(&userDataCasted->streamParameters, NULL, RTAUDIO_FLOAT64,
+                userDataCasted->sampleRate, &userDataCasted->bufferFrames, callback, userData);
       audio.startStream();
     }
     catch (RtAudioError &e)
@@ -104,9 +97,9 @@
   }
 
 
-  void TestRtAudio::playWavTable(int deviceId)
+  void TestRtAudio::playWavTable()
   {
-    playRtAudioCallback(&waveTable, (void *)&rtWaveTableCallback, deviceId);
+    playRtAudioCallback(&waveTable, (void *)&rtWaveTableCallback);
   }
 
 
