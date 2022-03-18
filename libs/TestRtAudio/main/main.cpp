@@ -7,6 +7,7 @@ int main()
  
   // TestRtAudio::coutListApis();
   TestRtAudio tra;
+  tra.coutDevicesInfo();
   tra.setupStreamParameters(2);
   tra.playWavTable();
   tra.rtWaveTableCallback.doScopelog=false;
