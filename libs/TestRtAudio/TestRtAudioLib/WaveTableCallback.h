@@ -93,7 +93,7 @@ public:
              double &streamTime, RtAudioStreamStatus &status);
 
   void setupStreamParameters(RtAudio &audio, int deviceId = -1);
-  unsigned int bufferFrames = 512; 
-  unsigned int sampleRate = 44100;
+  unsigned int bufferFrames = 64; 
+  unsigned int sampleRate = 48000;
   RtAudio::StreamParameters streamParameters;             
 };
