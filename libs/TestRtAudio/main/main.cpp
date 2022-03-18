@@ -13,8 +13,8 @@ int main()
   char input;
   std::cout << "\nPlaying ... press <enter> to quit.\n";
   std::cin.get(input);  
-  tra.rtWaveTableCallback.rtGuiSlider.at(0)->setVal(440);
-  std::cin.get(input);
+  //tra.rtWaveTableCallback.rtGuiSlider.at(0)->setVal(440);
+  //std::cin.get(input);
   tra.stopStream();
  
  /*
