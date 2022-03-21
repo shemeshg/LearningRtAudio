@@ -5,7 +5,15 @@
 
 RtWaveTableCallback::RtWaveTableCallback()
 {
-  auto oscSine = std::make_unique<OscWaveTableAddative>(sampleRate);
+
+
+}
+
+
+ void RtWaveTableCallback::setupPlayersAndControls(){
+  
+  auto oscSine = std::make_unique<OscWaveTableAddative>(sampleRate, streamParameters.nChannels);
+  oscSine->sendToChannels={1};
 
   // auto oscSine2 = std::make_unique<OscWaveTableAddative>();
 
@@ -26,8 +34,7 @@ RtWaveTableCallback::RtWaveTableCallback()
 
   Oscs.push_back(std::move(oscSine));
   // Oscs.push_back(std::move(oscSine2));
-
-}
+ }
 
 RtWaveTableCallback::~RtWaveTableCallback()
 {

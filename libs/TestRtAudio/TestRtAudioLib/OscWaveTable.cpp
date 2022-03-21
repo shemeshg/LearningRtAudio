@@ -13,21 +13,21 @@ void OscWaveTableAddative::setupWaveTable()
   {
     
     const float fondamental = (2.0 * M_PI) * ((float)n / (float)gWavetableLength);
-    gWavetable[n * gChannelsCount] = harmoniesLevels[0] * sin(fondamental * 1); 
+    gWavetable[n * nChannels] = harmoniesLevels[0] * sin(fondamental * 1); 
       
     for(unsigned int i=1;i<harmoniesLevels.size();i++){
       if (((float)gFrequency * (i+ 1) )> (sampleRate/ 2)){        
         break;
       }
-      gWavetable[n * gChannelsCount] +=  harmoniesLevels[i] * sin(fondamental * (i+ 1));
+      gWavetable[n * nChannels] +=  harmoniesLevels[i] * sin(fondamental * (i+ 1));
     }  
     
     
     
 
-    for (unsigned int i = 1; i < gChannelsCount; i++)
+    for (unsigned int i = 1; i < nChannels; i++)
     {
-      gWavetable[n * gChannelsCount + i] = gWavetable[n * gChannelsCount];
+      gWavetable[n * nChannels + i] = gWavetable[n * nChannels];
     }
   }
 }
@@ -38,7 +38,7 @@ void OscWaveTableSine::setupWaveTable()
   {
     const float fondamental = (2.0 * M_PI) * ((float)n / (float)gWavetableLength);
 
-    gWavetable[n * gChannelsCount] = sin(fondamental);
+    gWavetable[n * nChannels] = sin(fondamental);
     /*
     0.5 * sin(fondamental) +
         pow(0.5, 2) * sin(fondamental * 2) +
@@ -46,9 +46,9 @@ void OscWaveTableSine::setupWaveTable()
         pow(0.5, 4) * sin(fondamental * 4);
         */
 
-    for (unsigned int i = 1; i < gChannelsCount; i++)
+    for (unsigned int i = 1; i < nChannels; i++)
     {
-      gWavetable[n * gChannelsCount + i] = gWavetable[n * gChannelsCount];
+      gWavetable[n * nChannels + i] = gWavetable[n * nChannels];
     }
   }
 }
@@ -61,23 +61,23 @@ void OscWaveTableTiangle::setupWaveTable()
 
   for (unsigned int n = 0; n < gWavetableLength / 2; n++)
   {
-    gWavetable[n * gChannelsCount] = -1.0 + 4.0 * (float)n / (float)gWavetableLength;
-    for (unsigned int i = 1; i < gChannelsCount; i++)
+    gWavetable[n * nChannels] = -1.0 + 4.0 * (float)n / (float)gWavetableLength;
+    for (unsigned int i = 1; i < nChannels; i++)
     {
-      gWavetable[n * gChannelsCount + i] = gWavetable[n * gChannelsCount];
+      gWavetable[n * nChannels + i] = gWavetable[n * nChannels];
     }
   }
   for (unsigned int n = gWavetableLength / 2; n < gWavetableLength; n++)
   {
-    gWavetable[n * gChannelsCount] = 1.0 - 4.0 * (float)(n - gWavetableLength / 2) / (float)gWavetableLength;
-    for (unsigned int i = 1; i < gChannelsCount; i++)
+    gWavetable[n * nChannels] = 1.0 - 4.0 * (float)(n - gWavetableLength / 2) / (float)gWavetableLength;
+    for (unsigned int i = 1; i < nChannels; i++)
     {
-      gWavetable[n * gChannelsCount + i] = gWavetable[n * gChannelsCount];
+      gWavetable[n * nChannels + i] = gWavetable[n * nChannels];
     }
   }
 }
 
-OscWaveTable::OscWaveTable(unsigned int sampleRate):sampleRate{sampleRate}
+OscWaveTable::OscWaveTable(unsigned int sampleRate,unsigned int nChannels):sampleRate{sampleRate},nChannels{nChannels}
 {
   gWavetable = (float *)std::calloc(gWavetableLength * 2, sizeof(float));
   assert(gWavetable);
@@ -96,15 +96,21 @@ int OscWaveTable::render(double *buffer, unsigned int &nBufferFrames, RenderMode
 
   for (unsigned int i = 0; i < nBufferFrames; i++)
   {
-    for (unsigned chIdx = 0; chIdx < gChannelsCount; chIdx++)
+    for (unsigned chIdx = 0; chIdx < nChannels; chIdx++)
     {
+      double val = 0;
+
+      if ( std::count(sendToChannels.begin(), sendToChannels.end(), chIdx)  ){
+        val = _gAmplitude * getLinearInterpolation(chIdx);
+      }
+      
       if (renderMode == RenderMode::setBuffer)
       {
-        buffer[bufferPosition] = _gAmplitude * getLinearInterpolation(chIdx);
+        buffer[bufferPosition] = val;
       }
       else
       {
-        buffer[bufferPosition] += _gAmplitude * getLinearInterpolation(chIdx);
+        buffer[bufferPosition] += val;
       }
 
       bufferPosition++;
@@ -121,9 +127,9 @@ float OscWaveTable::getLinearInterpolation(int chid)
   float currentGReadRemainder = gReadPointer - (int)gReadPointer;
   int nextGReadPointerInt = currentGReadPointer + 1 >= gWavetableLength ? 0 : currentGReadPointer + 1;
 
-  float ch = this->gWavetable[currentGReadPointer * gChannelsCount + chid] +
+  float ch = this->gWavetable[currentGReadPointer * nChannels + chid] +
              currentGReadRemainder *
-                 (this->gWavetable[nextGReadPointerInt * gChannelsCount + chid] - this->gWavetable[currentGReadPointer * gChannelsCount + chid]);
+                 (this->gWavetable[nextGReadPointerInt * nChannels + chid] - this->gWavetable[currentGReadPointer * nChannels + chid]);
 
   return ch;
 }
