@@ -12,7 +12,7 @@ RtWaveTableCallback::RtWaveTableCallback()
 
  void RtWaveTableCallback::setupPlayersAndControls(){
   
-  auto oscSine = std::make_unique<OscWaveTableAddative>(sampleRate, streamParameters.nChannels);
+  auto oscSine = std::make_unique<OscWaveTableAddative>(sampleRate, streamOutParameters.nChannels);
   oscSine->sendToChannels={1};
 
   // auto oscSine2 = std::make_unique<OscWaveTableAddative>();
@@ -98,10 +98,11 @@ int RtWaveTableCallback::render(void *outputBuffer, void *inputBuffer, unsigned 
       deviceId = audio.getDefaultOutputDevice();
     }
 
-    streamParameters.deviceId = deviceId;
-    streamParameters.nChannels = 2;
-    streamParameters.firstChannel = 0;
+    streamOutParameters.deviceId = deviceId;
 
-    RtAudio::DeviceInfo info = audio.getDeviceInfo(deviceId);
+    RtAudio::DeviceInfo info = audio.getDeviceInfo(deviceId);    
+    streamOutParameters.nChannels = 2; //info.outputChannels
+    streamOutParameters.firstChannel = 0;
+
     sampleRate = info.preferredSampleRate;    
   }

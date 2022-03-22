@@ -7,14 +7,14 @@ class OscWaveTable
 public:
   int gWavetableLength = 512; // The length of the buffer in frames
   unsigned int sampleRate;
-  unsigned int nChannels;
+  unsigned int nOutChannels;
   std::vector<int> sendToChannels{0,1};
 
   float gAmplitudeDb = -10; // Amplitude of the playback
   float gFrequency = 220.0; // Frequency (TODO: not implemented yet)
   
 
-  OscWaveTable(unsigned int sampleRate, unsigned int nChannels);
+  OscWaveTable(unsigned int sampleRate, unsigned int nOutChannels);
   virtual void setupWaveTable() = 0;
   virtual ~OscWaveTable();
   enum RenderMode
@@ -56,7 +56,7 @@ private:
 class OscWaveTableSine : public OscWaveTable
 {
 public:
-  OscWaveTableSine(unsigned int sampleRate, unsigned int nChannels) : OscWaveTable(sampleRate, nChannels) {
+  OscWaveTableSine(unsigned int sampleRate, unsigned int nOutChannels) : OscWaveTable(sampleRate, nOutChannels) {
     setupWaveTable();
   }
   void setupWaveTable() override;
@@ -68,7 +68,7 @@ public:
   // Levels 0..1 NOT DBs
   std::vector<float> harmoniesLevels{0.5,0,0,0,0,0,0,0};
 
-  OscWaveTableAddative(unsigned int sampleRate, unsigned int nChannels) : OscWaveTable(sampleRate, nChannels){
+  OscWaveTableAddative(unsigned int sampleRate, unsigned int nOutChannels) : OscWaveTable(sampleRate, nOutChannels){
     setupWaveTable();
   }
   void setupWaveTable() override;
@@ -77,7 +77,7 @@ public:
 class OscWaveTableTiangle : public OscWaveTable
 {
 public:
-  OscWaveTableTiangle(unsigned int sampleRate, unsigned int nChannels) : OscWaveTable(sampleRate, nChannels) {
+  OscWaveTableTiangle(unsigned int sampleRate, unsigned int nOutChannels) : OscWaveTable(sampleRate, nOutChannels) {
     setupWaveTable();
   }
   void setupWaveTable() override;

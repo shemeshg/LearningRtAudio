@@ -96,5 +96,5 @@ public:
   void setupPlayersAndControls();
   unsigned int bufferFrames = 64; 
   unsigned int sampleRate = 48000;
-  RtAudio::StreamParameters streamParameters;             
+  RtAudio::StreamParameters streamOutParameters;             
 };

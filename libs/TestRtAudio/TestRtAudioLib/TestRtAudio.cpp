@@ -72,7 +72,7 @@
     try
     {
       
-      audio.openStream(&userDataCasted->streamParameters, NULL, RTAUDIO_FLOAT64,
+      audio.openStream(&userDataCasted->streamOutParameters, NULL, RTAUDIO_FLOAT64,
                 userDataCasted->sampleRate, &userDataCasted->bufferFrames, callback, userData);
       audio.startStream();
     }
