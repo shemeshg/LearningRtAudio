@@ -77,9 +77,12 @@ int RtWaveTableCallback::render(void *outputBuffer, void *inputBuffer, unsigned 
   double *outBuffer = (double *)outputBuffer;
   double *inBuffer = (double *)inputBuffer;
 
+  // ********* THIS IS BAD ******** we need continues value, not per buffer
+  // ********* THIS IS BAD ******** No need for range translation, it is always -1 to 1
   for (auto const& e : std::as_const(rtDcInControls)) {
     e->setValIfRequired(inBuffer,nBufferFrames);
   }
+  // ********* THIS IS BAD ******** we need continues value, not per buffer
 
   if (status)
     std::cout << "Stream underflow detected!" << std::endl;
