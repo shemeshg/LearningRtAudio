@@ -20,14 +20,9 @@ RtWaveTableCallback::RtWaveTableCallback()
   std::unique_ptr<RtGuiControl> rs2(new RtGuiSlider("Amplitude Db", detuneAmplitudeDb, -40, 0, 0.1));
   std::unique_ptr<RtGuiControl> rs3(new RtGuiSlider("detuneOscs", detuneOscsAmount, 0, 100, 0.1));
 
-  // step=0 is no quantizing
-  std::unique_ptr<RtDcInControlBase>  rs4(new RtDcInControl(streamInParameters.nChannels, detuneOscsAmount,1,-1,1,0)); 
-
   rtGuiSliders.push_back(std::move(rs1));
   rtGuiSliders.push_back(std::move(rs2));
   rtGuiSliders.push_back(std::move(rs3));
-
-  rtDcInControls.push_back(std::move(rs4));
 
   /*
   for (unsigned int i = 0; i < oscSine->harmoniesLevels.size(); i++)
@@ -77,12 +72,7 @@ int RtWaveTableCallback::render(void *outputBuffer, void *inputBuffer, unsigned 
   double *outBuffer = (double *)outputBuffer;
   double *inBuffer = (double *)inputBuffer;
 
-  // ********* THIS IS BAD ******** we need continues value, not per buffer
-  // ********* THIS IS BAD ******** No need for range translation, it is always -1 to 1
-  for (auto const& e : std::as_const(rtDcInControls)) {
-    e->setValIfRequired(inBuffer,nBufferFrames);
-  }
-  // ********* THIS IS BAD ******** we need continues value, not per buffer
+  //************ TODO getInDcArray(inBuffer, nBufferFrames, streamInParameters.nChannels, inDcChannel)
 
   if (status)
     std::cout << "Stream underflow detected!" << std::endl;

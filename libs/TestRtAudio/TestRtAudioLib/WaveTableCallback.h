@@ -4,58 +4,6 @@
 #include "RtAudio.h"
 #include "OscWaveTable.h"
 
-class RtDcInControlBase
-{
-public:
-  float &val;
-  float min;
-  float max;
-  float step;
-  unsigned int nChannels;
-  unsigned int inputId;
-  float from_start = -1.0;
-  float from_end = -1.0;
-
-  RtDcInControlBase(unsigned int nChannels, float &val, unsigned int inputId, float min, float max, float step) : nChannels{nChannels},val(val),inputId{inputId}, min(min), max(max), step(step)
-  {
-  }
-
-  virtual ~RtDcInControlBase() {}
-  void virtual setVal(float v) = 0;
-  void setValIfRequired(double *buffer, unsigned int &nBufferFrames){
-    //DO WAHTEVER
-  }
-};
-
-class RtDcInControl : public RtDcInControlBase
-{
-public:
-  RtDcInControl(unsigned int nChannels, float &val, unsigned int inputId,  float min, float max, float step) : RtDcInControlBase{nChannels, val, inputId, min, max, step}
-  {
-  }
-
-  void setVal(float v) override
-  {
-    val = v;
-  }
-};
-
-class RtDcInControlRefreshTableSetter : public RtDcInControlBase
-{
-public:
-  OscWaveTable &owt;
-  RtDcInControlRefreshTableSetter(OscWaveTable &owt,unsigned int nChannels,  float &val, unsigned int inputId, float min, float max, float step) : RtDcInControlBase{nChannels, val, inputId, min, max, step}, owt{owt}
-  {
-  }
-
-  void setVal(float v) override
-  {
-    val = v;
-    owt.setupWaveTable();
-  }
-};
-
-
 class RtGuiControl
 {
 public:
@@ -106,7 +54,6 @@ class RtWaveTableCallback
 {
 public:
   std::vector<std::unique_ptr<RtGuiControl>> rtGuiSliders;
-  std::vector<std::unique_ptr<RtDcInControlBase>> rtDcInControls;
   std::vector<std::unique_ptr<OscWaveTable>> Oscs;
 
   float detuneOscsAmount = 0;
