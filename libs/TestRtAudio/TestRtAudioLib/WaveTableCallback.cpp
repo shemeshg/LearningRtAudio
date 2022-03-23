@@ -40,7 +40,8 @@ RtWaveTableCallback::~RtWaveTableCallback()
 {
 }
 
-void RtWaveTableCallback::scopeLog(double *buffer, unsigned int &nBufferFrames, int channels, int rowsCount)
+void RtWaveTableCallback::scopeLog(double *buffer, unsigned int &nBufferFrames, int channels, int rowsCount, 
+        std::vector<unsigned int> colsToPrint)
 {
   static int i = 0;
   int bufferPosition = 0;
@@ -52,7 +53,9 @@ void RtWaveTableCallback::scopeLog(double *buffer, unsigned int &nBufferFrames, 
       std::cout << i;
       for (int ch = 0; ch < channels; ch++)
       {
-        std::cout << "," << buffer[bufferPosition++];
+        if (std::count(colsToPrint.begin(), colsToPrint.end(), ch)) {
+          std::cout << "," << buffer[bufferPosition++];
+        }
       }
       std::cout << "\n";
       i++;
@@ -64,7 +67,7 @@ int RtWaveTableCallback::render(void *outputBuffer, void *inputBuffer, unsigned 
                                 double &streamTime, RtAudioStreamStatus &status)
 {
 
-  double *buffer = (double *)outputBuffer;
+  double *outBuffer = (double *)outputBuffer;
 
   if (status)
     std::cout << "Stream underflow detected!" << std::endl;
@@ -74,18 +77,18 @@ int RtWaveTableCallback::render(void *outputBuffer, void *inputBuffer, unsigned 
   Oscs.at(0)->gFrequency = detuneFrequency + detuneOscsAmount;
   Oscs.at(0)->gAmplitudeDb = detuneAmplitudeDb;
 
-  Oscs.at(0)->render(buffer, nBufferFrames, OscWaveTable::RenderMode::setBuffer);
+  Oscs.at(0)->render(outBuffer, nBufferFrames, OscWaveTable::RenderMode::setBuffer);
 
   if (Oscs.size() == 2)
   {
     Oscs.at(1)->gFrequency = detuneFrequency - detuneOscsAmount;
     Oscs.at(1)->gAmplitudeDb = detuneAmplitudeDb;
-    Oscs.at(1)->render(buffer, nBufferFrames, OscWaveTable::RenderMode::addBuffer);
+    Oscs.at(1)->render(outBuffer, nBufferFrames, OscWaveTable::RenderMode::addBuffer);
   }
 
   if (doScopelog)
   {
-    scopeLog(buffer, nBufferFrames);
+    scopeLog(outBuffer, nBufferFrames, streamOutParameters.nChannels, 20250, {0,1});
   }
 
   return 0;
