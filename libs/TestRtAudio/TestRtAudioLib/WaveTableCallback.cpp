@@ -41,7 +41,8 @@ RtWaveTableCallback::~RtWaveTableCallback()
 }
 
 void RtWaveTableCallback::scopeLog(double *buffer, unsigned int &nBufferFrames, int channels, int rowsCount, 
-        std::vector<unsigned int> colsToPrint)
+        std::vector<unsigned int> colsToPrint,
+        std::ostream& stream )
 {
   static int i = 0;
   int bufferPosition = 0;
@@ -50,14 +51,14 @@ void RtWaveTableCallback::scopeLog(double *buffer, unsigned int &nBufferFrames, 
 
     for (int frameCount = 0; frameCount < nBufferFrames && i < rowsCount; frameCount++)
     {
-      std::cout << i;
+      stream << i;
       for (int ch = 0; ch < channels; ch++)
       {
         if (std::count(colsToPrint.begin(), colsToPrint.end(), ch)) {
-          std::cout << "," << buffer[bufferPosition++];
+          stream << "," << buffer[bufferPosition++];
         }
       }
-      std::cout << "\n";
+      stream << "\n";
       i++;
     }
   }

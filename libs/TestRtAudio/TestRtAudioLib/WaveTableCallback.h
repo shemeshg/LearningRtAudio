@@ -88,7 +88,7 @@ public:
   ~RtWaveTableCallback();
 
   void scopeLog(double *buffer, unsigned int &nBufferFrames, int channels, int rowsCount,
-        std::vector<unsigned int> colsToPrint);
+        std::vector<unsigned int> colsToPrint, std::ostream& stream = std::cout);
 
   int render(void *outputBuffer, void *inputBuffer, unsigned int &nBufferFrames,
              double &streamTime, RtAudioStreamStatus &status);
