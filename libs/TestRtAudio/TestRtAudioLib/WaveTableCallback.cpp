@@ -20,13 +20,14 @@ RtWaveTableCallback::RtWaveTableCallback()
   std::unique_ptr<RtGuiControl> rs2(new RtGuiSlider("Amplitude Db", detuneAmplitudeDb, -40, 0, 0.1));
   std::unique_ptr<RtGuiControl> rs3(new RtGuiSlider("detuneOscs", detuneOscsAmount, 0, 100, 0.1));
 
-  //std::unique_ptr<RtDcInControle> rs4 RefToPitchWeel, inport=1, from_start=-1.0, from_end=1, to_start=-1, to_end=1, toSensativity=0)
-  //                RtDcInControleRefreshTableSetter
-  //rtGuiControls.push_back(std::move(rs4))
+  // step=0 is no quantizing
+  std::unique_ptr<RtDcInControlBase>  rs4(new RtDcInControl(streamInParameters.nChannels, detuneOscsAmount,1,-1,1,0)); 
 
   rtGuiSliders.push_back(std::move(rs1));
   rtGuiSliders.push_back(std::move(rs2));
   rtGuiSliders.push_back(std::move(rs3));
+
+  rtDcInControls.push_back(std::move(rs4));
 
   /*
   for (unsigned int i = 0; i < oscSine->harmoniesLevels.size(); i++)
@@ -74,6 +75,11 @@ int RtWaveTableCallback::render(void *outputBuffer, void *inputBuffer, unsigned 
 {
 
   double *outBuffer = (double *)outputBuffer;
+  double *inBuffer = (double *)inputBuffer;
+
+  for (auto const& e : std::as_const(rtDcInControls)) {
+    e->setValIfRequired(inBuffer,nBufferFrames);
+  }
 
   if (status)
     std::cout << "Stream underflow detected!" << std::endl;
@@ -101,19 +107,25 @@ int RtWaveTableCallback::render(void *outputBuffer, void *inputBuffer, unsigned 
 }
 
 
-  void RtWaveTableCallback::setupStreamParameters(RtAudio &audio, int deviceId){
-    if (deviceId == -1)
+  void RtWaveTableCallback::setupStreamParameters(RtAudio &audio, int outDeviceId, int inDeviceId){
+    if (outDeviceId == -1)
     {
-      deviceId = audio.getDefaultOutputDevice();
+      outDeviceId = audio.getDefaultOutputDevice();
     }
 
-    streamOutParameters.deviceId = deviceId;
+    if (inDeviceId == -1)
+    {
+      inDeviceId = audio.getDefaultInputDevice();
+    }
 
-    RtAudio::DeviceInfo info = audio.getDeviceInfo(deviceId);    
+    streamOutParameters.deviceId = outDeviceId;
+
+    RtAudio::DeviceInfo info = audio.getDeviceInfo(outDeviceId);    
     streamOutParameters.nChannels = 2; //info.outputChannels
     streamOutParameters.firstChannel = 0;
 
-    streamInParameters.nChannels = 4; //info.inputChannels
+    streamInParameters.deviceId = inDeviceId;
+    streamInParameters.nChannels = 2; //info.inputChannels
     streamInParameters.firstChannel = 0;
 
     sampleRate = info.preferredSampleRate;    

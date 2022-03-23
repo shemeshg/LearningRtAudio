@@ -14,9 +14,9 @@ public:
   void coutDevicesInfo();
   void stopStream();
   void playWavTable();
-  void setupStreamParameters(int deviceId = -1)
+  void setupStreamParameters(int outDeviceId = -1, int inDeviceId = -1)
   {
-    rtWaveTableCallback.setupStreamParameters(audio, deviceId);
+    rtWaveTableCallback.setupStreamParameters(audio, outDeviceId, inDeviceId);
   }
 
   RtWaveTableCallback rtWaveTableCallback = RtWaveTableCallback();
