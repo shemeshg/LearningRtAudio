@@ -13,27 +13,29 @@ RtWaveTableCallback::RtWaveTableCallback()
  void RtWaveTableCallback::setupPlayersAndControls(){
   
   auto oscSine = std::make_unique<OscWaveTableAddative>(sampleRate, streamOutParameters.nChannels);
-  oscSine->sendToChannels={1};
+  oscSine->sendToChannels={0,1};
 
-  // auto oscSine2 = std::make_unique<OscWaveTableAddative>();
+  auto oscSine2 = std::make_unique<OscWaveTableAddative>(sampleRate, streamOutParameters.nChannels);
 
   std::unique_ptr<RtGuiControl> rs1(new RtGuiSliderRefreshTableSetter(*oscSine,"Note Number", detuneNoteNumber, 21, 108, 1));
   std::unique_ptr<RtGuiControl> rs2(new RtGuiSlider("Amplitude Db", detuneAmplitudeDb, -40, 0, 0.1));
-  //std::unique_ptr<RtGuiControl> rs3(new RtGuiSlider("detuneOscs", detuneOscsAmount, 0, 100, 0.1));
+  std::unique_ptr<RtGuiControl> rs3(new RtGuiSlider("detuneOscs", detuneOscsAmount, 0, 100, 0.1));
 
   rtGuiSlider.push_back(std::move(rs1));
   rtGuiSlider.push_back(std::move(rs2));
-  //rtGuiSlider.push_back(std::move(rs3));
+  rtGuiSlider.push_back(std::move(rs3));
 
+  /*
   for (unsigned int i = 0; i < oscSine->harmoniesLevels.size(); i++)
   {
     std::unique_ptr<RtGuiControl> hm1(new RtGuiSliderRefreshTableSetter(*oscSine, "harminic " + std::to_string(i), oscSine->harmoniesLevels.at(i), -1, 1, 0.00001));    
     hm1->setVal(pow(0.5,i));
     rtGuiSlider.push_back(std::move(hm1));
   }
+  */
 
   Oscs.push_back(std::move(oscSine));
-  // Oscs.push_back(std::move(oscSine2));
+  Oscs.push_back(std::move(oscSine2));
  }
 
 RtWaveTableCallback::~RtWaveTableCallback()
@@ -107,6 +109,9 @@ int RtWaveTableCallback::render(void *outputBuffer, void *inputBuffer, unsigned 
     RtAudio::DeviceInfo info = audio.getDeviceInfo(deviceId);    
     streamOutParameters.nChannels = 2; //info.outputChannels
     streamOutParameters.firstChannel = 0;
+
+    streamInParameters.nChannels = 4; //info.inputChannels
+    streamInParameters.firstChannel = 0;
 
     sampleRate = info.preferredSampleRate;    
   }
