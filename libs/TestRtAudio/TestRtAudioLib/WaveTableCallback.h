@@ -73,7 +73,7 @@ public:
 class RtWaveTableCallback
 {
 public:
-  std::vector<std::unique_ptr<RtGuiControl>> rtGuiSlider;
+  std::vector<std::unique_ptr<RtGuiControl>> rtGuiSliders;
   std::vector<std::unique_ptr<OscWaveTable>> Oscs;
 
   float detuneOscsAmount = 0;

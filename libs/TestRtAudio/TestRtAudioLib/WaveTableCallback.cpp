@@ -14,16 +14,19 @@ RtWaveTableCallback::RtWaveTableCallback()
   
   auto oscSine = std::make_unique<OscWaveTableAddative>(sampleRate, streamOutParameters.nChannels);
   oscSine->sendToChannels={0,1};
-
   auto oscSine2 = std::make_unique<OscWaveTableAddative>(sampleRate, streamOutParameters.nChannels);
 
   std::unique_ptr<RtGuiControl> rs1(new RtGuiSliderRefreshTableSetter(*oscSine,"Note Number", detuneNoteNumber, 21, 108, 1));
   std::unique_ptr<RtGuiControl> rs2(new RtGuiSlider("Amplitude Db", detuneAmplitudeDb, -40, 0, 0.1));
   std::unique_ptr<RtGuiControl> rs3(new RtGuiSlider("detuneOscs", detuneOscsAmount, 0, 100, 0.1));
 
-  rtGuiSlider.push_back(std::move(rs1));
-  rtGuiSlider.push_back(std::move(rs2));
-  rtGuiSlider.push_back(std::move(rs3));
+  //std::unique_ptr<RtDcInControle> rs4 RefToPitchWeel, inport=1, from_start=-1.0, from_end=1, to_start=-1, to_end=1, toSensativity=0)
+  //                RtDcInControleRefreshTableSetter
+  //rtGuiControls.push_back(std::move(rs4))
+
+  rtGuiSliders.push_back(std::move(rs1));
+  rtGuiSliders.push_back(std::move(rs2));
+  rtGuiSliders.push_back(std::move(rs3));
 
   /*
   for (unsigned int i = 0; i < oscSine->harmoniesLevels.size(); i++)
