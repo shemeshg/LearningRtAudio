@@ -41,12 +41,13 @@ RtWaveTableCallback::~RtWaveTableCallback()
 void RtWaveTableCallback::sendOutput(double *buffer, unsigned int &nBufferFrames, int channels,
                                      std::vector<double> &outChannel, std::vector<unsigned int> colsToSend)
 {
-    for (int frameCount = 0; frameCount < nBufferFrames ; frameCount++)
+  for (int frameCount = 0; frameCount < nBufferFrames; frameCount++)
+  {
+    for (auto &colToSend : colsToSend)
     {
-      for (auto &colToSend : colsToSend){
-        buffer[frameCount*channels + colToSend] =outChannel[frameCount];
-      } 
+      buffer[frameCount * channels + colToSend] = outChannel[frameCount];
     }
+  }
 }
 
 void RtWaveTableCallback::scopeLog(double *buffer, unsigned int &nBufferFrames, int channels, int rowsCount,
@@ -74,6 +75,18 @@ void RtWaveTableCallback::scopeLog(double *buffer, unsigned int &nBufferFrames, 
   }
 }
 
+std::vector<double> RtWaveTableCallback::getInput(double *inBuffer, unsigned int &nBufferFrames, int channels, unsigned int inputToGet)
+{
+  std::vector<double> inChannel(nBufferFrames, 0);
+
+  for (int frameCount = 0; frameCount < nBufferFrames; frameCount++)
+  {
+    inChannel[frameCount] = inBuffer[frameCount * channels + inputToGet];
+  }
+
+  return inChannel;
+}
+
 int RtWaveTableCallback::render(void *outputBuffer, void *inputBuffer, unsigned int &nBufferFrames,
                                 double &streamTime, RtAudioStreamStatus &status)
 {
@@ -82,6 +95,8 @@ int RtWaveTableCallback::render(void *outputBuffer, void *inputBuffer, unsigned 
   double *inBuffer = (double *)inputBuffer;
 
   std::vector<double> outChannel01(nBufferFrames, 0);
+  // I choose channel 2 to avoid feedback
+  std::vector<double> inChannel1 = getInput(inBuffer, nBufferFrames, streamInParameters.nChannels, 2);
 
   if (status)
     std::cout << "Stream underflow detected!" << std::endl;
@@ -100,12 +115,18 @@ int RtWaveTableCallback::render(void *outputBuffer, void *inputBuffer, unsigned 
     Oscs.at(1)->render(outChannel01);
   }
 
+  
+  std::transform(outChannel01.begin(), outChannel01.end(), inChannel1.begin(),outChannel01.begin(),  [](double i, double j)
+                 { return i * j ; });
+  
+
+
+  sendOutput(outBuffer, nBufferFrames, streamOutParameters.nChannels, outChannel01, {0,1});
   if (doScopelog)
   {
     scopeLog(outBuffer, nBufferFrames, streamOutParameters.nChannels, 20250, {0, 1});
   }
 
-  sendOutput(outBuffer, nBufferFrames, streamOutParameters.nChannels, outChannel01, {0, 1});
   return 0;
 }
 
@@ -124,11 +145,11 @@ void RtWaveTableCallback::setupStreamParameters(RtAudio &audio, int outDeviceId,
   streamOutParameters.deviceId = outDeviceId;
 
   RtAudio::DeviceInfo info = audio.getDeviceInfo(outDeviceId);
-  streamOutParameters.nChannels = 2; // info.outputChannels
+  streamOutParameters.nChannels = 4; // info.outputChannels
   streamOutParameters.firstChannel = 0;
 
   streamInParameters.deviceId = inDeviceId;
-  streamInParameters.nChannels = 2; // info.inputChannels
+  streamInParameters.nChannels = 4; // info.inputChannels
   streamInParameters.firstChannel = 0;
 
   sampleRate = info.preferredSampleRate;

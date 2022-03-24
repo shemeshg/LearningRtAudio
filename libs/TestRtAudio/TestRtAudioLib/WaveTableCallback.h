@@ -73,8 +73,11 @@ public:
   void sendOutput(double *buffer, unsigned int &nBufferFrames, int channels,
                   std::vector<double> &outChannel, std::vector<unsigned int> colsToSend);
 
+  std::vector<double> getInput(double *inputBuffer, unsigned int &nBufferFrames,int channels,unsigned int inputToGet);
+
   int render(void *outputBuffer, void *inputBuffer, unsigned int &nBufferFrames,
              double &streamTime, RtAudioStreamStatus &status);
+
 
   void setupStreamParameters(RtAudio &audio, int outDeviceId = -1, int inDeviceId = -1);
   void setupPlayersAndControls();
