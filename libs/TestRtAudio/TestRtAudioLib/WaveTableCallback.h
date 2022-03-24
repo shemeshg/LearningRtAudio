@@ -70,6 +70,9 @@ public:
   void scopeLog(double *buffer, unsigned int &nBufferFrames, int channels, int rowsCount,
                 std::vector<unsigned int> colsToPrint, std::ostream &stream = std::cout);
 
+  void sendOutput(double *buffer, unsigned int &nBufferFrames, int channels,
+                  std::vector<double> &outChannel, std::vector<unsigned int> colsToSend);
+
   int render(void *outputBuffer, void *inputBuffer, unsigned int &nBufferFrames,
              double &streamTime, RtAudioStreamStatus &status);
 

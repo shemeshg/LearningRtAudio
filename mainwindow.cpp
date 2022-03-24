@@ -12,7 +12,7 @@ MainWindow::MainWindow(QWidget *parent)
     tra.rtWaveTableCallback.setupPlayersAndControls();
     tra.playWavTable();
 
-    for (auto &rts : tra.rtWaveTableCallback.rtGuiSlider) {
+    for (auto &rts : tra.rtWaveTableCallback.rtGuiSliders) {
         GuiSlider *g=new GuiSlider(*rts);
         ui->verticalLayout->addWidget(g);
         g->show();

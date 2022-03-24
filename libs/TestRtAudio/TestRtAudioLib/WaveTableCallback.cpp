@@ -5,18 +5,15 @@
 
 RtWaveTableCallback::RtWaveTableCallback()
 {
-
-
 }
 
+void RtWaveTableCallback::setupPlayersAndControls()
+{
 
- void RtWaveTableCallback::setupPlayersAndControls(){
-  
-  auto oscSine = std::make_unique<OscWaveTableAddative>(sampleRate, streamOutParameters.nChannels);
-  oscSine->sendToChannels={0,1};
-  auto oscSine2 = std::make_unique<OscWaveTableAddative>(sampleRate, streamOutParameters.nChannels);
+  auto oscSine = std::make_unique<OscWaveTableAddative>(sampleRate);
+  auto oscSine2 = std::make_unique<OscWaveTableAddative>(sampleRate);
 
-  std::unique_ptr<RtGuiControl> rs1(new RtGuiSliderRefreshTableSetter(*oscSine,"Note Number", detuneNoteNumber, 21, 108, 1));
+  std::unique_ptr<RtGuiControl> rs1(new RtGuiSliderRefreshTableSetter(*oscSine, "Note Number", detuneNoteNumber, 21, 108, 1));
   std::unique_ptr<RtGuiControl> rs2(new RtGuiSlider("Amplitude Db", detuneAmplitudeDb, -40, 0, 0.1));
   std::unique_ptr<RtGuiControl> rs3(new RtGuiSlider("detuneOscs", detuneOscsAmount, 0, 100, 0.1));
 
@@ -27,7 +24,7 @@ RtWaveTableCallback::RtWaveTableCallback()
   /*
   for (unsigned int i = 0; i < oscSine->harmoniesLevels.size(); i++)
   {
-    std::unique_ptr<RtGuiControl> hm1(new RtGuiSliderRefreshTableSetter(*oscSine, "harminic " + std::to_string(i), oscSine->harmoniesLevels.at(i), -1, 1, 0.00001));    
+    std::unique_ptr<RtGuiControl> hm1(new RtGuiSliderRefreshTableSetter(*oscSine, "harminic " + std::to_string(i), oscSine->harmoniesLevels.at(i), -1, 1, 0.00001));
     hm1->setVal(pow(0.5,i));
     rtGuiSlider.push_back(std::move(hm1));
   }
@@ -35,15 +32,26 @@ RtWaveTableCallback::RtWaveTableCallback()
 
   Oscs.push_back(std::move(oscSine));
   Oscs.push_back(std::move(oscSine2));
- }
+}
 
 RtWaveTableCallback::~RtWaveTableCallback()
 {
 }
 
-void RtWaveTableCallback::scopeLog(double *buffer, unsigned int &nBufferFrames, int channels, int rowsCount, 
-        std::vector<unsigned int> colsToPrint,
-        std::ostream& stream )
+void RtWaveTableCallback::sendOutput(double *buffer, unsigned int &nBufferFrames, int channels,
+                                     std::vector<double> &outChannel, std::vector<unsigned int> colsToSend)
+{
+    for (int frameCount = 0; frameCount < nBufferFrames ; frameCount++)
+    {
+      for (auto &colToSend : colsToSend){
+        buffer[frameCount*channels + colToSend] =outChannel[frameCount];
+      } 
+    }
+}
+
+void RtWaveTableCallback::scopeLog(double *buffer, unsigned int &nBufferFrames, int channels, int rowsCount,
+                                   std::vector<unsigned int> colsToPrint,
+                                   std::ostream &stream)
 {
   static int i = 0;
   int bufferPosition = 0;
@@ -55,7 +63,8 @@ void RtWaveTableCallback::scopeLog(double *buffer, unsigned int &nBufferFrames, 
       stream << i;
       for (int ch = 0; ch < channels; ch++)
       {
-        if (std::count(colsToPrint.begin(), colsToPrint.end(), ch)) {
+        if (std::count(colsToPrint.begin(), colsToPrint.end(), ch))
+        {
           stream << "," << buffer[bufferPosition++];
         }
       }
@@ -72,7 +81,7 @@ int RtWaveTableCallback::render(void *outputBuffer, void *inputBuffer, unsigned 
   double *outBuffer = (double *)outputBuffer;
   double *inBuffer = (double *)inputBuffer;
 
-  //************ TODO getInDcArray(inBuffer, nBufferFrames, streamInParameters.nChannels, inDcChannel)
+  std::vector<double> outChannel01(nBufferFrames, 0);
 
   if (status)
     std::cout << "Stream underflow detected!" << std::endl;
@@ -82,44 +91,45 @@ int RtWaveTableCallback::render(void *outputBuffer, void *inputBuffer, unsigned 
   Oscs.at(0)->gFrequency = detuneFrequency + detuneOscsAmount;
   Oscs.at(0)->gAmplitudeDb = detuneAmplitudeDb;
 
-  Oscs.at(0)->render(outBuffer, nBufferFrames, OscWaveTable::RenderMode::setBuffer);
+  Oscs.at(0)->render(outChannel01);
 
   if (Oscs.size() == 2)
   {
     Oscs.at(1)->gFrequency = detuneFrequency - detuneOscsAmount;
     Oscs.at(1)->gAmplitudeDb = detuneAmplitudeDb;
-    Oscs.at(1)->render(outBuffer, nBufferFrames, OscWaveTable::RenderMode::addBuffer);
+    Oscs.at(1)->render(outChannel01);
   }
 
   if (doScopelog)
   {
-    scopeLog(outBuffer, nBufferFrames, streamOutParameters.nChannels, 20250, {0,1});
+    scopeLog(outBuffer, nBufferFrames, streamOutParameters.nChannels, 20250, {0, 1});
   }
 
+  sendOutput(outBuffer, nBufferFrames, streamOutParameters.nChannels, outChannel01, {0, 1});
   return 0;
 }
 
-
-  void RtWaveTableCallback::setupStreamParameters(RtAudio &audio, int outDeviceId, int inDeviceId){
-    if (outDeviceId == -1)
-    {
-      outDeviceId = audio.getDefaultOutputDevice();
-    }
-
-    if (inDeviceId == -1)
-    {
-      inDeviceId = audio.getDefaultInputDevice();
-    }
-
-    streamOutParameters.deviceId = outDeviceId;
-
-    RtAudio::DeviceInfo info = audio.getDeviceInfo(outDeviceId);    
-    streamOutParameters.nChannels = 2; //info.outputChannels
-    streamOutParameters.firstChannel = 0;
-
-    streamInParameters.deviceId = inDeviceId;
-    streamInParameters.nChannels = 2; //info.inputChannels
-    streamInParameters.firstChannel = 0;
-
-    sampleRate = info.preferredSampleRate;    
+void RtWaveTableCallback::setupStreamParameters(RtAudio &audio, int outDeviceId, int inDeviceId)
+{
+  if (outDeviceId == -1)
+  {
+    outDeviceId = audio.getDefaultOutputDevice();
   }
+
+  if (inDeviceId == -1)
+  {
+    inDeviceId = audio.getDefaultInputDevice();
+  }
+
+  streamOutParameters.deviceId = outDeviceId;
+
+  RtAudio::DeviceInfo info = audio.getDeviceInfo(outDeviceId);
+  streamOutParameters.nChannels = 2; // info.outputChannels
+  streamOutParameters.firstChannel = 0;
+
+  streamInParameters.deviceId = inDeviceId;
+  streamInParameters.nChannels = 2; // info.inputChannels
+  streamInParameters.firstChannel = 0;
+
+  sampleRate = info.preferredSampleRate;
+}
