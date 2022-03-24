@@ -10,7 +10,7 @@ public:
 
 
   float gAmplitudeDb = -10; // Amplitude of the playback
-  float gFrequency = 220.0; // Frequency (TODO: not implemented yet)
+  float gFrequency = 220.0; // Frequency 
   
 
   OscWaveTable(unsigned int sampleRate);
@@ -36,7 +36,7 @@ private:
 
   double phaseStep()
   {
-    return gWavetableLength * (gFrequency / 44100.0);
+    return gWavetableLength * (gFrequency / sampleRate);
   }
 
   float nextGReadPointer()
