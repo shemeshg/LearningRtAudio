@@ -53,6 +53,18 @@ void RtWaveTableCallback::sendOutput(double *buffer, unsigned int &nBufferFrames
   }
 }
 
+std::vector<double> RtWaveTableCallback::getInput(double *inBuffer, unsigned int &nBufferFrames, int channels, unsigned int inputToGet)
+{
+  std::vector<double> inChannel(nBufferFrames, 0);
+
+  for (int frameCount = 0; frameCount < nBufferFrames; frameCount++)
+  {
+    inChannel[frameCount] = inBuffer[frameCount * channels + inputToGet];
+  }
+
+  return inChannel;
+}
+
 void RtWaveTableCallback::scopeLog(double *buffer, unsigned int &nBufferFrames, int channels, int rowsCount,
                                    std::vector<unsigned int> colsToPrint,
                                    std::ostream &stream)
@@ -78,17 +90,7 @@ void RtWaveTableCallback::scopeLog(double *buffer, unsigned int &nBufferFrames, 
   }
 }
 
-std::vector<double> RtWaveTableCallback::getInput(double *inBuffer, unsigned int &nBufferFrames, int channels, unsigned int inputToGet)
-{
-  std::vector<double> inChannel(nBufferFrames, 0);
 
-  for (int frameCount = 0; frameCount < nBufferFrames; frameCount++)
-  {
-    inChannel[frameCount] = inBuffer[frameCount * channels + inputToGet];
-  }
-
-  return inChannel;
-}
 
 int RtWaveTableCallback::render(void *outputBuffer, void *inputBuffer, unsigned int &nBufferFrames,
                                 double &streamTime, RtAudioStreamStatus &status)
@@ -98,8 +100,8 @@ int RtWaveTableCallback::render(void *outputBuffer, void *inputBuffer, unsigned 
   double *inBuffer = (double *)inputBuffer;
 
   std::vector<double> outChannel01(nBufferFrames, 0);
-  // I choose channel 2 to avoid feedback
-  std::vector<double> inChannel1 = getInput(inBuffer, nBufferFrames, streamInParameters.nChannels, 2);
+  std::vector<double> outOscContiousPitch(nBufferFrames, 1);
+
 
   if (status)
     std::cout << "Stream underflow detected!" << std::endl;
@@ -109,22 +111,24 @@ int RtWaveTableCallback::render(void *outputBuffer, void *inputBuffer, unsigned 
   Oscs.at(0)->gFrequency = detuneFrequency + detuneOscsAmount;
   Oscs.at(0)->gAmplitudeDb = detuneAmplitudeDb;
 
-  Oscs.at(0)->render(outChannel01);
+  Oscs.at(0)->render(outChannel01, outOscContiousPitch);
 
   if (Oscs.size() == 2)
   {
     Oscs.at(1)->gFrequency = detuneFrequency - detuneOscsAmount;
     Oscs.at(1)->gAmplitudeDb = detuneAmplitudeDb;
-    Oscs.at(1)->render(outChannel01);
+    Oscs.at(1)->render(outChannel01, outOscContiousPitch);
   }
 
-  
+  // I choose channel 2 to avoid feedback
+  std::vector<double> inChannel1 = getInput(inBuffer, nBufferFrames, streamInParameters.nChannels, 3);
   std::transform(outChannel01.begin(), outChannel01.end(), inChannel1.begin(),outChannel01.begin(),  [](double i, double j)
                  { return i * j ; });
   
 
 
   sendOutput(outBuffer, nBufferFrames, streamOutParameters.nChannels, outChannel01, {0,1});
+  sendOutput(outBuffer, nBufferFrames, streamOutParameters.nChannels, inChannel1, {2});
   if (doScopelog)
   {
     scopeLog(outBuffer, nBufferFrames, streamOutParameters.nChannels, 20250, {0, 1});
@@ -148,11 +152,11 @@ void RtWaveTableCallback::setupStreamParameters(RtAudio &audio, int outDeviceId,
   streamOutParameters.deviceId = outDeviceId;
 
   RtAudio::DeviceInfo info = audio.getDeviceInfo(outDeviceId);
-  streamOutParameters.nChannels = 4; // info.outputChannels
+  streamOutParameters.nChannels = info.outputChannels; //4; 
   streamOutParameters.firstChannel = 0;
 
   streamInParameters.deviceId = inDeviceId;
-  streamInParameters.nChannels = 4; // info.inputChannels
+  streamInParameters.nChannels =  info.inputChannels; //4; 
   streamInParameters.firstChannel = 0;
 
   sampleRate = info.preferredSampleRate;

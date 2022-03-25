@@ -81,7 +81,7 @@ public:
 
   void setupStreamParameters(RtAudio &audio, int outDeviceId = -1, int inDeviceId = -1);
   void setupPlayersAndControls();
-  unsigned int bufferFrames = 64;
+  unsigned int bufferFrames = 1024;
   unsigned int sampleRate = 48000;
   RtAudio::StreamParameters streamOutParameters, streamInParameters;
 };

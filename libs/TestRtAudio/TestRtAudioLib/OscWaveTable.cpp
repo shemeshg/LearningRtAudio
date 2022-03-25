@@ -70,7 +70,7 @@ OscWaveTable::~OscWaveTable()
   gWavetable = NULL;
 }
 
-int OscWaveTable::render(std::vector<double> &channelData)
+int OscWaveTable::render(std::vector<double> &channelData, std::vector<double> &cvPitchChange)
 {
   double *buffer = &channelData[0];
   unsigned int nBufferFrames = channelData.size();
@@ -83,7 +83,7 @@ int OscWaveTable::render(std::vector<double> &channelData)
     val = _gAmplitude * getLinearInterpolation();
     buffer[bufferPosition] += val;
     bufferPosition++;
-    gReadPointer = nextGReadPointer();
+    gReadPointer = nextGReadPointer(gFrequency * cvPitchChange[i]);
   }
   return 0;
 }

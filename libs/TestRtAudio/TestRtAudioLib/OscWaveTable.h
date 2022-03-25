@@ -22,7 +22,7 @@ public:
     addBuffer
   };
 
-  int render(std::vector<double> &channelData);
+  int render(std::vector<double> &channelData, std::vector<double> &cvPitchChange);
 
 protected:
   float *gWavetable; // Buffer that holds the wavetable
@@ -34,14 +34,14 @@ private:
     return pow(10.0, gAmplitudeDb / 20.0);
   }
 
-  double phaseStep()
+  double phaseStep(const double &frequency )
   {
-    return gWavetableLength * (gFrequency / sampleRate);
+    return gWavetableLength * (frequency / sampleRate);
   }
 
-  float nextGReadPointer()
+  float nextGReadPointer(const double &frequency )
   {
-    float p = gReadPointer + phaseStep();
+    float p = gReadPointer + phaseStep(frequency);
     if (p >= gWavetableLength)
     {
       p -= gWavetableLength;
