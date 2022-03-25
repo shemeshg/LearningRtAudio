@@ -64,10 +64,6 @@ public:
   std::vector<std::unique_ptr<RtGuiControl>> rtGuiSliders;
   std::vector<std::unique_ptr<OscWaveTable>> Oscs;
 
-
-
-  
-
   RtWaveTableCallback();
 
   ~RtWaveTableCallback();
@@ -77,8 +73,7 @@ public:
 
   void setupStreamParameters(RtAudio &audio, int outDeviceId = -1, int inDeviceId = -1, unsigned int streamBufferFrames = 1024);
   void setupPlayersAndControls();
-  unsigned int bufferFrames = 1024;
-  unsigned int sampleRate = 48000;
+
   RtAudio::StreamParameters streamOutParameters, streamInParameters;
 
   std::function<void(std::vector<double> &v)> callbackToUi = [](std::vector<double> &v) {};
@@ -86,6 +81,8 @@ public:
   bool const &getDoScopelog() const { return doScopelog; }
   void setDoScopelog(bool val){doScopelog = val;}
 
+  unsigned int  const &getSampleRate() const { return sampleRate; }
+  unsigned int bufferFrames = 1024;
 private:
   void scopeLog(double *buffer, unsigned int &nBufferFrames, int channels, int rowsCount,
                 std::vector<unsigned int> colsToPrint, std::ostream &stream = std::cout);
@@ -98,6 +95,9 @@ private:
   float detuneOscsAmount = 0;
   float detuneNoteNumber = 60;
   float detuneAmplitudeDb = -10;   
+
+  
+  unsigned int sampleRate = 48000;
 
   bool doScopelog = false;               
 };

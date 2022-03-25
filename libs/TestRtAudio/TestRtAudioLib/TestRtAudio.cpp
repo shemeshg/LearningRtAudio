@@ -73,7 +73,7 @@
     {
       
       audio.openStream(&userDataCasted->streamOutParameters, &userDataCasted->streamInParameters, RTAUDIO_FLOAT64,
-                userDataCasted->sampleRate, &userDataCasted->bufferFrames, callback, userData);
+                userDataCasted->getSampleRate(), &userDataCasted->bufferFrames, callback, userData);
       audio.startStream();
     }
     catch (RtAudioError &e)
