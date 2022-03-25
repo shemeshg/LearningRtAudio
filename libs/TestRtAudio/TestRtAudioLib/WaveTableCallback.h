@@ -22,6 +22,7 @@ public:
 
 protected:
   float &val;
+
 private:
   float min;
   float max;
@@ -63,24 +64,13 @@ public:
   std::vector<std::unique_ptr<RtGuiControl>> rtGuiSliders;
   std::vector<std::unique_ptr<OscWaveTable>> Oscs;
 
-  float detuneOscsAmount = 0;
-  float detuneNoteNumber = 60;
 
-  float detuneAmplitudeDb = -10;
 
-  bool doScopelog = false;
+  
 
   RtWaveTableCallback();
 
   ~RtWaveTableCallback();
-
-  void scopeLog(double *buffer, unsigned int &nBufferFrames, int channels, int rowsCount,
-                std::vector<unsigned int> colsToPrint, std::ostream &stream = std::cout);
-
-  void sendOutput(double *buffer, unsigned int &nBufferFrames, int channels,
-                  std::vector<double> &outChannel, std::vector<unsigned int> colsToSend);
-
-  std::vector<double> getInput(double *inputBuffer, unsigned int &nBufferFrames, int channels, unsigned int inputToGet);
 
   int render(void *outputBuffer, void *inputBuffer, unsigned int &nBufferFrames,
              double &streamTime, RtAudioStreamStatus &status);
@@ -92,4 +82,22 @@ public:
   RtAudio::StreamParameters streamOutParameters, streamInParameters;
 
   std::function<void(std::vector<double> &v)> callbackToUi = [](std::vector<double> &v) {};
+
+  bool const &getDoScopelog() const { return doScopelog; }
+  void setDoScopelog(bool val){doScopelog = val;}
+
+private:
+  void scopeLog(double *buffer, unsigned int &nBufferFrames, int channels, int rowsCount,
+                std::vector<unsigned int> colsToPrint, std::ostream &stream = std::cout);
+
+  std::vector<double> getInput(double *inputBuffer, unsigned int &nBufferFrames, int channels, unsigned int inputToGet);
+
+  void sendOutput(double *buffer, unsigned int &nBufferFrames, int channels,
+                  std::vector<double> &outChannel, std::vector<unsigned int> colsToSend);
+
+  float detuneOscsAmount = 0;
+  float detuneNoteNumber = 60;
+  float detuneAmplitudeDb = -10;   
+
+  bool doScopelog = false;               
 };

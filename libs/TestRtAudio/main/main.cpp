@@ -19,7 +19,7 @@ int main()
     }
   };
   tra.playWavTable();
-  tra.rtWaveTableCallback.doScopelog = false;
+  tra.rtWaveTableCallback.setDoScopelog(false);
   char input;
   std::cout << "\nPlaying ... press <enter> to quit.\n";
   std::cin.get(input);

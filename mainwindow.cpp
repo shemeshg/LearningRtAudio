@@ -20,7 +20,7 @@ MainWindow::MainWindow(QWidget *parent)
       }
     };
     tra.playWavTable();
-    tra.rtWaveTableCallback.doScopelog = false;
+    tra.rtWaveTableCallback.setDoScopelog(false);
 
      for (auto &rts : tra.rtWaveTableCallback.rtGuiSliders) {
            GuiSlider *g=new GuiSlider(*rts);
