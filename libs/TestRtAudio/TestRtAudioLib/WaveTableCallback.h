@@ -7,12 +7,6 @@
 class RtGuiControl
 {
 public:
-  float &val;
-  float min;
-  float max;
-  float step;
-  std::string name;
-
   RtGuiControl(std::string name, float &val, float min, float max, float step) : name(name), val(val), min(min), max(max), step(step)
   {
   }
@@ -20,6 +14,18 @@ public:
   virtual ~RtGuiControl() {}
 
   void virtual setVal(float v) = 0;
+  float const &getVal() const { return val; }
+  std::string const &getName() const { return name; }
+  float const &getMin() const { return min; }
+  float const &getMax() const { return max; }
+  float const &getStep() const { return step; }
+
+protected:
+  float &val;
+  float min;
+  float max;
+  float step;
+  std::string name;
 };
 
 class RtGuiSlider : public RtGuiControl
@@ -73,13 +79,12 @@ public:
   void sendOutput(double *buffer, unsigned int &nBufferFrames, int channels,
                   std::vector<double> &outChannel, std::vector<unsigned int> colsToSend);
 
-  std::vector<double> getInput(double *inputBuffer, unsigned int &nBufferFrames,int channels,unsigned int inputToGet);
+  std::vector<double> getInput(double *inputBuffer, unsigned int &nBufferFrames, int channels, unsigned int inputToGet);
 
   int render(void *outputBuffer, void *inputBuffer, unsigned int &nBufferFrames,
              double &streamTime, RtAudioStreamStatus &status);
 
-
-  void setupStreamParameters(RtAudio &audio, int outDeviceId = -1, int inDeviceId = -1,  unsigned int streamBufferFrames = 1024);
+  void setupStreamParameters(RtAudio &audio, int outDeviceId = -1, int inDeviceId = -1, unsigned int streamBufferFrames = 1024);
   void setupPlayersAndControls();
   unsigned int bufferFrames = 1024;
   unsigned int sampleRate = 48000;

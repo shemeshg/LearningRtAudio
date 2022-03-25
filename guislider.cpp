@@ -8,12 +8,12 @@ GuiSlider::GuiSlider(RtGuiControl &rtg, QWidget *parent)
 {
 
     ui->setupUi(this);
-    ui->label->setText(QString::fromStdString(rtg.name));    
+    ui->label->setText(QString::fromStdString(rtg.getName()));
     ui->horizontalSlider->setRange(0,INT_MAX);
 
-    float val=rtg.val;
-    ui->horizontalSlider->setValue(rescaleRange(val, rtg.min, rtg.max, 0,(float)INT_MAX));
-    ui->lineEdit->setText(QString::number(rtg.val));
+    float val=rtg.getVal();
+    ui->horizontalSlider->setValue(rescaleRange(val, rtg.getMin(), rtg.getMax(), 0,(float)INT_MAX));
+    ui->lineEdit->setText(QString::number(rtg.getVal()));
 }
 
 GuiSlider::~GuiSlider()
@@ -31,16 +31,16 @@ GuiSlider::~GuiSlider()
 void GuiSlider::on_lineEdit_editingFinished()
 {
     float val=(int)ui->lineEdit->text().toFloat();
-    ui->horizontalSlider->setValue(rescaleRange(val, rtg.min, rtg.max, 0,(float)INT_MAX));
+    ui->horizontalSlider->setValue(rescaleRange(val, rtg.getMin(), rtg.getMax(), 0,(float)INT_MAX));
     rtg.setVal( val);
 }
 
 
 void GuiSlider::on_horizontalSlider_sliderMoved(int position)
 {    
-    float val=rescaleRange(position, 0,(float)INT_MAX,rtg.min, rtg.max);
-    val=int(val/rtg.step) * rtg.step;
-    val=constrainRange(val,rtg.min,rtg.max);
+    float val=rescaleRange(position, 0,(float)INT_MAX,rtg.getMin(), rtg.getMax());
+    val=int(val/rtg.getStep()) * rtg.getStep();
+    val=constrainRange(val,rtg.getMin(),rtg.getMax());
     ui->lineEdit->setText(QString::number(val));
     rtg.setVal( val);
 }

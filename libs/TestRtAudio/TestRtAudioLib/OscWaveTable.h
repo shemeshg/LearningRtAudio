@@ -16,11 +16,6 @@ public:
   OscWaveTable(unsigned int sampleRate);
   virtual void setupWaveTable() = 0;
   virtual ~OscWaveTable();
-  enum RenderMode
-  {
-    setBuffer,
-    addBuffer
-  };
 
   int render(std::vector<double> &channelData, std::vector<double> &cvPitchChange);
 
