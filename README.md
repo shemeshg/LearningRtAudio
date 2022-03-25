@@ -15,3 +15,7 @@ I use these resources for personal learning, nothing proffesional.
 * fourie visualisation I use Pandas workbook (runs on Anaconda).
 
 See in tools folder.
+
+* for some reasone  Audio Inputs produce zores when run directlly from QtCreator,
+    When running from the build directory it runs fine (Ooutputs from QtCreate works also fine).
+    Also this issue does not exists in VSCODE, on QtCreate.

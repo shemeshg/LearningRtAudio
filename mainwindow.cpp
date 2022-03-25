@@ -9,31 +9,26 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);   
     tra.coutDevicesInfo();
-    tra.setupStreamParameters(2,2,1024);
+    tra.setupStreamParameters(2, 2, 1024);
     tra.rtWaveTableCallback.setupPlayersAndControls();
-    tra.rtWaveTableCallback.callbackToUi = [](std::vector<double> &v) {
-        static int i=0;
-        if  (!(++i % 50)){
-            qDebug()<<"Called back from RTAudio: "<<i<<" "<<v[0]<< " \n";
-
-        }
-        /*
-        static int i=0;
-        if  (!(++i % 50)){
-            QString s= QString("Called back from RTAudio: %1 %2").arg(i).arg(v[0]);
-            ui->label->setText(s);
-        }
-        */
+    tra.rtWaveTableCallback.callbackToUi = [this](std::vector<double> &v)
+    {
+      static int i = 0;
+      if (!(++i % 50))
+      {
+        ui->label->setText(QString::number( v[0]));
+      }
     };
     tra.playWavTable();
+    tra.rtWaveTableCallback.doScopelog = false;
 
-    for (auto &rts : tra.rtWaveTableCallback.rtGuiSliders) {
-        GuiSlider *g=new GuiSlider(*rts);
-        ui->verticalLayout->addWidget(g);
-        g->show();
-    }
+     for (auto &rts : tra.rtWaveTableCallback.rtGuiSliders) {
+           GuiSlider *g=new GuiSlider(*rts);
+            ui->verticalLayout->addWidget(g);
+            g->show();
+        }
 
-    ui->label->setText("Sliders:");
+       ui->label->setText("Sliders:");
 }
 
 MainWindow::~MainWindow()
