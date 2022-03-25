@@ -16,7 +16,6 @@ I use these resources for personal learning, nothing proffesional.
 
 See in tools folder.
 
-* for some reasone  Audio Inputs produce zores when run directlly from QtCreator,
-    When running from the build directory it runs fine (Ooutputs from QtCreate works also fine).
+* for some reasone  (OS Security settings) Audio Inputs produce zores when run directlly from QtCreator,
+    When running from the build directory in terminal it runs fine (outputs from QtCreate works also fine).
     
-    Also this issue does not exists in VSCODE, but only QtCreate.
