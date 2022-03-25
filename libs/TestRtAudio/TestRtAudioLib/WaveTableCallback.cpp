@@ -13,6 +13,9 @@ void RtWaveTableCallback::setupPlayersAndControls()
   auto oscSine = std::make_unique<OscWaveTableAddative>(sampleRate);
   auto oscSine2 = std::make_unique<OscWaveTableAddative>(sampleRate);
 
+  // it is RtGuiSliderRefreshTableSetter to prevent aliassing on harmonics, 
+  // Maybe think how to do that, based on setter automaticlly,
+  // but then we will have to manage MaxFrequency to restrigger RefreshTable
   std::unique_ptr<RtGuiControl> rs1(new RtGuiSliderRefreshTableSetter(*oscSine, "Note Number", detuneNoteNumber, 21, 108, 1));
   std::unique_ptr<RtGuiControl> rs2(new RtGuiSlider("Amplitude Db", detuneAmplitudeDb, -40, 0, 0.1));
   std::unique_ptr<RtGuiControl> rs3(new RtGuiSlider("detuneOscs", detuneOscsAmount, 0, 100, 0.1));
