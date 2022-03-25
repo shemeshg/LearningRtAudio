@@ -22,6 +22,7 @@ public:
 
 protected:
   float &val;
+private:
   float min;
   float max;
   float step;
