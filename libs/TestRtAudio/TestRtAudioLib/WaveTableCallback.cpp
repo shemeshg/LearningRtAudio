@@ -100,8 +100,8 @@ int RtWaveTableCallback::render(void *outputBuffer, void *inputBuffer, unsigned 
   double *inBuffer = (double *)inputBuffer;
 
   std::vector<double> outChannel01(nBufferFrames, 0);
-  std::vector<double> outOscContiousPitch(nBufferFrames, 1);
-
+  std::vector<double> outOscContiousPitch = //(nBufferFrames, 1);
+                        getInput(inBuffer, nBufferFrames, streamInParameters.nChannels, 4);
 
   if (status)
     std::cout << "Stream underflow detected!" << std::endl;
@@ -137,7 +137,7 @@ int RtWaveTableCallback::render(void *outputBuffer, void *inputBuffer, unsigned 
   return 0;
 }
 
-void RtWaveTableCallback::setupStreamParameters(RtAudio &audio, int outDeviceId, int inDeviceId)
+void RtWaveTableCallback::setupStreamParameters(RtAudio &audio, int outDeviceId, int inDeviceId, unsigned int streamBufferFrames)
 {
   if (outDeviceId == -1)
   {
@@ -160,4 +160,6 @@ void RtWaveTableCallback::setupStreamParameters(RtAudio &audio, int outDeviceId,
   streamInParameters.firstChannel = 0;
 
   sampleRate = info.preferredSampleRate;
+  bufferFrames=streamBufferFrames;
+
 }

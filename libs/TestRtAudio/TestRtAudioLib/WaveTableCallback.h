@@ -79,7 +79,7 @@ public:
              double &streamTime, RtAudioStreamStatus &status);
 
 
-  void setupStreamParameters(RtAudio &audio, int outDeviceId = -1, int inDeviceId = -1);
+  void setupStreamParameters(RtAudio &audio, int outDeviceId = -1, int inDeviceId = -1,  unsigned int streamBufferFrames = 1024);
   void setupPlayersAndControls();
   unsigned int bufferFrames = 1024;
   unsigned int sampleRate = 48000;
