@@ -8,8 +8,23 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);   
-    tra.setupStreamParameters(2);
+    tra.coutDevicesInfo();
+    tra.setupStreamParameters(2,2,1024);
     tra.rtWaveTableCallback.setupPlayersAndControls();
+    tra.rtWaveTableCallback.callbackToUi = [](std::vector<double> &v) {
+        static int i=0;
+        if  (!(++i % 50)){
+            qDebug()<<"Called back from RTAudio: "<<i<<" "<<v[0]<< " \n";
+
+        }
+        /*
+        static int i=0;
+        if  (!(++i % 50)){
+            QString s= QString("Called back from RTAudio: %1 %2").arg(i).arg(v[0]);
+            ui->label->setText(s);
+        }
+        */
+    };
     tra.playWavTable();
 
     for (auto &rts : tra.rtWaveTableCallback.rtGuiSliders) {

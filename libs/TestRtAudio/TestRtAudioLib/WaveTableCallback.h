@@ -84,4 +84,6 @@ public:
   unsigned int bufferFrames = 1024;
   unsigned int sampleRate = 48000;
   RtAudio::StreamParameters streamOutParameters, streamInParameters;
+
+  std::function<void(std::vector<double> &v)> callbackToUi = [](std::vector<double> &v) {};
 };

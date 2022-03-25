@@ -99,9 +99,11 @@ int RtWaveTableCallback::render(void *outputBuffer, void *inputBuffer, unsigned 
   double *outBuffer = (double *)outputBuffer;
   double *inBuffer = (double *)inputBuffer;
 
+  
+
   std::vector<double> outChannel01(nBufferFrames, 0);
-  std::vector<double> outOscContiousPitch = //(nBufferFrames, 1);
-                        getInput(inBuffer, nBufferFrames, streamInParameters.nChannels, 4);
+  std::vector<double> outOscContiousPitch(nBufferFrames, 1);
+                        //=getInput(inBuffer, nBufferFrames, streamInParameters.nChannels, 2);
 
   if (status)
     std::cout << "Stream underflow detected!" << std::endl;
@@ -121,14 +123,15 @@ int RtWaveTableCallback::render(void *outputBuffer, void *inputBuffer, unsigned 
   }
 
   // I choose channel 2 to avoid feedback
-  std::vector<double> inChannel1 = getInput(inBuffer, nBufferFrames, streamInParameters.nChannels, 3);
-  std::transform(outChannel01.begin(), outChannel01.end(), inChannel1.begin(),outChannel01.begin(),  [](double i, double j)
-                 { return i * j ; });
+  std::vector<double> inChannel1 = getInput(inBuffer, nBufferFrames, streamInParameters.nChannels, 2);
+  callbackToUi(inChannel1);
+  //std::transform(outChannel01.begin(), outChannel01.end(), inChannel1.begin(),outChannel01.begin(),  [](double i, double j)
+  //               { return i * j ; });
   
 
 
   sendOutput(outBuffer, nBufferFrames, streamOutParameters.nChannels, outChannel01, {0,1});
-  sendOutput(outBuffer, nBufferFrames, streamOutParameters.nChannels, inChannel1, {2});
+  //sendOutput(outBuffer, nBufferFrames, streamOutParameters.nChannels, inChannel1, {2});
   if (doScopelog)
   {
     scopeLog(outBuffer, nBufferFrames, streamOutParameters.nChannels, 20250, {0, 1});
@@ -156,7 +159,7 @@ void RtWaveTableCallback::setupStreamParameters(RtAudio &audio, int outDeviceId,
   streamOutParameters.firstChannel = 0;
 
   streamInParameters.deviceId = inDeviceId;
-  streamInParameters.nChannels =  info.inputChannels; //4; 
+  streamInParameters.nChannels = info.inputChannels;
   streamInParameters.firstChannel = 0;
 
   sampleRate = info.preferredSampleRate;
