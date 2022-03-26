@@ -1,6 +1,7 @@
 #include <cassert>
 #include "WaveTableCallback.h"
 #include "RangeUtils.h"
+#include "Components/OscWaveTableAddative.h"
 #include <string>
 using namespace RtAudioNs;
 

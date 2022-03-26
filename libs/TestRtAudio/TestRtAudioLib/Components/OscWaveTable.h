@@ -49,37 +49,7 @@ namespace RtAudioNs
       float getLinearInterpolation();
     };
 
-    class OscWaveTableSine : public OscWaveTable
-    {
-    public:
-      OscWaveTableSine(unsigned int sampleRate) : OscWaveTable(sampleRate)
-      {
-        setupWaveTable();
-      }
-      void setupWaveTable() override;
-    };
 
-    class OscWaveTableAddative : public OscWaveTable
-    {
-    public:
-      // Levels 0..1 NOT DBs
-      std::vector<float> harmoniesLevels{0.5, 0, 0, 0, 0, 0, 0, 0};
 
-      OscWaveTableAddative(unsigned int sampleRate) : OscWaveTable(sampleRate)
-      {
-        setupWaveTable();
-      }
-      void setupWaveTable() override;
-    };
-
-    class OscWaveTableTiangle : public OscWaveTable
-    {
-    public:
-      OscWaveTableTiangle(unsigned int sampleRate) : OscWaveTable(sampleRate)
-      {
-        setupWaveTable();
-      }
-      void setupWaveTable() override;
-    };
   }
 }
