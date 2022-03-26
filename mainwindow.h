@@ -21,6 +21,6 @@ private slots:
 
 private:
     Ui::MainWindow *ui;
-    TestRtAudio tra;
+    RtAudioNs::TestRtAudio tra;
 };
 #endif // MAINWINDOW_H

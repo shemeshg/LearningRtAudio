@@ -2,7 +2,7 @@
 #include "./ui_guislider.h"
 #include "RangeUtils.h"
 
-GuiSlider::GuiSlider(RtGuiControl &rtg, QWidget *parent)
+GuiSlider::GuiSlider(RtAudioNs::Components::RtGuiControl &rtg, QWidget *parent)
     : QWidget(parent)
     , ui(new Ui::GuiSlider), rtg(rtg)
 {
