@@ -1,6 +1,8 @@
 #include "TestRtAudio.h"
 #include "waveTable.h"
 
+using namespace RtAudioNs;
+
 TestRtAudio::TestRtAudio(RtAudio::Api api, RtAudioErrorCallback &&errorCallback) : audio{api, std::move(errorCallback)}
 {
 }

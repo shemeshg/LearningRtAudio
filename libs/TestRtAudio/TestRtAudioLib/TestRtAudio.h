@@ -4,25 +4,29 @@
 #include "RtAudioError.h"
 #include "WaveTableCallback.h"
 
-class TestRtAudio
+namespace RtAudioNs
 {
-public:
-  TestRtAudio(RtAudio::Api api = RtAudio::Api::UNSPECIFIED, RtAudioErrorCallback &&errorCallback = 0);
-  ~TestRtAudio();
 
-  static void coutListApis();
-  void coutDevicesInfo();
-  void stopStream();
-  void playWavTable();
-  void setupStreamParameters(int outDeviceId = -1, int inDeviceId = -1, unsigned int streamBufferFrames = 1024)
+  class TestRtAudio
   {
-    rtWaveTableCallback.setupStreamParameters(audio, outDeviceId, inDeviceId, streamBufferFrames);
-  }
+  public:
+    TestRtAudio(RtAudio::Api api = RtAudio::Api::UNSPECIFIED, RtAudioErrorCallback &&errorCallback = 0);
+    ~TestRtAudio();
 
-  RtWaveTableCallback rtWaveTableCallback = RtWaveTableCallback();
+    static void coutListApis();
+    void coutDevicesInfo();
+    void stopStream();
+    void playWavTable();
+    void setupStreamParameters(int outDeviceId = -1, int inDeviceId = -1, unsigned int streamBufferFrames = 1024)
+    {
+      rtWaveTableCallback.setupStreamParameters(audio, outDeviceId, inDeviceId, streamBufferFrames);
+    }
 
-private:
-  RtAudio audio;
-  std::string const nativeFormatStr(RtAudioFormat const &i);
-  void playRtAudioCallback(RtAudioCallback callback, void *userData);
-};
+    RtWaveTableCallback rtWaveTableCallback = RtWaveTableCallback();
+
+  private:
+    RtAudio audio;
+    std::string const nativeFormatStr(RtAudioFormat const &i);
+    void playRtAudioCallback(RtAudioCallback callback, void *userData);
+  };
+}

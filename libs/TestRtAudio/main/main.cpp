@@ -6,7 +6,7 @@ int main()
 {
 
   // TestRtAudio::coutListApis();
-  TestRtAudio tra;
+  RtAudioNs::TestRtAudio tra;
   tra.coutDevicesInfo();
   tra.setupStreamParameters(2, 2, 1024);
   tra.rtWaveTableCallback.setupPlayersAndControls();

@@ -2,6 +2,8 @@
 #include <iostream>
 #include "OscWaveTable.h"
 
+using namespace RtAudioNs;
+
 void OscWaveTable::setupWaveTable()
 {
   return;

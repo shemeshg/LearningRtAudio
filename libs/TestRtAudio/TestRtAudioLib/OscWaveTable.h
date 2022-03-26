@@ -2,6 +2,8 @@
 #include <cmath>
 #include <vector>
 
+namespace RtAudioNs {
+
 class OscWaveTable
 {
 public:
@@ -76,3 +78,4 @@ public:
   }
   void setupWaveTable() override;
 };
+}

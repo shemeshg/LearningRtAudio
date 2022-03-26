@@ -2,6 +2,7 @@
 #include "WaveTableCallback.h"
 #include "RangeUtils.h"
 #include <string>
+using namespace RtAudioNs;
 
 RtWaveTableCallback::RtWaveTableCallback()
 {
