@@ -13,7 +13,9 @@ void RtWaveTableCallback::setupPlayersAndControls()
 {
 
   auto oscSine = std::make_unique<Components::OscWaveTableAddative>(sampleRate);
+  oscSine->setupWaveTable();
   auto oscSine2 = std::make_unique<Components::OscWaveTableAddative>(sampleRate);
+  oscSine2->setupWaveTable();
 
   // it is RtGuiSliderRefreshTableSetter to prevent aliassing on harmonics, 
   // Maybe think how to do that, based on setter automaticlly,

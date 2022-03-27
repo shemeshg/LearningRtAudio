@@ -13,7 +13,6 @@ namespace Components
 
       OscWaveTableAddative(unsigned int sampleRate) : OscWaveTable(sampleRate)
       {
-        setupWaveTable();
       }
       void setupWaveTable() override;
     };
