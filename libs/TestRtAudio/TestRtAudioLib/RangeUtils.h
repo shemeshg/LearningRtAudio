@@ -16,8 +16,7 @@ public:
   float cMidiNoteToFrequency(float noteNumber)
   {
     double curr = midiNoteIntToFrequency(noteNumber);
-    double next = midiNoteIntToFrequency(noteNumber + 1);
-    double reminder = noteNumber - (int)noteNumber;
+    double next = midiNoteIntToFrequency(noteNumber + 1);    
 
     double logScaleIntNoteNumber = midiLogScaleToFrequency((int)noteNumber);
     double logScaleStep = midiLogScaleToFrequency((int)noteNumber + 1) - logScaleIntNoteNumber;
