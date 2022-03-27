@@ -1,3 +1,4 @@
+#pragma once
 #include "OscWaveTable.h"
 namespace RtAudioNs
 {

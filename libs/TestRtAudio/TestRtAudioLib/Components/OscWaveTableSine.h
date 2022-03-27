@@ -1,3 +1,4 @@
+#pragma once
 #include "OscWaveTable.h"
 namespace RtAudioNs
 {
@@ -9,7 +10,6 @@ namespace Components
     public:
       OscWaveTableSine(unsigned int sampleRate) : OscWaveTable(sampleRate)
       {
-        setupWaveTable();
       }
       void setupWaveTable() override;
     };

@@ -1,6 +1,6 @@
 #include "./guislider.h"
 #include "./ui_guislider.h"
-#include "RangeUtils.h"
+#include "Components/RangeUtils.h"
 
 GuiSlider::GuiSlider(RtAudioNs::Components::RtGuiControl &rtg, QWidget *parent)
     : QWidget(parent)

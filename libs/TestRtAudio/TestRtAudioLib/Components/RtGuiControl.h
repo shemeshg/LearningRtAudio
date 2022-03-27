@@ -1,3 +1,4 @@
+#pragma once
 #include <string>
 #include "OscWaveTable.h"
 
@@ -48,8 +49,8 @@ namespace RtAudioNs
     class RtGuiSliderRefreshTableSetter : public RtGuiControl
     {
     public:
-      OscWaveTable &owt;
-      RtGuiSliderRefreshTableSetter(OscWaveTable &owt, std::string name, float &val, float min, float max, float step) : RtGuiControl{name, val, min, max, step}, owt{owt}
+      ItfSetupWaveTable &owt;
+      RtGuiSliderRefreshTableSetter(ItfSetupWaveTable &owt, std::string name, float &val, float min, float max, float step) : RtGuiControl{name, val, min, max, step}, owt{owt}
       {
       }
 

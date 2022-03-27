@@ -6,7 +6,12 @@ namespace RtAudioNs
 {
   namespace Components
   {
-    class OscWaveTable
+    class ItfSetupWaveTable {
+      public:
+      virtual void setupWaveTable() = 0;
+    };
+
+    class OscWaveTable: public ItfSetupWaveTable
     {
     public:
       int gWavetableLength = 512; // The length of the buffer in frames
@@ -16,7 +21,7 @@ namespace RtAudioNs
       float gFrequency = 220.0; // Frequency
 
       OscWaveTable(unsigned int sampleRate);
-      virtual void setupWaveTable() = 0;
+      
       virtual ~OscWaveTable();
 
       int render(std::vector<double> &channelData, std::vector<double> &cvPitchChange);

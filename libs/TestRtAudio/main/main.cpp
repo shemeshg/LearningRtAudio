@@ -1,6 +1,5 @@
 #include <iostream>
 #include "TestRtAudio.h"
-#include "RangeUtils.h"
 
 int main()
 {

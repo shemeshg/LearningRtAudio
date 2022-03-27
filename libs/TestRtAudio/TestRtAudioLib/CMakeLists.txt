@@ -10,12 +10,14 @@ set(TestRtAudioLib_SRCS
   waveTable.cpp
   WaveTableCallback.h 
   WaveTableCallback.cpp
-  RangeUtils.h
-  RangeUtils.cpp
+  Components/RangeUtils.h
+  Components/RangeUtils.cpp
   Components/OscWaveTable.h 
   Components/OscWaveTable.cpp
   Components/OscWaveTableAddative.h
   Components/OscWaveTableAddative.cpp
+  Components/OscWaveTable2Addative.h
+  Components/OscWaveTable2Addative.cpp
 )
 
 add_subdirectory(RtAudioLib)

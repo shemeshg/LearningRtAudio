@@ -1,7 +1,6 @@
 #include <cassert>
 #include "WaveTableCallback.h"
-#include "RangeUtils.h"
-#include "Components/OscWaveTableAddative.h"
+#include "Components/OscWaveTable2Addative.h"
 #include <string>
 using namespace RtAudioNs;
 
@@ -12,17 +11,15 @@ RtWaveTableCallback::RtWaveTableCallback()
 void RtWaveTableCallback::setupPlayersAndControls()
 {
 
-  auto oscSine = std::make_unique<Components::OscWaveTableAddative>(sampleRate);
-  oscSine->setupWaveTable();
-  auto oscSine2 = std::make_unique<Components::OscWaveTableAddative>(sampleRate);
-  oscSine2->setupWaveTable();
+  auto Osc2Sine = std::make_unique<Components::OscWaveTable2Addative>(sampleRate);
+
 
   // it is RtGuiSliderRefreshTableSetter to prevent aliassing on harmonics, 
   // Maybe think how to do that, based on setter automaticlly,
   // but then we will have to manage MaxFrequency to restrigger RefreshTable
-  std::unique_ptr<Components::RtGuiControl> rs1(new Components::RtGuiSliderRefreshTableSetter(*oscSine, "Note Number", detuneNoteNumber, 21, 108, 1));
-  std::unique_ptr<Components::RtGuiControl> rs2(new Components::RtGuiSlider("Amplitude Db", detuneAmplitudeDb, -40, 0, 0.1));
-  std::unique_ptr<Components::RtGuiControl> rs3(new Components::RtGuiSlider("detuneOscs", detuneOscsAmount, 0, 100, 0.1));
+  std::unique_ptr<Components::RtGuiControl> rs1(new Components::RtGuiSliderRefreshTableSetter(*Osc2Sine, "Note Number", Osc2Sine->detuneNoteNumber, 21, 108, 1));
+  std::unique_ptr<Components::RtGuiControl> rs2(new Components::RtGuiSlider("Amplitude Db", Osc2Sine->detuneAmplitudeDb, -40, 0, 0.1));
+  std::unique_ptr<Components::RtGuiControl> rs3(new Components::RtGuiSlider("detuneOscs", Osc2Sine->detuneOscsAmount, 0, 100, 0.1));
 
   rtGuiSliders.push_back(std::move(rs1));
   rtGuiSliders.push_back(std::move(rs2));
@@ -37,8 +34,8 @@ void RtWaveTableCallback::setupPlayersAndControls()
   }
   */
 
-  Oscs.push_back(std::move(oscSine));
-  Oscs.push_back(std::move(oscSine2));
+  Oscs.push_back(std::move(Osc2Sine));
+
 }
 
 RtWaveTableCallback::~RtWaveTableCallback()
@@ -112,19 +109,9 @@ int RtWaveTableCallback::render(void *outputBuffer, void *inputBuffer, unsigned 
   if (status)
     std::cout << "Stream underflow detected!" << std::endl;
 
-  float detuneFrequency = midiNoteToFrequency(detuneNoteNumber);
 
-  Oscs.at(0)->gFrequency = detuneFrequency + detuneOscsAmount;
-  Oscs.at(0)->gAmplitudeDb = detuneAmplitudeDb;
 
   Oscs.at(0)->render(outChannel01, outOscContiousPitch);
-
-  if (Oscs.size() == 2)
-  {
-    Oscs.at(1)->gFrequency = detuneFrequency - detuneOscsAmount;
-    Oscs.at(1)->gAmplitudeDb = detuneAmplitudeDb;
-    Oscs.at(1)->render(outChannel01, outOscContiousPitch);
-  }
 
   // I choose channel 2 to avoid feedback
   std::vector<double> inChannel1 = getInput(inBuffer, nBufferFrames, streamInParameters.nChannels, 2);

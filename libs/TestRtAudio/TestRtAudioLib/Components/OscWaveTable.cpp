@@ -6,11 +6,6 @@ namespace RtAudioNs
 {
   namespace Components
   {
-    void OscWaveTable::setupWaveTable()
-    {
-      return;
-    }
-
 
     OscWaveTable::OscWaveTable(unsigned int sampleRate) : sampleRate{sampleRate}
     {

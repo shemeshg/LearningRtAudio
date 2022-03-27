@@ -2,7 +2,7 @@
 #include <iostream>
 #include <vector>
 #include "RtAudio.h"
-#include "Components/OscWaveTable.h"
+#include "Components/OscWaveTable2Addative.h"
 #include "Components/RtGuiControl.h"
 namespace RtAudioNs
 {
@@ -11,7 +11,7 @@ namespace RtAudioNs
   {
   public:
     std::vector<std::unique_ptr<Components::RtGuiControl>> rtGuiSliders;
-    std::vector<std::unique_ptr<Components::OscWaveTable>> Oscs;
+    std::vector<std::unique_ptr<Components::OscWaveTable2Addative>> Oscs;
 
     RtWaveTableCallback();
 
@@ -42,9 +42,7 @@ namespace RtAudioNs
     void sendOutput(double *buffer, unsigned int &nBufferFrames, int channels,
                     std::vector<double> &outChannel, std::vector<unsigned int> colsToSend);
 
-    float detuneOscsAmount = 0;
-    float detuneNoteNumber = 60;
-    float detuneAmplitudeDb = -10;
+
 
     unsigned int sampleRate = 48000;
 
