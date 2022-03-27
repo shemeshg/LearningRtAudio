@@ -11,22 +11,22 @@ RtWaveTableCallback::RtWaveTableCallback()
 void RtWaveTableCallback::setupPlayersAndControls()
 {
 
-  auto Osc2Sine = std::make_unique<Components::OscWaveTable2Addative>(sampleRate);
+  auto osc2Sine = std::make_unique<Components::OscWaveTable2Addative>(sampleRate);
 
 
   // it is RtGuiSliderRefreshTableSetter to prevent aliassing on harmonics, 
   // Maybe think how to do that, based on setter automaticlly,
   // but then we will have to manage MaxFrequency to restrigger RefreshTable
-  std::unique_ptr<Components::RtGuiControl> rs1(new Components::RtGuiSliderRefreshTableSetter(*Osc2Sine, "Note Number", Osc2Sine->detuneNoteNumber, 21, 108, 1));
-  std::unique_ptr<Components::RtGuiControl> rs2(new Components::RtGuiSlider("Amplitude Db", Osc2Sine->detuneAmplitudeDb, -40, 0, 0.1));
-  std::unique_ptr<Components::RtGuiControl> rs3(new Components::RtGuiSlider("detuneOscs", Osc2Sine->detuneOscsAmount, 0, 100, 0.1));
+  std::unique_ptr<Components::RtGuiControl> rs1(new Components::RtGuiSliderRefreshTableSetter(*osc2Sine, "Note Number", osc2Sine->detuneNoteNumber, 21, 108, 1));
+  std::unique_ptr<Components::RtGuiControl> rs2(new Components::RtGuiSlider("Amplitude Db", osc2Sine->detuneAmplitudeDb, -40, 0, 0.1));
+  std::unique_ptr<Components::RtGuiControl> rs3(new Components::RtGuiSlider("detuneOscs", osc2Sine->detuneOscsAmount, 0, 100, 0.1));
 
   rtGuiSliders.push_back(std::move(rs1));
   rtGuiSliders.push_back(std::move(rs2));
   rtGuiSliders.push_back(std::move(rs3));
 
   /*
-  for (unsigned int i = 0; i < oscSine->harmoniesLevels.size(); i++)
+  for (unsigned int i = 0; i < Osc2Sine->harmoniesLevels.size(); i++)
   {
     std::unique_ptr<RtGuiControl> hm1(new RtGuiSliderRefreshTableSetter(*oscSine, "harminic " + std::to_string(i), oscSine->harmoniesLevels.at(i), -1, 1, 0.00001));
     hm1->setVal(pow(0.5,i));
@@ -34,7 +34,7 @@ void RtWaveTableCallback::setupPlayersAndControls()
   }
   */
 
-  Oscs.push_back(std::move(Osc2Sine));
+  vecOsc2Sine.push_back(std::move(osc2Sine));
 
 }
 
@@ -111,7 +111,7 @@ int RtWaveTableCallback::render(void *outputBuffer, void *inputBuffer, unsigned 
 
 
 
-  Oscs.at(0)->render(outChannel01, outOscContiousPitch);
+  vecOsc2Sine.at(0)->render(outChannel01, outOscContiousPitch);
 
   // I choose channel 2 to avoid feedback
   std::vector<double> inChannel1 = getInput(inBuffer, nBufferFrames, streamInParameters.nChannels, 2);

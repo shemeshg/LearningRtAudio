@@ -11,7 +11,7 @@ namespace RtAudioNs
   {
   public:
     std::vector<std::unique_ptr<Components::RtGuiControl>> rtGuiSliders;
-    std::vector<std::unique_ptr<Components::OscWaveTable2Addative>> Oscs;
+    std::vector<std::unique_ptr<Components::OscWaveTable2Addative>> vecOsc2Sine;
 
     RtWaveTableCallback();
 

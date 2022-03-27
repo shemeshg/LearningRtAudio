@@ -18,6 +18,9 @@ namespace RtAudioNs
       float detuneNoteNumber = 60;
       float detuneAmplitudeDb = -10;
 
+      // Levels 0..1 NOT DBs
+      std::vector<float> harmoniesLevels{0.5, 0, 0, 0, 0, 0, 0, 0};
+      
       int render(std::vector<double> &channelData, std::vector<double> &cvPitchChange);
     };
 
