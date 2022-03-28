@@ -1,4 +1,5 @@
 #pragma once
+#include "RangeUtils.h"
 #include "OscWaveTableAddative.h"
 
 namespace RtAudioNs
@@ -22,6 +23,9 @@ namespace RtAudioNs
       std::vector<float> harmoniesLevels{0.5, 0, 0, 0, 0, 0, 0, 0};
       
       int render(std::vector<double> &channelData, std::vector<double> &cvPitchChange);
+
+      private:
+        CustomMidiScale customMidiScale;
     };
 
   }
