@@ -25,12 +25,11 @@ namespace RtAudioNs
       double *buffer = &channelData[0];
       unsigned int nBufferFrames = channelData.size();
       int bufferPosition = 0;
-      const float _gAmplitude = amplitudeFromDb(-10.0);
 
       for (unsigned int i = 0; i < nBufferFrames; i++)
       {
         double val = 0;
-        val = _gAmplitude * getLinearInterpolation();
+        val = getLinearInterpolation();
         buffer[bufferPosition] += val;
         bufferPosition++;
         gReadPointer = nextGReadPointer(gFrequency * cvPitchChange[i]);

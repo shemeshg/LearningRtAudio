@@ -4,14 +4,16 @@
 #include "RtAudio.h"
 #include "Components/OscWaveTable2Addative.h"
 #include "Components/RtGuiControl.h"
+#include "Components/VcaGateComponent.h"
+
 namespace RtAudioNs
-{
- 
+{ 
   class RtWaveTableCallback
   {
   public:
     std::vector<std::unique_ptr<Components::RtGuiControl>> rtGuiSliders;
     std::vector<std::unique_ptr<Components::OscWaveTable2Addative>> vecOsc2Sine;
+    std::vector<std::unique_ptr<Components::VcaContainer>> vecVcaGateways;
 
     RtWaveTableCallback();
 

@@ -1,6 +1,8 @@
 #include <cassert>
 #include "WaveTableCallback.h"
 #include "Components/OscWaveTable2Addative.h"
+#include "Components/VcaGateComponent.h"
+#include "Components/RangeUtils.h"
 #include <string>
 using namespace RtAudioNs;
 
@@ -12,17 +14,18 @@ void RtWaveTableCallback::setupPlayersAndControls()
 {
 
   auto osc2Sine = std::make_unique<Components::OscWaveTable2Addative>(sampleRate);
+  auto vca1 = std::make_unique<Components::VcaContainer>();
+  vca1->attinuateMultiplier = -20;
 
-
-  // it is RtGuiSliderRefreshTableSetter to prevent aliassing on harmonics, 
+  // it is RtGuiSliderRefreshTableSetter to prevent aliassing on harmonics,
   // Maybe think how to do that, based on setter automaticlly,
   // but then we will have to manage MaxFrequency to restrigger RefreshTable
   std::unique_ptr<Components::RtGuiControl> rs1(new Components::RtGuiSliderRefreshTableSetter(*osc2Sine, "Note Number", osc2Sine->detuneNoteNumber, 21, 108, 1));
-  //std::unique_ptr<Components::RtGuiControl> rs2(new Components::RtGuiSlider("Amplitude Db", osc2Sine->detuneAmplitudeDb, -40, 0, 0.1));
+  std::unique_ptr<Components::RtGuiControl> rs2(new Components::RtGuiSlider("Amplitude Db", vca1->attinuateMultiplier, -40, 0, 0.1));
   std::unique_ptr<Components::RtGuiControl> rs3(new Components::RtGuiSlider("detuneOscs", osc2Sine->detuneOscsAmount, 0, 100, 0.1));
 
   rtGuiSliders.push_back(std::move(rs1));
-  //rtGuiSliders.push_back(std::move(rs2));
+  rtGuiSliders.push_back(std::move(rs2));
   rtGuiSliders.push_back(std::move(rs3));
 
   /*
@@ -33,9 +36,8 @@ void RtWaveTableCallback::setupPlayersAndControls()
     rtGuiSlider.push_back(std::move(hm1));
   }
   */
-
+  vecVcaGateways.push_back(std::move(vca1));
   vecOsc2Sine.push_back(std::move(osc2Sine));
-
 }
 
 RtWaveTableCallback::~RtWaveTableCallback()
@@ -91,8 +93,6 @@ void RtWaveTableCallback::scopeLog(double *buffer, unsigned int &nBufferFrames, 
   }
 }
 
-
-
 int RtWaveTableCallback::render(void *outputBuffer, void *inputBuffer, unsigned int &nBufferFrames,
                                 double &streamTime, RtAudioStreamStatus &status)
 {
@@ -100,29 +100,28 @@ int RtWaveTableCallback::render(void *outputBuffer, void *inputBuffer, unsigned 
   double *outBuffer = (double *)outputBuffer;
   double *inBuffer = (double *)inputBuffer;
 
-  
-
   std::vector<double> outChannel01(nBufferFrames, 0);
   std::vector<double> outOscContiousPitch(nBufferFrames, 1);
-                        //=getInput(inBuffer, nBufferFrames, streamInParameters.nChannels, 2);
+  //=getInput(inBuffer, nBufferFrames, streamInParameters.nChannels, 2);
 
   if (status)
     std::cout << "Stream underflow detected!" << std::endl;
 
-
-
   vecOsc2Sine.at(0)->render(outChannel01, outOscContiousPitch);
 
+  std::vector<double> vca1Amp(nBufferFrames, amplitudeFromDb(vecVcaGateways[0]->attinuateMultiplier));
+  std::vector<double> vca1add(nBufferFrames, vecVcaGateways[0]->addVoltage);
+  Components::vcaComponent(outChannel01, vca1add, vca1Amp);
+
   // I choose channel 2 to avoid feedback
-  std::vector<double> inChannel1 = getInput(inBuffer, nBufferFrames, streamInParameters.nChannels, 2);
+  std::vector<double>
+      inChannel1 = getInput(inBuffer, nBufferFrames, streamInParameters.nChannels, 2);
   callbackToUi(inChannel1);
-  //std::transform(outChannel01.begin(), outChannel01.end(), inChannel1.begin(),outChannel01.begin(),  [](double i, double j)
-  //               { return i * j ; });
-  
+  // std::transform(outChannel01.begin(), outChannel01.end(), inChannel1.begin(),outChannel01.begin(),  [](double i, double j)
+  //                { return i * j ; });
 
-
-  sendOutput(outBuffer, nBufferFrames, streamOutParameters.nChannels, outChannel01, {0,1});
-  //sendOutput(outBuffer, nBufferFrames, streamOutParameters.nChannels, inChannel1, {2});
+  sendOutput(outBuffer, nBufferFrames, streamOutParameters.nChannels, outChannel01, {0, 1});
+  // sendOutput(outBuffer, nBufferFrames, streamOutParameters.nChannels, inChannel1, {2});
   if (doScopelog)
   {
     scopeLog(outBuffer, nBufferFrames, streamOutParameters.nChannels, 20250, {0, 1});
@@ -146,7 +145,7 @@ void RtWaveTableCallback::setupStreamParameters(RtAudio &audio, int outDeviceId,
   streamOutParameters.deviceId = outDeviceId;
 
   RtAudio::DeviceInfo info = audio.getDeviceInfo(outDeviceId);
-  streamOutParameters.nChannels = info.outputChannels; //4; 
+  streamOutParameters.nChannels = info.outputChannels; // 4;
   streamOutParameters.firstChannel = 0;
 
   streamInParameters.deviceId = inDeviceId;
@@ -154,6 +153,5 @@ void RtWaveTableCallback::setupStreamParameters(RtAudio &audio, int outDeviceId,
   streamInParameters.firstChannel = 0;
 
   sampleRate = info.preferredSampleRate;
-  bufferFrames=streamBufferFrames;
-
+  bufferFrames = streamBufferFrames;
 }
