@@ -1,6 +1,7 @@
 #include <cassert>
 #include <iostream>
 #include "OscWaveTable.h"
+#include "RangeUtils.h"
 
 namespace RtAudioNs
 {
@@ -24,7 +25,7 @@ namespace RtAudioNs
       double *buffer = &channelData[0];
       unsigned int nBufferFrames = channelData.size();
       int bufferPosition = 0;
-      float _gAmplitude = gAmplitude();
+      const float _gAmplitude = amplitudeFromDb(-10.0);
 
       for (unsigned int i = 0; i < nBufferFrames; i++)
       {

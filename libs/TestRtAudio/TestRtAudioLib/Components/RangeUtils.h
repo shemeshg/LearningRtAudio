@@ -8,6 +8,8 @@ float constrainRange(float x, float min_val, float max_val);
 
 float midiNoteToFrequency(float noteNumber);
 
+double amplitudeFromDb(double amp);
+
 class CustomMidiScale
 {
 public:
@@ -16,7 +18,7 @@ public:
   float cMidiNoteToFrequency(float noteNumber)
   {
     double curr = midiNoteIntToFrequency(noteNumber);
-    double next = midiNoteIntToFrequency(noteNumber + 1);    
+    double next = midiNoteIntToFrequency(noteNumber + 1);
 
     double logScaleIntNoteNumber = midiLogScaleToFrequency((int)noteNumber);
     double logScaleStep = midiLogScaleToFrequency((int)noteNumber + 1) - logScaleIntNoteNumber;

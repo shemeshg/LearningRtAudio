@@ -18,11 +18,11 @@ void RtWaveTableCallback::setupPlayersAndControls()
   // Maybe think how to do that, based on setter automaticlly,
   // but then we will have to manage MaxFrequency to restrigger RefreshTable
   std::unique_ptr<Components::RtGuiControl> rs1(new Components::RtGuiSliderRefreshTableSetter(*osc2Sine, "Note Number", osc2Sine->detuneNoteNumber, 21, 108, 1));
-  std::unique_ptr<Components::RtGuiControl> rs2(new Components::RtGuiSlider("Amplitude Db", osc2Sine->detuneAmplitudeDb, -40, 0, 0.1));
+  //std::unique_ptr<Components::RtGuiControl> rs2(new Components::RtGuiSlider("Amplitude Db", osc2Sine->detuneAmplitudeDb, -40, 0, 0.1));
   std::unique_ptr<Components::RtGuiControl> rs3(new Components::RtGuiSlider("detuneOscs", osc2Sine->detuneOscsAmount, 0, 100, 0.1));
 
   rtGuiSliders.push_back(std::move(rs1));
-  rtGuiSliders.push_back(std::move(rs2));
+  //rtGuiSliders.push_back(std::move(rs2));
   rtGuiSliders.push_back(std::move(rs3));
 
   /*

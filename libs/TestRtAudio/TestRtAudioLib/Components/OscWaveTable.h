@@ -17,7 +17,6 @@ namespace RtAudioNs
       int gWavetableLength = 512; // The length of the buffer in frames
       unsigned int sampleRate;
 
-      float gAmplitudeDb = -10; // Amplitude of the playback
       float gFrequency = 220.0; // Frequency
 
       OscWaveTable(unsigned int sampleRate);
@@ -30,11 +29,6 @@ namespace RtAudioNs
       float *gWavetable; // Buffer that holds the wavetable
     private:
       double gReadPointer = 0;
-
-      float gAmplitude()
-      {
-        return pow(10.0, gAmplitudeDb / 20.0);
-      }
 
       double phaseStep(const double &frequency)
       {
