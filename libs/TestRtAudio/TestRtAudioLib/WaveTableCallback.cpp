@@ -15,13 +15,13 @@ void RtWaveTableCallback::setupPlayersAndControls()
 
   auto osc2Sine = std::make_unique<Components::OscWaveTable2Addative>(sampleRate);
   auto vca1 = std::make_unique<Components::VcaContainer>();
-  vca1->attinuateMultiplier = -20;
+  vca1->multVoltage = -20;
 
   // it is RtGuiSliderRefreshTableSetter to prevent aliassing on harmonics,
   // Maybe think how to do that, based on setter automaticlly,
   // but then we will have to manage MaxFrequency to restrigger RefreshTable
   std::unique_ptr<Components::RtGuiControl> rs1(new Components::RtGuiSliderRefreshTableSetter(*osc2Sine, "Note Number", osc2Sine->detuneNoteNumber, 21, 108, 1));
-  std::unique_ptr<Components::RtGuiControl> rs2(new Components::RtGuiSlider("Amplitude Db", vca1->attinuateMultiplier, -40, 0, 0.1));
+  std::unique_ptr<Components::RtGuiControl> rs2(new Components::RtGuiSlider("Amplitude Db", vca1->multVoltage, -40, 0, 0.1));
   std::unique_ptr<Components::RtGuiControl> rs3(new Components::RtGuiSlider("detuneOscs", osc2Sine->detuneOscsAmount, 0, 100, 0.1));
 
   rtGuiSliders.push_back(std::move(rs1));
@@ -36,7 +36,7 @@ void RtWaveTableCallback::setupPlayersAndControls()
     rtGuiSlider.push_back(std::move(hm1));
   }
   */
-  vecVcaGateways.push_back(std::move(vca1));
+  vecVcas.push_back(std::move(vca1));
   vecOsc2Sine.push_back(std::move(osc2Sine));
 }
 
@@ -109,8 +109,8 @@ int RtWaveTableCallback::render(void *outputBuffer, void *inputBuffer, unsigned 
 
   vecOsc2Sine.at(0)->render(outChannel01, outOscContiousPitch);
 
-  std::vector<double> vca1Amp(nBufferFrames, amplitudeFromDb(vecVcaGateways[0]->attinuateMultiplier));
-  std::vector<double> vca1add(nBufferFrames, vecVcaGateways[0]->addVoltage);
+  std::vector<double> vca1Amp(nBufferFrames, amplitudeFromDb(vecVcas[0]->multVoltage));
+  std::vector<double> vca1add(nBufferFrames, vecVcas[0]->addVoltage);
   Components::vcaComponent(outChannel01, vca1add, vca1Amp);
 
   // I choose channel 2 to avoid feedback
