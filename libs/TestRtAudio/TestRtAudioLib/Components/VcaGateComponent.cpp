@@ -5,12 +5,12 @@ namespace RtAudioNs
   namespace Components
   {
     void vcaComponent(std::vector<double> &channelData,
-                      std::vector<double> &addVoltage,
-                      std::vector<double> &multVoltage)
+                      std::vector<double> &addAmp,
+                      std::vector<double> &multAmp)
     {
       for (unsigned int i = 0; i < channelData.size(); i++)
       {
-        channelData[i] = (channelData[i] + addVoltage[i]) * multVoltage[i];
+        channelData[i] = (channelData[i] + addAmp[i]) * multAmp[i];
       }
     }
 

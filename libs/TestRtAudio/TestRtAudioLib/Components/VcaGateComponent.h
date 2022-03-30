@@ -6,14 +6,14 @@ namespace RtAudioNs
   {
 
     void vcaComponent(std::vector<double> &channelData,
-                          std::vector<double> &addVoltage,
-                          std::vector<double> &multVoltage);                          
+                          std::vector<double> &addAmp,
+                          std::vector<double> &multAmp);                          
 
     class VcaContainer
     {
     public:
-      float addVoltage = 0;
-      float multVoltage = 1;
+      float addAmp = 0;
+      float multAmp = 1;
     };
 
     void gateComponent(std::vector<double> &channelData,
