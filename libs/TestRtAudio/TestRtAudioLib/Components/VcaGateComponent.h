@@ -30,11 +30,11 @@ namespace RtAudioNs
     class SnhContainer {
       public:
       std::vector<double> currentState;
-      SnhContainer(unsigned int frameSize);
+      SnhContainer(unsigned int frameSize,double lastVal);
       void render(std::vector<double> &gateIn, std::vector<double> &gateThreshold, std::vector<double> &gateOut);
       private:
         unsigned int _frameSize; 
-        double lastVal=0.0;
+        double _lastVal=0.0;
     };
 
     
