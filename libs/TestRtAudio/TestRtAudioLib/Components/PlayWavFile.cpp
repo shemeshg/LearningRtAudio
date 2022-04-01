@@ -10,9 +10,10 @@ namespace RtAudioNs
       std::cout << "Opened file" << _filename << "\n";
       std::cout << "    Sample rate : " << sndfile->samplerate() << "\n";
       std::cout << "    Channels : " << sndfile->channels() << "\n";
+      channels = sndfile->channels();
     }
 
-    std::vector<std::vector<double>> PlayWavFile::getVectorStream(unsigned int bufferSize, const unsigned int channels){
+    std::vector<std::vector<double>> PlayWavFile::getVectorStream(unsigned int bufferSize){
         std::vector<std::vector<double>> v;
         double buffer[channels * bufferSize];
         double *bufferStart = &buffer[0];

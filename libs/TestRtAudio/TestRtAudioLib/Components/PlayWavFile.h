@@ -17,12 +17,13 @@ namespace RtAudioNs
       void openFile();
       const unsigned int getChannels() const {return sndfile->channels();}
 
-      std::vector<std::vector<double>> getVectorStream(unsigned int bufferSize, const unsigned int channels);
+      std::vector<std::vector<double>> getVectorStream(unsigned int bufferSize);
 
     private:
       const std::string _filename;
       std::unique_ptr<SndfileHandle> sndfile;
       bool isLoopback = true;
+      unsigned int channels = 1;
     };
 
   }
