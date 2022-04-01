@@ -1,10 +1,12 @@
 #pragma once
 #include <vector>
+#include "GateConstants.h"
+
 namespace RtAudioNs
 {
   namespace Components
   {
-    const double gateThreshold = 0.3;
+
 
     void vcaComponent(std::vector<double> &channelData,
                           std::vector<double> &addAmp,
