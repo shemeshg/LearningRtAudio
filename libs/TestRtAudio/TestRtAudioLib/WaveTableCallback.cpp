@@ -140,6 +140,7 @@ int RtWaveTableCallback::render(void *outputBuffer, void *inputBuffer, unsigned 
   std::vector<double> vca1add(nBufferFrames, vecVcas[0]->addAmp);
   Components::vcaComponent(outChannel01, vca1add, inChannel2);
   //Components::gateComponent(outChannel01, inChannel3);
+   outChannel01 = playWavfiles[0]->getVectorStream(nBufferFrames, playWavfiles[0]->getChannels())[0];
 
   sendOutput(outBuffer, nBufferFrames, streamOutParameters.nChannels, outChannel01, {0, 1});
   if (doScopelog)
