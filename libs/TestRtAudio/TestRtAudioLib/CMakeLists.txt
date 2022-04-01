@@ -22,6 +22,8 @@ set(TestRtAudioLib_SRCS
   Components/VcaGateComponent.cpp
   Components/SwitchAmpComponent.h
   Components/SwitchAmpComponent.cpp
+  Components/SwitchNHoldComponent.h
+  Components/SwitchNHoldComponent.cpp
 )
 
 add_subdirectory(RtAudioLib)
