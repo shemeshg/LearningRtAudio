@@ -1,5 +1,6 @@
 #include "OscWaveTable2Addative.h"
 #include "RangeUtils.h"
+#include <iostream>
 
 namespace RtAudioNs
 {

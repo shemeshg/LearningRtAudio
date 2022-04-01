@@ -14,6 +14,7 @@ void RtWaveTableCallback::setupPlayersAndControls()
 {
 
   auto osc2Sine = std::make_unique<Components::OscWaveTable2Addative>(sampleRate);
+  osc2Sine->setupWaveTable();
   auto vca1 = std::make_unique<Components::VcaContainer>();
   vca1->multAmp = -20;
 
@@ -109,14 +110,18 @@ int RtWaveTableCallback::render(void *outputBuffer, void *inputBuffer, unsigned 
 
   vecOsc2Sine.at(0)->render(outChannel01, outOscContiousPitch);
 
-  std::vector<double> vca1Amp(nBufferFrames, amplitudeFromDb(vecVcas[0]->multAmp));
-  std::vector<double> vca1add(nBufferFrames, vecVcas[0]->addAmp);
-  Components::vcaComponent(outChannel01, vca1add, vca1Amp);
+  //std::vector<double> vca1Amp(nBufferFrames, amplitudeFromDb(vecVcas[0]->multAmp));
+  //std::vector<double> vca1add(nBufferFrames, vecVcas[0]->addAmp);
+  //Components::vcaComponent(outChannel01, vca1add, vca1Amp);
 
   // I choose channel 2 to avoid feedback
+  callbackToUi(outChannel01);
   std::vector<double>
-      inChannel1 = getInput(inBuffer, nBufferFrames, streamInParameters.nChannels, 2);
-  callbackToUi(inChannel1);
+      inChannel2 = getInput(inBuffer, nBufferFrames, streamInParameters.nChannels, 2);
+  std::vector<double> vca1add(nBufferFrames, vecVcas[0]->addAmp);
+  Components::vcaComponent(outChannel01, vca1add, inChannel2);
+
+  
   // std::transform(outChannel01.begin(), outChannel01.end(), inChannel1.begin(),outChannel01.begin(),  [](double i, double j)
   //                { return i * j ; });
 
