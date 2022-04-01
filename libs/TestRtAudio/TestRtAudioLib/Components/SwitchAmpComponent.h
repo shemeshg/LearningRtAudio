@@ -6,15 +6,21 @@ namespace RtAudioNs
   {
     class SwitchAmpComponent
     {
-      enum SwitchStatus { on_stop, on_start };
+      enum SwitchStatus
+      {
+        on_stop,
+        on_start
+      };
       SwitchStatus switchStatus = on_stop;
-      std::vector<std::vector<double>> &outVals;
+
+    public:
+      std::vector<std::vector<double>> outVals;
       unsigned int currentValIdx = 0;
-      SwitchAmpComponent(std::vector<std::vector<double>> &_outVals):outVals(_outVals) {
+      SwitchAmpComponent()
+      {
       }
 
       void render(std::vector<double> &vIn, std::vector<double> &vOut);
-
     };
   }
 }

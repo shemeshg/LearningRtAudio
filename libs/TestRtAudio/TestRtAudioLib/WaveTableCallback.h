@@ -5,6 +5,7 @@
 #include "Components/OscWaveTable2Addative.h"
 #include "Components/RtGuiControl.h"
 #include "Components/VcaGateComponent.h"
+#include "Components/SwitchAmpComponent.h"
 
 namespace RtAudioNs
 { 
@@ -14,6 +15,7 @@ namespace RtAudioNs
     std::vector<std::unique_ptr<Components::RtGuiControl>> rtGuiSliders;
     std::vector<std::unique_ptr<Components::OscWaveTable2Addative>> vecOsc2Sine;
     std::vector<std::unique_ptr<Components::VcaContainer>> vecVcas;
+    std::vector<std::unique_ptr<Components::SwitchAmpComponent>> switchAmps;
 
     RtWaveTableCallback();
 
