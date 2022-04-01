@@ -32,7 +32,7 @@ namespace RtAudioNs
         val = getLinearInterpolation();
         buffer[bufferPosition] += val;
         bufferPosition++;
-        gReadPointer = nextGReadPointer(gFrequency * cvPitchChange[i]);
+        gReadPointer = nextGReadPointer(gFrequency * pow(2, cvPitchChange[i] * 10));
       }
       return 0;
     }
