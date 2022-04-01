@@ -25,6 +25,8 @@ set(TestRtAudioLib_SRCS
   Components/SwitchAmpComponent.cpp
   Components/SwitchNHoldComponent.h
   Components/SwitchNHoldComponent.cpp
+  Components/PlayWavFile.h 
+  Components/PlayWavFile.cpp
 )
 
 add_subdirectory(RtAudioLib)

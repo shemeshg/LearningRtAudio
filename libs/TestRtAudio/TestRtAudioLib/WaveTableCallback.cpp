@@ -3,7 +3,7 @@
 #include "Components/OscWaveTable2Addative.h"
 #include "Components/VcaGateComponent.h"
 #include "Components/SwitchAmpComponent.h"
-#include "Components/RangeUtils.h"
+#include "Components/RangeUtils.h" 
 #include <string>
 using namespace RtAudioNs;
 
@@ -18,6 +18,10 @@ void RtWaveTableCallback::setupPlayersAndControls()
   osc2Sine->setupWaveTable();
   auto vca1 = std::make_unique<Components::VcaContainer>();
   vca1->multAmp = -20;
+
+  auto playWavfile = std::make_unique<Components::PlayWavFile>("//Volumes//TEMP//DeleteME//tmp/sampleWav.wav");
+  playWavfile->openFile();
+  
 
   // it is RtGuiSliderRefreshTableSetter to prevent aliassing on harmonics,
   // Maybe think how to do that, based on setter automaticlly,
@@ -45,9 +49,13 @@ void RtWaveTableCallback::setupPlayersAndControls()
     rtGuiSlider.push_back(std::move(hm1));
   }
   */
+
+
+
   vecVcas.push_back(std::move(vca1));
   vecOsc2Sine.push_back(std::move(osc2Sine));
   switchAmps.push_back(std::move(sac));
+  playWavfiles.push_back(std::move(playWavfile));
 }
 
 RtWaveTableCallback::~RtWaveTableCallback()
@@ -125,7 +133,7 @@ int RtWaveTableCallback::render(void *outputBuffer, void *inputBuffer, unsigned 
   switchAmps[0]->render(inChannel3,outOscContiousPitch);
   vecOsc2Sine.at(0)->render(outChannel01, outOscContiousPitch);
 
-  callbackToUi(outChannel01);
+  // callbackToUi(outChannel01);
 
   
 
