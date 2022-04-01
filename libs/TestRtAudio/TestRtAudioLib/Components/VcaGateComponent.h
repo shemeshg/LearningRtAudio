@@ -28,15 +28,7 @@ namespace RtAudioNs
       float gateIn = 0;
     };
 
-    class SnhContainer {
-      public:
-      std::vector<double> currentState;
-      SnhContainer(unsigned int frameSize,double lastVal);
-      void render(std::vector<double> &gateIn, std::vector<double> &gateOut);
-      private:
-        unsigned int _frameSize; 
-        double _lastVal=0.0;
-    };
+
 
     
 

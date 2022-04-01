@@ -23,16 +23,6 @@ namespace RtAudioNs
       }
     }
 
-    SnhContainer::SnhContainer(unsigned int frameSize, double lastVal):_lastVal{lastVal}, _frameSize{frameSize},currentState(frameSize,0) {}
-
-    void SnhContainer::render(std::vector<double> &gateIn, std::vector<double> &gateOut){
-      for (unsigned int i = 0; i < gateIn.size(); i++){
-        if (gateIn[i]>gateThreshold){
-          _lastVal = gateIn[i];
-        }
-        gateOut[i]=_lastVal;
-      }
-    }
 
   }
 }
