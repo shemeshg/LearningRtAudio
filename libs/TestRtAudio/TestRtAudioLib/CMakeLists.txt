@@ -3,6 +3,7 @@ project(TestRtAudioLib VERSION 0.1.0)
 
 set(CMAKE_CXX_STANDARD 17)
 
+include(loadLibSndFile.cmake)
 
 set(TestRtAudioLib_SRCS
   TestRtAudio.cpp  
@@ -33,6 +34,9 @@ add_library(TestRtAudioLib STATIC
     ${TestRtAudioLib_SRCS}
 )
 target_link_libraries (TestRtAudioLib PUBLIC RtAudioLib ${LINKLIBS})
+
+target_link_libraries(TestRtAudioLib PRIVATE ${LIBSNDFILE_LIBRARIES})
+
 # Specify here the include directories exported
 # by this library
 target_include_directories(TestRtAudioLib PUBLIC

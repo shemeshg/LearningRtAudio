@@ -7,11 +7,11 @@ namespace RtAudioNs
     class SwitchNHoldComponent
     {
       double currentVal = 0;
-      SwitchAmpComponent(){
+      SwitchNHoldComponent(){
       }
 
       void render(std::vector<double> &vIn, std::vector<double> &vOut);
 
-    }
+    };
   }
 }
