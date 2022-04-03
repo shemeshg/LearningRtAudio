@@ -14,7 +14,7 @@ namespace RtAudioNs
       channels = sndfile->channels();
     }
 
-    std::vector<std::vector<double>> PlayWavFile::render(std::vector<double> &triggerIn, std::vector<double> &isLoopbackIn)
+    std::vector<std::vector<double>> PlayWavFile::render(std::vector<double> &triggerIn, std::vector<double> &triggerResetIn)
     {
       std::vector<std::vector<double>> v;
       const unsigned int bufferSize=triggerIn.size();
@@ -25,8 +25,18 @@ namespace RtAudioNs
       }
 
       unsigned int play_begin = -1;
+      
+
       for (unsigned int i = 0; i < bufferSize; i++)
       {
+        if (triggerResetIn[i] > gateThreshold && triggerResetButtonReleased){
+          sndfile->seek(0, 0);
+          triggerResetButtonReleased = false;
+        } else if(!triggerResetButtonReleased && triggerResetIn[i] < gateThreshold){
+          triggerResetButtonReleased = true;
+        }
+
+
         if (play_begin == -1 && triggerIn[i] > gateThreshold)
         {
           play_begin = i;
