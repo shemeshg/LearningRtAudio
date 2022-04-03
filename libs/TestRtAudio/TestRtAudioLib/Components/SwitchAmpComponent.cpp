@@ -12,7 +12,6 @@ namespace RtAudioNs
           currentValIdx++;
           switchStatus=on_start;
           if (currentValIdx == outVals.size()){currentValIdx = 0;}
-          std::cout<<" changed to "<<  outVals[currentValIdx][0]<<"\n";
         } else if  (switchStatus==on_start && vIn[i] < gateThreshold){
           switchStatus=on_stop;
         } 

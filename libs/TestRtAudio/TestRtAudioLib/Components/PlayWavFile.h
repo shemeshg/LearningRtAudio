@@ -19,11 +19,16 @@ namespace RtAudioNs
 
       std::vector<std::vector<double>> getVectorStream(unsigned int bufferSize);
 
+      std::vector<std::vector<double>> render(std::vector<double> &triggerIn, std::vector<double> &isLoopbackIn);
+
     private:
       const std::string _filename;
       std::unique_ptr<SndfileHandle> sndfile;
       bool isLoopback = true;
       unsigned int channels = 1;
+  
+      void setVectorStreamFromPosition(std::vector<std::vector<double>>  &v,unsigned int play_begin, unsigned int play_count);
+
     };
 
   }
