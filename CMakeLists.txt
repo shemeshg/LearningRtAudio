@@ -16,6 +16,7 @@ find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Widgets LinguistTools REQUIRED)
 
 
 add_subdirectory(libs/TestRtAudio/TestRtAudioLib)
+include(libs/TestRtAudio/TestRtAudioLib/loadLibSndFile.cmake)
 
 set(TS_FILES RtAudioGui_en_US.ts)
 
@@ -61,7 +62,7 @@ endif()
 
 
 target_link_libraries(RtAudioGui PRIVATE Qt${QT_VERSION_MAJOR}::Widgets TestRtAudioLib)
-
+target_link_libraries(RtAudioGui PRIVATE ${LIBSNDFILE_LIBRARIES})
 
 set_target_properties(RtAudioGui PROPERTIES
     MACOSX_BUNDLE_GUI_IDENTIFIER my.example.com
