@@ -1,0 +1,3 @@
+[submodule "libs/TestRtAudio/TestRtAudioLib/DSP-Cpp-filters"]
+	path = libs/TestRtAudio/TestRtAudioLib/DSP-Cpp-filters
+	url = https://github.com/dimtass/DSP-Cpp-filters
