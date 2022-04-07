@@ -4,6 +4,8 @@ namespace RtAudioNs
 {
   namespace Components
   {
+    // Switch between inputs(vector of vector) on every trigger of 
+    // render(std::vector<double> &vTriggerNext
     class SwitchAmpComponent
     {
       enum SwitchStatus
@@ -20,7 +22,7 @@ namespace RtAudioNs
       {
       }
 
-      void render(std::vector<double> &vIn, std::vector<double> &vOut);
+      void render(std::vector<double> &vTriggerNext, std::vector<double> &vOut);
     };
   }
 }
