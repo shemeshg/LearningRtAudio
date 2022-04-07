@@ -1,6 +1,6 @@
 #pragma once
-#include "filter_common.h"
-#include "filter_includes.h"
+#include "DSP-Cpp-filters/lib/filter_common.h"
+#include "DSP-Cpp-filters/lib/filter_includes.h"
 
 namespace RtAudioNs
 {
@@ -38,6 +38,8 @@ namespace RtAudioNs
       {
         setFilterType(_filterType);
       }
+
+      void process_fc(std::vector<double> &channelData, std::vector<double> &fc_vector);
 
       void setFilterType(const FILTER_TYPE _filterType)
       {

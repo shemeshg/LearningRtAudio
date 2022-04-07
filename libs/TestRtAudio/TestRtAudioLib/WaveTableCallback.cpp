@@ -19,6 +19,10 @@ void RtWaveTableCallback::setupPlayersAndControls()
   auto vca1 = std::make_unique<Components::VcaContainer>();
   vca1->multAmp = -20;
 
+  auto filter = std::make_unique<Components::FiltersComponent>(
+    Components::FiltersComponent::FILTER_TYPE::FILTER_FO_LPF,  
+    sampleRate);
+
   auto playWavfile = std::make_unique<Components::PlayWavFile>("//Volumes//TEMP//DeleteME//tmp/sampleWav.wav");
   playWavfile->openFile();
   
@@ -29,6 +33,7 @@ void RtWaveTableCallback::setupPlayersAndControls()
   std::unique_ptr<Components::RtGuiControl> rs1(new Components::RtGuiSliderRefreshTableSetter(*osc2Sine, "Note Number", osc2Sine->detuneNoteNumber, 21, 108, 1));
   std::unique_ptr<Components::RtGuiControl> rs2(new Components::RtGuiSlider("Amplitude Db", vca1->multAmp, -40, 0, 0.1));
   std::unique_ptr<Components::RtGuiControl> rs3(new Components::RtGuiSlider("detuneOscs", osc2Sine->detuneOscsAmount, 0, 100, 0.1));
+
 
   rtGuiSliders.push_back(std::move(rs1));
   rtGuiSliders.push_back(std::move(rs2));
@@ -56,6 +61,7 @@ void RtWaveTableCallback::setupPlayersAndControls()
   vecOsc2Sine.push_back(std::move(osc2Sine));
   switchAmps.push_back(std::move(sac));
   playWavfiles.push_back(std::move(playWavfile));
+  filters.push_back(std::move(filter));
 }
 
 RtWaveTableCallback::~RtWaveTableCallback()
@@ -119,7 +125,7 @@ int RtWaveTableCallback::render(void *outputBuffer, void *inputBuffer, unsigned 
   double *inBuffer = (double *)inputBuffer;
 
   std::vector<double> outChannel01(nBufferFrames, 0);
-  std::vector<double> outOscContiousPitch(nBufferFrames, 1);
+  //std::vector<double> outOscContiousPitch(nBufferFrames, 1);
 
 
   if (status)
@@ -130,16 +136,20 @@ int RtWaveTableCallback::render(void *outputBuffer, void *inputBuffer, unsigned 
   std::vector<double>
       inChannel3 = getInput(inBuffer, nBufferFrames, streamInParameters.nChannels, 3);
 
-  switchAmps[0]->render(inChannel3,outOscContiousPitch);
-  vecOsc2Sine.at(0)->render(outChannel01, outOscContiousPitch);
+  //switchAmps[0]->render(inChannel3,outOscContiousPitch);
+  //vecOsc2Sine.at(0)->render(outChannel01, outOscContiousPitch);
 
   // callbackToUi(outChannel01);
 
-  std::vector<double> vca1add(nBufferFrames, vecVcas[0]->addAmp);
-  Components::vcaComponent(outChannel01, vca1add, inChannel2);
+  //std::vector<double> vca1add(nBufferFrames, vecVcas[0]->addAmp);
+  //Components::vcaComponent(outChannel01, vca1add, inChannel2);
   //Components::gateComponent(outChannel01, inChannel3);
   //outChannel01 = playWavfiles[0]->getVectorStream(nBufferFrames)[0];
-  outChannel01 = playWavfiles[0]->render(inChannel2,inChannel3)[0];
+  //outChannel01 = playWavfiles[0]->render(inChannel2,inChannel3)[0];
+
+  outChannel01 = inChannel2;
+  filters[0]->process_fc(outChannel01, inChannel3);
+  
 
   sendOutput(outBuffer, nBufferFrames, streamOutParameters.nChannels, outChannel01, {0, 1});
   if (doScopelog)

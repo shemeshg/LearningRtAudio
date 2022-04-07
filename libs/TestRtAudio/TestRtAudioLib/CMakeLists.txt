@@ -5,7 +5,7 @@ set(CMAKE_CXX_STANDARD 17)
 
 include(loadLibSndFile.cmake)
 
-include_directories(./DSP-Cpp-filters/lib)
+include_directories(DSP-Cpp-filters/lib)
 
 set(TestRtAudioLib_SRCS
   TestRtAudio.cpp  
@@ -31,6 +31,7 @@ set(TestRtAudioLib_SRCS
   Components/PlayWavFile.cpp
   Components/FiltersComponent.h
   Components/FiltersComponent.cpp
+
 )
 
 add_subdirectory(RtAudioLib)

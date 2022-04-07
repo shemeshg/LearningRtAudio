@@ -7,6 +7,7 @@
 #include "Components/VcaGateComponent.h"
 #include "Components/SwitchAmpComponent.h"
 #include "Components/PlayWavFile.h"
+#include "Components/FiltersComponent.h"
 
 namespace RtAudioNs
 { 
@@ -18,6 +19,8 @@ namespace RtAudioNs
     std::vector<std::unique_ptr<Components::VcaContainer>> vecVcas;
     std::vector<std::unique_ptr<Components::SwitchAmpComponent>> switchAmps;
     std::vector<std::unique_ptr<Components::PlayWavFile>> playWavfiles;
+    std::vector<std::unique_ptr<Components::FiltersComponent>> filters;
+
 
     RtWaveTableCallback();
 
