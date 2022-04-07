@@ -10,7 +10,7 @@ namespace RtAudioNs
       SwitchNHoldComponent(){
       }
 
-      void render(std::vector<double> &vIn, std::vector<double> &vOut);
+      void render(std::vector<double> &vIn,std::vector<double> &vTrigger, std::vector<double> &vOut);
 
     };
   }
