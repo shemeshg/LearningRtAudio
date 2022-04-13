@@ -13,6 +13,7 @@ RtWaveTableCallback::RtWaveTableCallback()
 
 void RtWaveTableCallback::setupPlayersAndControls()
 {
+  playheadMarker = std::make_unique<Components::PlayheadMarker>(sampleRate,bufferFrames);
 
   auto osc2Sine = std::make_unique<Components::OscWaveTable2Addative>(sampleRate);
   osc2Sine->setupWaveTable();
@@ -34,6 +35,8 @@ void RtWaveTableCallback::setupPlayersAndControls()
   std::unique_ptr<Components::RtGuiControl> rs2(new Components::RtGuiSlider("Amplitude Db", vca1->multAmp, -40, 0, 0.1));
   std::unique_ptr<Components::RtGuiControl> rs3(new Components::RtGuiSlider("detuneOscs", osc2Sine->detuneOscsAmount, 0, 100, 0.1));
 
+  
+  
 
   rtGuiSliders.push_back(std::move(rs1));
   rtGuiSliders.push_back(std::move(rs2));
@@ -120,35 +123,43 @@ void RtWaveTableCallback::scopeLog(double *buffer, unsigned int &nBufferFrames, 
 int RtWaveTableCallback::render(void *outputBuffer, void *inputBuffer, unsigned int &nBufferFrames,
                                 double &streamTime, RtAudioStreamStatus &status)
 {
+  
+  static int tmp = 0;
+  tmp++;
+  if (tmp %10 == 0) {
+    std::cout<<playheadMarker->getMarkerSeconds()<<"\n";
+  }
+  
 
   double *outBuffer = (double *)outputBuffer;
   double *inBuffer = (double *)inputBuffer;
 
   std::vector<double> outChannel01(nBufferFrames, 0);
+  std::vector<double> allOne(nBufferFrames, 1);
   //std::vector<double> outOscContiousPitch(nBufferFrames, 1);
 
 
   if (status)
     std::cout << "Stream underflow detected!" << std::endl;
 
-  std::vector<double>
-      inChannel2 = getInput(inBuffer, nBufferFrames, streamInParameters.nChannels, 2);
-  std::vector<double>
-      inChannel3 = getInput(inBuffer, nBufferFrames, streamInParameters.nChannels, 3);
+  //std::vector<double>
+  //    inChannel2 = getInput(inBuffer, nBufferFrames, streamInParameters.nChannels, 2);
+  //std::vector<double>
+  //    inChannel3 = getInput(inBuffer, nBufferFrames, streamInParameters.nChannels, 3);
 
   //switchAmps[0]->render(inChannel3,outOscContiousPitch);
   //vecOsc2Sine.at(0)->render(outChannel01, outOscContiousPitch);
 
-  // callbackToUi(outChannel01);
+  //callbackToUi(outChannel01);
 
   //std::vector<double> vca1add(nBufferFrames, vecVcas[0]->addAmp);
   //Components::vcaComponent(outChannel01, vca1add, inChannel2);
   //Components::gateComponent(outChannel01, inChannel3);
-  //outChannel01 = playWavfiles[0]->getVectorStream(nBufferFrames)[0];
-  //outChannel01 = playWavfiles[0]->render(inChannel2,inChannel3)[0];
+  //outChannel01 = playWavfiles[0]->getVectorStream(nBufferFrames)[0]; //render all
+  outChannel01 = playWavfiles[0]->render(allOne,allOne)[0]; //render partially
 
-  outChannel01 = inChannel2;
-  filters[0]->process_fc(outChannel01, inChannel3);
+  //outChannel01 = inChannel2;
+  //filters[0]->process_fc(outChannel01, inChannel3);
   
 
   sendOutput(outBuffer, nBufferFrames, streamOutParameters.nChannels, outChannel01, {0, 1});
@@ -157,6 +168,7 @@ int RtWaveTableCallback::render(void *outputBuffer, void *inputBuffer, unsigned 
     scopeLog(outBuffer, nBufferFrames, streamOutParameters.nChannels, 20250, {0, 1});
   }
 
+  playheadMarker->incrementMarkerNext();
   return 0;
 }
 

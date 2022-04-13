@@ -31,7 +31,8 @@ set(TestRtAudioLib_SRCS
   Components/PlayWavFile.cpp
   Components/FiltersComponent.h
   Components/FiltersComponent.cpp
-
+  Components/PlayheadMarker.h
+  Components/PlayheadMarker.cpp
 )
 
 add_subdirectory(RtAudioLib)

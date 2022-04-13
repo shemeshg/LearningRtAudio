@@ -8,6 +8,7 @@
 #include "Components/SwitchAmpComponent.h"
 #include "Components/PlayWavFile.h"
 #include "Components/FiltersComponent.h"
+#include "Components/PlayheadMarker.h"
 
 namespace RtAudioNs
 { 
@@ -20,6 +21,7 @@ namespace RtAudioNs
     std::vector<std::unique_ptr<Components::SwitchAmpComponent>> switchAmps;
     std::vector<std::unique_ptr<Components::PlayWavFile>> playWavfiles;
     std::vector<std::unique_ptr<Components::FiltersComponent>> filters;
+    std::unique_ptr<Components::PlayheadMarker> playheadMarker;
 
 
     RtWaveTableCallback();
