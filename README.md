@@ -32,4 +32,5 @@ It is one to one the assignments in the course, but adjusted to desktop
 - Lesson 6   Read Input generated in VCV rack using Blackhole
 - Lesson 7   Gate, trigger, and switch component tp seitch between different streams.
 - Lesson 8   Filters (Havent done any homework assignment, just encapsulated DSP-Cpp-filters)
-- Lesson 8   Time - Scheduale events with a concept of Gate and Reset
+- Lesson 9   Time - Scheduale events with a concept of Gate and Reset
+- lesson10   latency
