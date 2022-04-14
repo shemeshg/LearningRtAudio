@@ -16,10 +16,10 @@ void RtWaveTableCallback::setupPlayersAndControls()
   playheadMarker = std::make_unique<Components::PlayheadMarker>(sampleRate, bufferFrames);
 
   Components::PlayheadEvent phe{};
-  phe.framesEvery = sampleRate; // 1 sec
-  phe.framesLen = sampleRate;   // 1 sec
+  phe.framesEvery = sampleRate * 1; // 1 sec
+  phe.framesLen = sampleRate * 1;   // 1 sec
   phe.frameStart = 0;
-  phe.repeatCount = 3;
+  phe.repeatCount = -1;
   playheadEvents.push_back(std::move(phe));
 
   auto osc2Sine = std::make_unique<Components::OscWaveTable2Addative>(sampleRate);
@@ -129,8 +129,7 @@ int RtWaveTableCallback::render(void *outputBuffer, void *inputBuffer, unsigned 
   double *inBuffer = (double *)inputBuffer;
 
   std::vector<double> outChannel01(nBufferFrames, 0);
-  std::vector<double> allOne(nBufferFrames, 1);
-  // std::vector<double> outOscContiousPitch(nBufferFrames, 1);
+  std::vector<double> outOscContiousPitch(nBufferFrames, 1);
 
   if (status)
     std::cout << "Stream underflow detected!" << std::endl;
@@ -140,8 +139,11 @@ int RtWaveTableCallback::render(void *outputBuffer, void *inputBuffer, unsigned 
   // std::vector<double>
   //     inChannel3 = getInput(inBuffer, nBufferFrames, streamInParameters.nChannels, 3);
 
-  // switchAmps[0]->render(inChannel3,outOscContiousPitch);
-  // vecOsc2Sine.at(0)->render(outChannel01, outOscContiousPitch);
+  std::vector<double> testGate(nBufferFrames, 0);
+  std::vector<double> testReset(nBufferFrames, 0);
+  playheadEvents[0].render(testGate, testReset);
+  switchAmps[0]->render(testReset,outOscContiousPitch);
+  vecOsc2Sine.at(0)->render(outChannel01, outOscContiousPitch);
 
   // callbackToUi(outChannel01);
 
@@ -149,11 +151,7 @@ int RtWaveTableCallback::render(void *outputBuffer, void *inputBuffer, unsigned 
   // Components::vcaComponent(outChannel01, vca1add, inChannel2);
   // Components::gateComponent(outChannel01, inChannel3);
   // outChannel01 = playWavfiles[0]->getVectorStream(nBufferFrames)[0]; //render all
-  std::vector<double> testGate(nBufferFrames, 0);
-  std::vector<double> testReset(nBufferFrames, 0);
-  playheadEvents[0].render(testGate, testReset);
-
-  outChannel01 = playWavfiles[0]->render(testGate, testReset)[0]; // render partially
+  //outChannel01 = playWavfiles[0]->render(testGate, testReset)[0]; // render partially
 
   // outChannel01 = inChannel2;
   // filters[0]->process_fc(outChannel01, inChannel3);
