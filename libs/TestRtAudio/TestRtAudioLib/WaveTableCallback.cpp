@@ -14,6 +14,8 @@ RtWaveTableCallback::RtWaveTableCallback()
 void RtWaveTableCallback::setupPlayersAndControls()
 {
   playheadMarker = std::make_unique<Components::PlayheadMarker>(sampleRate,bufferFrames);
+  Components::PlayheadEvent phe{};
+  playheadMarker->playheadEvents.push_back(std::move(phe));
 
   auto osc2Sine = std::make_unique<Components::OscWaveTable2Addative>(sampleRate);
   osc2Sine->setupWaveTable();
@@ -123,14 +125,10 @@ void RtWaveTableCallback::scopeLog(double *buffer, unsigned int &nBufferFrames, 
 int RtWaveTableCallback::render(void *outputBuffer, void *inputBuffer, unsigned int &nBufferFrames,
                                 double &streamTime, RtAudioStreamStatus &status)
 {
+  std::vector<double> testGate(nBufferFrames, 0);
+  std::vector<double> testReset(nBufferFrames, 0);
+  playheadMarker->playheadEvents[0].render(testGate, testReset);
   
-  static int tmp = 0;
-  tmp++;
-  if (tmp %10 == 0) {
-    std::cout<<playheadMarker->getMarkerSeconds()<<"\n";
-  }
-  
-
   double *outBuffer = (double *)outputBuffer;
   double *inBuffer = (double *)inputBuffer;
 
