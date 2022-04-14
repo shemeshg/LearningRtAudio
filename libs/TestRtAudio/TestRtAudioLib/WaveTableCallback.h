@@ -22,7 +22,7 @@ namespace RtAudioNs
     std::vector<std::unique_ptr<Components::PlayWavFile>> playWavfiles;
     std::vector<std::unique_ptr<Components::FiltersComponent>> filters;
     std::unique_ptr<Components::PlayheadMarker> playheadMarker;
-
+    std::vector<Components::PlayheadEvent> playheadEvents;
 
     RtWaveTableCallback();
 

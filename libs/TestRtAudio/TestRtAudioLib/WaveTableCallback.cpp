@@ -3,7 +3,7 @@
 #include "Components/OscWaveTable2Addative.h"
 #include "Components/VcaGateComponent.h"
 #include "Components/SwitchAmpComponent.h"
-#include "Components/RangeUtils.h" 
+#include "Components/RangeUtils.h"
 #include <string>
 using namespace RtAudioNs;
 
@@ -13,9 +13,14 @@ RtWaveTableCallback::RtWaveTableCallback()
 
 void RtWaveTableCallback::setupPlayersAndControls()
 {
-  playheadMarker = std::make_unique<Components::PlayheadMarker>(sampleRate,bufferFrames);
+  playheadMarker = std::make_unique<Components::PlayheadMarker>(sampleRate, bufferFrames);
+
   Components::PlayheadEvent phe{};
-  playheadMarker->playheadEvents.push_back(std::move(phe));
+  phe.framesEvery = sampleRate; // 1 sec
+  phe.framesLen = sampleRate;   // 1 sec
+  phe.frameStart = 0;
+  phe.repeatCount = 3;
+  playheadEvents.push_back(std::move(phe));
 
   auto osc2Sine = std::make_unique<Components::OscWaveTable2Addative>(sampleRate);
   osc2Sine->setupWaveTable();
@@ -23,12 +28,11 @@ void RtWaveTableCallback::setupPlayersAndControls()
   vca1->multAmp = -20;
 
   auto filter = std::make_unique<Components::FiltersComponent>(
-    Components::FiltersComponent::FILTER_TYPE::FILTER_FO_LPF,  
-    sampleRate);
+      Components::FiltersComponent::FILTER_TYPE::FILTER_FO_LPF,
+      sampleRate);
 
   auto playWavfile = std::make_unique<Components::PlayWavFile>("//Volumes//TEMP//DeleteME//tmp/sampleWav.wav");
   playWavfile->openFile();
-  
 
   // it is RtGuiSliderRefreshTableSetter to prevent aliassing on harmonics,
   // Maybe think how to do that, based on setter automaticlly,
@@ -36,9 +40,6 @@ void RtWaveTableCallback::setupPlayersAndControls()
   std::unique_ptr<Components::RtGuiControl> rs1(new Components::RtGuiSliderRefreshTableSetter(*osc2Sine, "Note Number", osc2Sine->detuneNoteNumber, 21, 108, 1));
   std::unique_ptr<Components::RtGuiControl> rs2(new Components::RtGuiSlider("Amplitude Db", vca1->multAmp, -40, 0, 0.1));
   std::unique_ptr<Components::RtGuiControl> rs3(new Components::RtGuiSlider("detuneOscs", osc2Sine->detuneOscsAmount, 0, 100, 0.1));
-
-  
-  
 
   rtGuiSliders.push_back(std::move(rs1));
   rtGuiSliders.push_back(std::move(rs2));
@@ -59,8 +60,6 @@ void RtWaveTableCallback::setupPlayersAndControls()
     rtGuiSlider.push_back(std::move(hm1));
   }
   */
-
-
 
   vecVcas.push_back(std::move(vca1));
   vecOsc2Sine.push_back(std::move(osc2Sine));
@@ -125,40 +124,39 @@ void RtWaveTableCallback::scopeLog(double *buffer, unsigned int &nBufferFrames, 
 int RtWaveTableCallback::render(void *outputBuffer, void *inputBuffer, unsigned int &nBufferFrames,
                                 double &streamTime, RtAudioStreamStatus &status)
 {
-  std::vector<double> testGate(nBufferFrames, 0);
-  std::vector<double> testReset(nBufferFrames, 0);
-  playheadMarker->playheadEvents[0].render(testGate, testReset);
-  
+
   double *outBuffer = (double *)outputBuffer;
   double *inBuffer = (double *)inputBuffer;
 
   std::vector<double> outChannel01(nBufferFrames, 0);
   std::vector<double> allOne(nBufferFrames, 1);
-  //std::vector<double> outOscContiousPitch(nBufferFrames, 1);
-
+  // std::vector<double> outOscContiousPitch(nBufferFrames, 1);
 
   if (status)
     std::cout << "Stream underflow detected!" << std::endl;
 
-  //std::vector<double>
-  //    inChannel2 = getInput(inBuffer, nBufferFrames, streamInParameters.nChannels, 2);
-  //std::vector<double>
-  //    inChannel3 = getInput(inBuffer, nBufferFrames, streamInParameters.nChannels, 3);
+  // std::vector<double>
+  //     inChannel2 = getInput(inBuffer, nBufferFrames, streamInParameters.nChannels, 2);
+  // std::vector<double>
+  //     inChannel3 = getInput(inBuffer, nBufferFrames, streamInParameters.nChannels, 3);
 
-  //switchAmps[0]->render(inChannel3,outOscContiousPitch);
-  //vecOsc2Sine.at(0)->render(outChannel01, outOscContiousPitch);
+  // switchAmps[0]->render(inChannel3,outOscContiousPitch);
+  // vecOsc2Sine.at(0)->render(outChannel01, outOscContiousPitch);
 
-  //callbackToUi(outChannel01);
+  // callbackToUi(outChannel01);
 
-  //std::vector<double> vca1add(nBufferFrames, vecVcas[0]->addAmp);
-  //Components::vcaComponent(outChannel01, vca1add, inChannel2);
-  //Components::gateComponent(outChannel01, inChannel3);
-  //outChannel01 = playWavfiles[0]->getVectorStream(nBufferFrames)[0]; //render all
-  outChannel01 = playWavfiles[0]->render(allOne,allOne)[0]; //render partially
+  // std::vector<double> vca1add(nBufferFrames, vecVcas[0]->addAmp);
+  // Components::vcaComponent(outChannel01, vca1add, inChannel2);
+  // Components::gateComponent(outChannel01, inChannel3);
+  // outChannel01 = playWavfiles[0]->getVectorStream(nBufferFrames)[0]; //render all
+  std::vector<double> testGate(nBufferFrames, 0);
+  std::vector<double> testReset(nBufferFrames, 0);
+  playheadEvents[0].render(testGate, testReset);
 
-  //outChannel01 = inChannel2;
-  //filters[0]->process_fc(outChannel01, inChannel3);
-  
+  outChannel01 = playWavfiles[0]->render(testGate, testReset)[0]; // render partially
+
+  // outChannel01 = inChannel2;
+  // filters[0]->process_fc(outChannel01, inChannel3);
 
   sendOutput(outBuffer, nBufferFrames, streamOutParameters.nChannels, outChannel01, {0, 1});
   if (doScopelog)

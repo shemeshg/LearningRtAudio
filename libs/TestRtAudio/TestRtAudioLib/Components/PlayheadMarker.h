@@ -23,8 +23,7 @@ namespace RtAudioNs
     class PlayheadMarker
     {
     public:
-      PlayheadMarker(unsigned int _sampleRate, unsigned int _nBufferFrames);
-      std::vector<PlayheadEvent> playheadEvents;
+      PlayheadMarker(unsigned int _sampleRate, unsigned int _nBufferFrames);      
 
       void incrementMarkerNext()
       {
@@ -35,11 +34,12 @@ namespace RtAudioNs
       {
         return markerBufferFrames;
       }
-
+  
       const double getMarkerSeconds()
       {
         return (double)markerBufferFrames / (double)sampleRate;
       }
+      
 
     private:
       const unsigned int sampleRate;
