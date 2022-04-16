@@ -16,8 +16,8 @@ void RtWaveTableCallback::setupPlayersAndControls()
   playheadMarker = std::make_unique<Components::PlayheadMarker>(sampleRate, bufferFrames);
 
   Components::PlayheadEvent phe{};
-  phe.framesEvery = sampleRate * 1; // 1 sec
-  phe.framesLen = sampleRate * 1;   // 1 sec
+  phe.framesEvery = sampleRate * 4; // 1 sec
+  phe.framesLen = sampleRate * 0.2;   // 1 sec
   phe.frameStart = 0;
   phe.repeatCount = -1;
   playheadEvents.push_back(std::move(phe));
@@ -129,21 +129,30 @@ int RtWaveTableCallback::render(void *outputBuffer, void *inputBuffer, unsigned 
   double *inBuffer = (double *)inputBuffer;
 
   std::vector<double> outChannel01(nBufferFrames, 0);
-  std::vector<double> outOscContiousPitch(nBufferFrames, 1);
+  std::vector<double> outOscContiousPitch(nBufferFrames, 0);
 
   if (status)
     std::cout << "Stream underflow detected!" << std::endl;
 
+  std::vector<double>
+       inChannel3 = getInput(inBuffer, nBufferFrames, streamInParameters.nChannels, 2);
   // std::vector<double>
-  //     inChannel2 = getInput(inBuffer, nBufferFrames, streamInParameters.nChannels, 2);
-  // std::vector<double>
-  //     inChannel3 = getInput(inBuffer, nBufferFrames, streamInParameters.nChannels, 3);
+  //     inChannel4 = getInput(inBuffer, nBufferFrames, streamInParameters.nChannels, 3);
 
   std::vector<double> testGate(nBufferFrames, 0);
   std::vector<double> testReset(nBufferFrames, 0);
   playheadEvents[0].render(testGate, testReset);
-  switchAmps[0]->render(testReset,outOscContiousPitch);
+  //switchAmps[0]->render(testReset,outOscContiousPitch);
+  
   vecOsc2Sine.at(0)->render(outChannel01, outOscContiousPitch);
+  Components::gateComponent(outChannel01, testGate);
+  frameCounter.start(outChannel01);
+  int countedFrames =  frameCounter.stop(inChannel3);
+  if (countedFrames > -1){
+    //Notice always will be overlap when OSC plays, and input gets it at the same time, so only the first long 
+    //report is importent
+    std::cout<<"Counted frames "<<countedFrames<<" Seconds: "<<(float)countedFrames/(float)sampleRate<<"\n";
+  }
 
   // callbackToUi(outChannel01);
 

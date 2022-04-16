@@ -1,10 +1,60 @@
 #pragma once
 #include <vector>
+#include "GateConstants.h"
 
 namespace RtAudioNs
 {
   namespace Components
   {
+
+    class FramesCounter
+    {
+    public:
+      void start(std::vector<double> &vGateStart)
+      {
+        if (isCounting)
+        {
+          return;
+        }
+        for (unsigned int i = 0; i < vGateStart.size(); i++)
+        {
+          if (vGateStart[i] > gateThreshold)
+          {
+            countedFrames = 0;
+            countFromFrame = i;
+            isCounting = true;
+            return;
+          }
+        }
+      }
+
+      int stop(std::vector<double> &vGateStop)
+      {
+        if (!isCounting)
+        {
+          return -1;
+        }
+        for (unsigned int i = countFromFrame; i < vGateStop.size(); i++)
+        {
+          if (vGateStop[i] > gateThreshold)
+          {
+            int _countedFrames = countedFrames;
+            countFromFrame = 0;
+            countedFrames = 0;
+            isCounting = false;
+            return _countedFrames++;
+          }
+          countedFrames++;
+        }
+        countFromFrame = 0;
+        return -1;
+      }
+
+    private:
+      bool isCounting = false;
+      int countFromFrame = 0;
+      int countedFrames = 0;
+    };
 
     class PlayheadEvent
     {
@@ -23,7 +73,7 @@ namespace RtAudioNs
     class PlayheadMarker
     {
     public:
-      PlayheadMarker(unsigned int _sampleRate, unsigned int _nBufferFrames);      
+      PlayheadMarker(unsigned int _sampleRate, unsigned int _nBufferFrames);
 
       void incrementMarkerNext()
       {
@@ -34,12 +84,11 @@ namespace RtAudioNs
       {
         return markerBufferFrames;
       }
-  
+
       const double getMarkerSeconds()
       {
         return (double)markerBufferFrames / (double)sampleRate;
       }
-      
 
     private:
       const unsigned int sampleRate;
