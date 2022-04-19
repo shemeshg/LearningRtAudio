@@ -34,3 +34,4 @@ It is one to one the assignments in the course, but adjusted to desktop
 - Lesson 8   Filters (Havent done any homework assignment, just encapsulated DSP-Cpp-filters)
 - Lesson 9   Time - Scheduale events with a concept of Gate and Reset
 - lesson10   latency
+- lesson11   Circular_Buffers
