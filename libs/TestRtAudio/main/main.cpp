@@ -1,23 +1,8 @@
 #include <iostream>
 #include "TestRtAudio.h"
-#include "Components/CircularBuffer.h"
 
 int main()
 {
-  RtAudioNs::Components::CircularBuffer c(5);
-  std::vector<double> in{1,2,3,4,5},out{0,0,0,0,0}, feedback(5,0.0);
-  std::vector<int> offst(5,2);
-  c.render(in,out,offst,feedback);
-  for (auto &v: out){
-    std::cout<<v<<"*";
-  }
-  std::cout<<"\n";
-  for (auto &v: c.vec){
-    std::cout<<v<<"*";
-  }
-  std::cout<<"\n";
-  if (1==1){return 0;}
-
   // TestRtAudio::coutListApis();
   RtAudioNs::TestRtAudio tra;
   tra.coutDevicesInfo();
