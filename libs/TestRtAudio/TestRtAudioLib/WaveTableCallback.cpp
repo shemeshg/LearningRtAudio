@@ -17,7 +17,7 @@ void RtWaveTableCallback::setupPlayersAndControls()
 
   Components::PlayheadEvent phe{};
   phe.framesEvery = sampleRate * 4; // 1 sec
-  phe.framesLen = sampleRate * 0.2;   // 1 sec
+  phe.framesLen = sampleRate * 0.2; // 1 sec
   phe.frameStart = 0;
   phe.repeatCount = -1;
   playheadEvents.push_back(std::move(phe));
@@ -33,6 +33,8 @@ void RtWaveTableCallback::setupPlayersAndControls()
 
   auto playWavfile = std::make_unique<Components::PlayWavFile>("//Volumes//TEMP//DeleteME//tmp/sampleWav.wav");
   playWavfile->openFile();
+
+  circularBuffer = std::make_unique<Components::CircularBuffer>(sampleRate * 60); // 1 Min
 
   // it is RtGuiSliderRefreshTableSetter to prevent aliassing on harmonics,
   // Maybe think how to do that, based on setter automaticlly,
@@ -129,30 +131,25 @@ int RtWaveTableCallback::render(void *outputBuffer, void *inputBuffer, unsigned 
   double *inBuffer = (double *)inputBuffer;
 
   std::vector<double> outChannel01(nBufferFrames, 0);
-  std::vector<double> outOscContiousPitch(nBufferFrames, 0);
+  // std::vector<double> outOscContiousPitch(nBufferFrames, 0);
 
   if (status)
     std::cout << "Stream underflow detected!" << std::endl;
 
   std::vector<double>
-       inChannel3 = getInput(inBuffer, nBufferFrames, streamInParameters.nChannels, 2);
+      inChannel3 = getInput(inBuffer, nBufferFrames, streamInParameters.nChannels, 2);
+
+  std::vector<double>
+      inChannel4 = getInput(inBuffer, nBufferFrames, streamInParameters.nChannels, 3);
+  std::vector<int> delayOffset(nBufferFrames, 0);     
+  std::transform(inChannel4.begin(), inChannel4.end(), delayOffset.begin(),  [this](double toN )
+                { return rescaleRange(toN, 0.0, 1.0, sampleRate / 1000, sampleRate); });
+
+  //std::vector<int> delayOffset(nBufferFrames, sampleRate);
+  std::vector<double> delayFeedback(nBufferFrames, 0.3);
+  circularBuffer->render(inChannel3, outChannel01, delayOffset, delayFeedback);
   // std::vector<double>
   //     inChannel4 = getInput(inBuffer, nBufferFrames, streamInParameters.nChannels, 3);
-
-  std::vector<double> testGate(nBufferFrames, 0);
-  std::vector<double> testReset(nBufferFrames, 0);
-  playheadEvents[0].render(testGate, testReset);
-  //switchAmps[0]->render(testReset,outOscContiousPitch);
-  
-  vecOsc2Sine.at(0)->render(outChannel01, outOscContiousPitch);
-  Components::gateComponent(outChannel01, testGate);
-  frameCounter.start(outChannel01);
-  int countedFrames =  frameCounter.stop(inChannel3);
-  if (countedFrames > -1){
-    //Notice always will be overlap when OSC plays, and input gets it at the same time, so only the first long 
-    //report is importent
-    std::cout<<"Counted frames "<<countedFrames<<" Seconds: "<<(float)countedFrames/(float)sampleRate<<"\n";
-  }
 
   // callbackToUi(outChannel01);
 
@@ -160,7 +157,7 @@ int RtWaveTableCallback::render(void *outputBuffer, void *inputBuffer, unsigned 
   // Components::vcaComponent(outChannel01, vca1add, inChannel2);
   // Components::gateComponent(outChannel01, inChannel3);
   // outChannel01 = playWavfiles[0]->getVectorStream(nBufferFrames)[0]; //render all
-  //outChannel01 = playWavfiles[0]->render(testGate, testReset)[0]; // render partially
+  // outChannel01 = playWavfiles[0]->render(testGate, testReset)[0]; // render partially
 
   // outChannel01 = inChannel2;
   // filters[0]->process_fc(outChannel01, inChannel3);

@@ -1,15 +1,12 @@
 #pragma once
 #include <vector>
+#include "RangeUtils.h"
 
 namespace RtAudioNs
 {
   namespace Components
   {
-    inline int mod(int a, int b)
-    {
-      int ret = a % b;
-      return ret >= 0 ? ret : ret + b;
-    }
+
 
     class CircularBuffer
     {

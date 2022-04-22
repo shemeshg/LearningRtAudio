@@ -10,6 +10,12 @@ float midiNoteToFrequency(float noteNumber);
 
 double amplitudeFromDb(double amp);
 
+inline int mod(int a, int b)
+{
+  int ret = a % b;
+  return ret >= 0 ? ret : ret + b;
+}
+
 class CustomMidiScale
 {
 public:
