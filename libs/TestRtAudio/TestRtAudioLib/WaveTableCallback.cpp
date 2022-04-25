@@ -15,6 +15,8 @@ void RtWaveTableCallback::setupPlayersAndControls()
 {
   playheadMarker = std::make_unique<Components::PlayheadMarker>(sampleRate, bufferFrames);
 
+  simpleAdsrComponent = std::make_unique<Components::SimpleAdsrComponent>();
+
   Components::PlayheadEvent phe{};
   phe.framesEvery = sampleRate * 4; // 1 sec
   phe.framesLen = sampleRate * 0.2; // 1 sec
@@ -141,13 +143,16 @@ int RtWaveTableCallback::render(void *outputBuffer, void *inputBuffer, unsigned 
 
   std::vector<double>
       inChannel4 = getInput(inBuffer, nBufferFrames, streamInParameters.nChannels, 3);
-  std::vector<int> delayOffset(nBufferFrames, 0);     
-  std::transform(inChannel4.begin(), inChannel4.end(), delayOffset.begin(),  [this](double toN )
-                { return rescaleRange(toN, 0.0, 1.0, sampleRate / 1000, sampleRate); });
+  //std::vector<int> delayOffset(nBufferFrames, 0);     
+  //std::transform(inChannel4.begin(), inChannel4.end(), delayOffset.begin(),  [this](double toN )
+  //              { return rescaleRange(toN, 0.0, 1.0, sampleRate / 1000, sampleRate); });
 
   //std::vector<int> delayOffset(nBufferFrames, sampleRate);
-  std::vector<double> delayFeedback(nBufferFrames, 0.3);
-  circularBuffer->render(inChannel3, outChannel01, delayOffset, delayFeedback);
+  //std::vector<double> delayFeedback(nBufferFrames, 0.3);
+  //circularBuffer->render(inChannel3, outChannel01, delayOffset, delayFeedback);
+
+
+  simpleAdsrComponent->render(inChannel3);
   // std::vector<double>
   //     inChannel4 = getInput(inBuffer, nBufferFrames, streamInParameters.nChannels, 3);
 
