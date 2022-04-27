@@ -152,7 +152,7 @@ int RtWaveTableCallback::render(void *outputBuffer, void *inputBuffer, unsigned 
   //circularBuffer->render(inChannel3, outChannel01, delayOffset, delayFeedback);
 
 
-  simpleAdsrComponent->render(inChannel3);
+  simpleAdsrComponent->render(inChannel3, outChannel01);
   // std::vector<double>
   //     inChannel4 = getInput(inBuffer, nBufferFrames, streamInParameters.nChannels, 3);
 
