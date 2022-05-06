@@ -19,14 +19,17 @@ namespace RtAudioNs
     {
     public:
       double proccess(bool isReset, unsigned int totalFramesLen);
-      AdsrStep(SimpleAdsrStatus &_simpleAdsrStatus, 
+      AdsrStep(
+              double &_returnVal,
+              SimpleAdsrStatus &_simpleAdsrStatus, 
               SimpleAdsrStatus _currentStatus, 
               SimpleAdsrStatus _beforeNextStatus) : 
+              returnVal{_returnVal},
               simpleAdsrStatus{_simpleAdsrStatus}, 
               currentStatus{_currentStatus}, 
               beforeNextStatus{_beforeNextStatus} {}
 
-      double returnVal = 0;
+      double &returnVal;
       virtual void updateReturnVal(unsigned int totalFramesLen) = 0;
       virtual void resetRetval() = 0;
 
@@ -38,10 +41,12 @@ namespace RtAudioNs
     class AdsrStepA : public AdsrStep
     {
     public:
-      AdsrStepA(SimpleAdsrStatus &_simpleAdsrStatus, 
+      AdsrStepA(
+                double &_returnVal,
+                SimpleAdsrStatus &_simpleAdsrStatus, 
                 SimpleAdsrStatus _currentStatus, 
                 SimpleAdsrStatus _beforeNextStatus) : 
-                AdsrStep(_simpleAdsrStatus, _currentStatus, _beforeNextStatus) {}
+                AdsrStep(_returnVal, _simpleAdsrStatus, _currentStatus, _beforeNextStatus) {}
 
       void updateReturnVal(unsigned int totalFramesLen)
       {
@@ -55,10 +60,12 @@ namespace RtAudioNs
     class AdsrStepD : public AdsrStep
     {
     public:
-      AdsrStepD(SimpleAdsrStatus &_simpleAdsrStatus, 
+      AdsrStepD(
+                double &_returnVal,
+                SimpleAdsrStatus &_simpleAdsrStatus, 
                 SimpleAdsrStatus _currentStatus, 
                 SimpleAdsrStatus _beforeNextStatus) : 
-                AdsrStep(_simpleAdsrStatus, _currentStatus, _beforeNextStatus) {}
+                AdsrStep(_returnVal, _simpleAdsrStatus, _currentStatus, _beforeNextStatus) {}
                 
       void updateReturnVal(unsigned int totalFramesLen)
       {
@@ -74,10 +81,12 @@ namespace RtAudioNs
     class AdsrStepR : public AdsrStep
     {
     public:
-      AdsrStepR(SimpleAdsrStatus &_simpleAdsrStatus, 
+      AdsrStepR(
+                double &_returnVal,
+                SimpleAdsrStatus &_simpleAdsrStatus, 
                 SimpleAdsrStatus _currentStatus, 
                 SimpleAdsrStatus _beforeNextStatus) : 
-                AdsrStep(_simpleAdsrStatus, _currentStatus, _beforeNextStatus) {}
+                AdsrStep(_returnVal, _simpleAdsrStatus, _currentStatus, _beforeNextStatus) {}
                 
       void updateReturnVal(unsigned int totalFramesLen)
       {
@@ -99,14 +108,15 @@ namespace RtAudioNs
     {
     public:
       void render(std::vector<double> &vGate, std::vector<double> &vOut);
-      SimpleAdsrComponent() : stepA(simpleAdsrStatus, SimpleAdsrStatus::a, SimpleAdsrStatus::beforeD),
-                              stepD(simpleAdsrStatus, SimpleAdsrStatus::d, SimpleAdsrStatus::s),
-                              stepR(simpleAdsrStatus, SimpleAdsrStatus::r, SimpleAdsrStatus::idle)
+      SimpleAdsrComponent() : stepA(returnVal, simpleAdsrStatus, SimpleAdsrStatus::a, SimpleAdsrStatus::beforeD),
+                              stepD(returnVal, simpleAdsrStatus, SimpleAdsrStatus::d, SimpleAdsrStatus::s),
+                              stepR(returnVal, simpleAdsrStatus, SimpleAdsrStatus::r, SimpleAdsrStatus::idle)
       {
 
       }
 
     private:
+      double returnVal=0;
       SimpleAdsrStatus simpleAdsrStatus = SimpleAdsrStatus::idle;
 
       AdsrStepA stepA;
