@@ -49,7 +49,7 @@ namespace RtAudioNs
           }
           else if (simpleAdsrStatus == SimpleAdsrStatus::s)
           {
-            vOut[i] = 0.7;
+            vOut[i] = sustainLevel;
           }
         }
         else

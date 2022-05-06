@@ -61,11 +61,13 @@ namespace RtAudioNs
     {
     public:
       AdsrStepD(
+                double &_sustainLevel,
                 double &_returnVal,
                 SimpleAdsrStatus &_simpleAdsrStatus, 
                 SimpleAdsrStatus _currentStatus, 
                 SimpleAdsrStatus _beforeNextStatus) : 
-                AdsrStep(_returnVal, _simpleAdsrStatus, _currentStatus, _beforeNextStatus) {}
+                AdsrStep(_returnVal, _simpleAdsrStatus, _currentStatus, _beforeNextStatus),
+                sustainLevel{_sustainLevel} {}
                 
       void updateReturnVal(unsigned int totalFramesLen)
       {
@@ -75,18 +77,20 @@ namespace RtAudioNs
         returnVal = 1;
       }
     private:
-      double sustainLevel = 0.7;
+      double &sustainLevel;
     };
 
     class AdsrStepR : public AdsrStep
     {
     public:
       AdsrStepR(
+                double &_sustainLevel,
                 double &_returnVal,
                 SimpleAdsrStatus &_simpleAdsrStatus, 
                 SimpleAdsrStatus _currentStatus, 
                 SimpleAdsrStatus _beforeNextStatus) : 
-                AdsrStep(_returnVal, _simpleAdsrStatus, _currentStatus, _beforeNextStatus) {}
+                AdsrStep(_returnVal, _simpleAdsrStatus, _currentStatus, _beforeNextStatus),
+                sustainLevel{_sustainLevel} {}
                 
       void updateReturnVal(unsigned int totalFramesLen)
       {
@@ -101,7 +105,7 @@ namespace RtAudioNs
         //returnVal = sustainLevel;
       }
     private:
-      double sustainLevel = 0.7;
+      double &sustainLevel;
     };
 
     class SimpleAdsrComponent
@@ -109,14 +113,15 @@ namespace RtAudioNs
     public:
       void render(std::vector<double> &vGate, std::vector<double> &vOut);
       SimpleAdsrComponent() : stepA(returnVal, simpleAdsrStatus, SimpleAdsrStatus::a, SimpleAdsrStatus::beforeD),
-                              stepD(returnVal, simpleAdsrStatus, SimpleAdsrStatus::d, SimpleAdsrStatus::s),
-                              stepR(returnVal, simpleAdsrStatus, SimpleAdsrStatus::r, SimpleAdsrStatus::idle)
+                              stepD(sustainLevel, returnVal, simpleAdsrStatus, SimpleAdsrStatus::d, SimpleAdsrStatus::s),
+                              stepR(sustainLevel, returnVal, simpleAdsrStatus, SimpleAdsrStatus::r, SimpleAdsrStatus::idle)
       {
 
       }
 
     private:
       double returnVal=0;
+      double sustainLevel=0.7;
       SimpleAdsrStatus simpleAdsrStatus = SimpleAdsrStatus::idle;
 
       AdsrStepA stepA;
