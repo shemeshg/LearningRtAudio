@@ -42,7 +42,8 @@ namespace RtAudioNs
             countFromFrame = 0;
             countedFrames = 0;
             isCounting = false;
-            return _countedFrames++;
+            _countedFrames++;
+            return _countedFrames;
           }
           countedFrames++;
         }
