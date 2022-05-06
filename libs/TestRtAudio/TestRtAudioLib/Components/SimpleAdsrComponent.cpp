@@ -10,6 +10,7 @@ namespace RtAudioNs
       if (isReset)
       {
         position = 0;
+        resetRetval();
         simpleAdsrStatus = currentStatus;
       }
 
@@ -17,6 +18,9 @@ namespace RtAudioNs
       {
         simpleAdsrStatus = beforeNextStatus;
       }
+
+      updateReturnVal(totalFramesLen);
+
       position++;
       return returnVal;
     }
@@ -45,7 +49,7 @@ namespace RtAudioNs
           }
           else if (simpleAdsrStatus == SimpleAdsrStatus::s)
           {
-            vOut[i] = 0.5;
+            vOut[i] = 0.7;
           }
         }
         else

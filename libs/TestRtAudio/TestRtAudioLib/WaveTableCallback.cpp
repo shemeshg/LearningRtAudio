@@ -141,8 +141,8 @@ int RtWaveTableCallback::render(void *outputBuffer, void *inputBuffer, unsigned 
   std::vector<double>
       inChannel3 = getInput(inBuffer, nBufferFrames, streamInParameters.nChannels, 2);
 
-  std::vector<double>
-      inChannel4 = getInput(inBuffer, nBufferFrames, streamInParameters.nChannels, 3);
+  //std::vector<double>
+  //    inChannel4 = getInput(inBuffer, nBufferFrames, streamInParameters.nChannels, 3);
   //std::vector<int> delayOffset(nBufferFrames, 0);     
   //std::transform(inChannel4.begin(), inChannel4.end(), delayOffset.begin(),  [this](double toN )
   //              { return rescaleRange(toN, 0.0, 1.0, sampleRate / 1000, sampleRate); });
