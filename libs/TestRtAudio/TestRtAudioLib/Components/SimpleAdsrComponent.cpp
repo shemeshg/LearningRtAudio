@@ -1,10 +1,27 @@
 #include "SimpleAdsrComponent.h"
 #include "GateConstants.h"
+#include "RangeUtils.h"
 
 namespace RtAudioNs
 {
   namespace Components
   {
+
+    double AdsrStep::rescalePower(const double signedFromZeroToOne)
+    {
+      double scaled = rescaleRange(abs(signedFromZeroToOne), 0, 1, 1, maxCurvePower);
+      if (signedFromZeroToOne < 0)
+      {
+        return 1.0 / scaled;
+      }
+      return scaled;
+    }
+
+    double AdsrStep::getPowSignedZerowToOne(const double val, const unsigned int totalFramesLen)
+    {
+      return pow((double)position * (1.0 / (double)totalFramesLen), rescalePower(val));
+    }
+
     double AdsrStep::proccess(bool isReset, unsigned int totalFramesLen)
     {
       if (isReset)
@@ -55,10 +72,9 @@ namespace RtAudioNs
         else
         {
           if (simpleAdsrStatus == SimpleAdsrStatus::a ||
-            simpleAdsrStatus == SimpleAdsrStatus::beforeD ||
-            simpleAdsrStatus == SimpleAdsrStatus::d ||
-            simpleAdsrStatus == SimpleAdsrStatus::s 
-          )
+              simpleAdsrStatus == SimpleAdsrStatus::beforeD ||
+              simpleAdsrStatus == SimpleAdsrStatus::d ||
+              simpleAdsrStatus == SimpleAdsrStatus::s)
           {
             vOut[i] = stepR.proccess(true, 44800);
           }
