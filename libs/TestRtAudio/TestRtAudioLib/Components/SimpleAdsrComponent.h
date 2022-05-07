@@ -19,7 +19,7 @@ namespace RtAudioNs
     class AdsrStep
     {
     public:
-      double proccess(bool isReset, unsigned int totalFramesLen);
+      double proccess(bool isReset);
       AdsrStep(
           double &_returnVal,
           SimpleAdsrStatus &_simpleAdsrStatus,
@@ -30,12 +30,13 @@ namespace RtAudioNs
                                                 beforeNextStatus{_beforeNextStatus} {}
 
       double &returnVal;
-      virtual void updateReturnVal(unsigned int totalFramesLen) = 0;
+      virtual void updateReturnVal() = 0;
       virtual void resetRetval() = 0;
 
+      unsigned int totalFramesLen = 44800;
     protected:
       unsigned int position = 0;      
-      double getPowSignedZerowToOne(const double val, const unsigned int totalFramesLen);
+      double getPowSignedZerowToOne(const double val);
 
     private:
       SimpleAdsrStatus &simpleAdsrStatus, currentStatus, beforeNextStatus;
@@ -53,14 +54,16 @@ namespace RtAudioNs
           SimpleAdsrStatus _currentStatus,
           SimpleAdsrStatus _beforeNextStatus) : AdsrStep(_returnVal, _simpleAdsrStatus, _currentStatus, _beforeNextStatus) {}
 
-      void updateReturnVal(unsigned int totalFramesLen)
+      void updateReturnVal()
       {
-        returnVal = getPowSignedZerowToOne(0.2, totalFramesLen);
+        returnVal = getPowSignedZerowToOne(lineCurved);
       }
       void resetRetval()
       {
         returnVal = 0;
       }
+
+      double lineCurved = 0;
     };
 
     class AdsrStepD : public AdsrStep
@@ -74,16 +77,16 @@ namespace RtAudioNs
           SimpleAdsrStatus _beforeNextStatus) : AdsrStep(_returnVal, _simpleAdsrStatus, _currentStatus, _beforeNextStatus),
                                                 sustainLevel{_sustainLevel} {}
 
-      void updateReturnVal(unsigned int totalFramesLen)
+      void updateReturnVal()
       {
-        // returnVal -= (1.0 - sustainLevel) / (double)totalFramesLen;
-        returnVal = (1.0 - sustainLevel) * (1.0 - getPowSignedZerowToOne(-0.2, totalFramesLen)) + sustainLevel;
+        returnVal = (1.0 - sustainLevel) * (1.0 - getPowSignedZerowToOne(lineCurved)) + sustainLevel;
       }
       void resetRetval()
       {
         returnVal = 1;
       }
 
+      double lineCurved = 0;
     private:
       double &sustainLevel;
     };
@@ -97,11 +100,11 @@ namespace RtAudioNs
           SimpleAdsrStatus _currentStatus,
           SimpleAdsrStatus _beforeNextStatus) : AdsrStep(_returnVal, _simpleAdsrStatus, _currentStatus, _beforeNextStatus) {}
 
-      void updateReturnVal(unsigned int totalFramesLen)
+      void updateReturnVal()
       {
         if (returnVal > 0)
         {
-          returnVal = sustainLevel * (1.0 - getPowSignedZerowToOne(0.2, totalFramesLen));
+          returnVal = sustainLevel * (1.0 - getPowSignedZerowToOne(lineCurved));
         }
         else
         {
@@ -112,6 +115,8 @@ namespace RtAudioNs
       {
         sustainLevel = returnVal;
       }
+
+      double lineCurved = 0; 
 
     private:
       double sustainLevel = 0;

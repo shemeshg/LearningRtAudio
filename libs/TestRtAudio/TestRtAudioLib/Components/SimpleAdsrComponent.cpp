@@ -17,12 +17,12 @@ namespace RtAudioNs
       return scaled;
     }
 
-    double AdsrStep::getPowSignedZerowToOne(const double val, const unsigned int totalFramesLen)
+    double AdsrStep::getPowSignedZerowToOne(const double val)
     {
       return pow((double)position * (1.0 / (double)totalFramesLen), rescalePower(val));
     }
 
-    double AdsrStep::proccess(bool isReset, unsigned int totalFramesLen)
+    double AdsrStep::proccess(bool isReset)
     {
       if (isReset)
       {
@@ -36,7 +36,7 @@ namespace RtAudioNs
         simpleAdsrStatus = beforeNextStatus;
       }
 
-      updateReturnVal(totalFramesLen);
+      updateReturnVal();
 
       position++;
       return returnVal;
@@ -44,25 +44,33 @@ namespace RtAudioNs
 
     void SimpleAdsrComponent::render(std::vector<double> &vGate, std::vector<double> &vOut)
     {
+      stepA.lineCurved = 0.2;
+      stepD.lineCurved = - 0.2;
+      stepR.lineCurved = 0.4;
+      stepA.totalFramesLen = 44800;
+      stepD.totalFramesLen = 44800;
+      stepR.totalFramesLen = 44800;
+
+
       for (unsigned int i = 0; i < vGate.size(); i++)
       {
         if (vGate[i] > gateThreshold)
         {
           if (simpleAdsrStatus == SimpleAdsrStatus::idle || simpleAdsrStatus == SimpleAdsrStatus::r)
           {
-            vOut[i] = stepA.proccess(true, 44800);
+            vOut[i] = stepA.proccess(true);
           }
           else if (simpleAdsrStatus == SimpleAdsrStatus::a)
           {
-            vOut[i] = stepA.proccess(false, 44800);
+            vOut[i] = stepA.proccess(false);
           }
           else if (simpleAdsrStatus == SimpleAdsrStatus::beforeD)
           {
-            vOut[i] = stepD.proccess(true, 44800);
+            vOut[i] = stepD.proccess(true);
           }
           else if (simpleAdsrStatus == SimpleAdsrStatus::d)
           {
-            vOut[i] = stepD.proccess(false, 44800);
+            vOut[i] = stepD.proccess(false);
           }
           else if (simpleAdsrStatus == SimpleAdsrStatus::s)
           {
@@ -76,11 +84,11 @@ namespace RtAudioNs
               simpleAdsrStatus == SimpleAdsrStatus::d ||
               simpleAdsrStatus == SimpleAdsrStatus::s)
           {
-            vOut[i] = stepR.proccess(true, 44800);
+            vOut[i] = stepR.proccess(true);
           }
           else if (simpleAdsrStatus == SimpleAdsrStatus::r)
           {
-            vOut[i] = stepR.proccess(false, 44800);
+            vOut[i] = stepR.proccess(false);
           }
           else
           {
