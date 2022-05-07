@@ -44,10 +44,10 @@ namespace RtAudioNs
 
     void SimpleAdsrComponent::render(std::vector<double> &vGate, std::vector<double> &vOut)
     {
-      stepA.lineCurved = 0.2;
+      stepA.lineCurved = 0.2; //This is zero to one, see in header constant 5 as max power.
       stepD.lineCurved = - 0.2;
       stepR.lineCurved = 0.4;
-      stepA.totalFramesLen = 44800;
+      stepA.totalFramesLen = 44800; //This is the buffer len(time)
       stepD.totalFramesLen = 44800;
       stepR.totalFramesLen = 44800;
 
