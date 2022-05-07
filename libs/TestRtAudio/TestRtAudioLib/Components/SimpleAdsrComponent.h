@@ -1,5 +1,6 @@
 #pragma once
 #include <vector>
+#include <cmath>
 
 namespace RtAudioNs
 {
@@ -32,8 +33,10 @@ namespace RtAudioNs
       virtual void updateReturnVal(unsigned int totalFramesLen) = 0;
       virtual void resetRetval() = 0;
 
-    private:
+    protected:
       unsigned int position = 0;
+
+    private:
       SimpleAdsrStatus &simpleAdsrStatus, currentStatus, beforeNextStatus;
     };
 
@@ -48,7 +51,7 @@ namespace RtAudioNs
 
       void updateReturnVal(unsigned int totalFramesLen)
       {
-        returnVal += 1.0 / (double)totalFramesLen;
+        returnVal = pow((double)position * (1.0 / (double)totalFramesLen), 2.0);
       }
       void resetRetval()
       {
@@ -69,7 +72,8 @@ namespace RtAudioNs
 
       void updateReturnVal(unsigned int totalFramesLen)
       {
-        returnVal -= (1.0 - sustainLevel) / (double)totalFramesLen;
+        // returnVal -= (1.0 - sustainLevel) / (double)totalFramesLen;
+        returnVal = (1.0 - sustainLevel) * (1.0 - pow((double)position * (1.0 / (double)totalFramesLen), 2.0)) + sustainLevel;
       }
       void resetRetval()
       {
@@ -84,18 +88,17 @@ namespace RtAudioNs
     {
     public:
       AdsrStepR(
-          double &_sustainLevel,
           double &_returnVal,
           SimpleAdsrStatus &_simpleAdsrStatus,
           SimpleAdsrStatus _currentStatus,
-          SimpleAdsrStatus _beforeNextStatus) : AdsrStep(_returnVal, _simpleAdsrStatus, _currentStatus, _beforeNextStatus),
-                                                sustainLevel{_sustainLevel} {}
+          SimpleAdsrStatus _beforeNextStatus) : 
+          AdsrStep(_returnVal, _simpleAdsrStatus, _currentStatus, _beforeNextStatus){}
 
       void updateReturnVal(unsigned int totalFramesLen)
       {
         if (returnVal > 0)
         {
-          returnVal -= (sustainLevel) / (double)totalFramesLen;
+          returnVal = sustainLevel * (1.0 - pow((double)position * (1.0 / (double)totalFramesLen), 2.0));
         }
         else
         {
@@ -104,11 +107,11 @@ namespace RtAudioNs
       }
       void resetRetval()
       {
-        // returnVal = sustainLevel;
+        sustainLevel = returnVal;
       }
 
     private:
-      double &sustainLevel;
+      double sustainLevel = 0;
     };
 
     class SimpleAdsrComponent
@@ -117,7 +120,7 @@ namespace RtAudioNs
       void render(std::vector<double> &vGate, std::vector<double> &vOut);
       SimpleAdsrComponent() : stepA(returnVal, simpleAdsrStatus, SimpleAdsrStatus::a, SimpleAdsrStatus::beforeD),
                               stepD(sustainLevel, returnVal, simpleAdsrStatus, SimpleAdsrStatus::d, SimpleAdsrStatus::s),
-                              stepR(sustainLevel, returnVal, simpleAdsrStatus, SimpleAdsrStatus::r, SimpleAdsrStatus::idle)
+                              stepR(returnVal, simpleAdsrStatus, SimpleAdsrStatus::r, SimpleAdsrStatus::idle)
       {
       }
 
