@@ -13,12 +13,12 @@ namespace RtAudioNs
 
       for (unsigned int i = 0; i < vGate.size(); i++)
       {
-        
+
         if (vGate[i] > gateThreshold)
         {
-          if (              triggerReleased )
+          if (triggerReleased)
           {
-            
+
             vOut[i] = stepR.proccess(true);
             triggerReleased = false;
           }
@@ -33,12 +33,11 @@ namespace RtAudioNs
           if (simpleAdsrStatus == SimpleAdsrStatus::r)
           {
             vOut[i] = stepR.proccess(false);
-            
           }
           else
           {
             simpleAdsrStatus = SimpleAdsrStatus::idle;
-            
+
             vOut[i] = 0;
           }
         }
