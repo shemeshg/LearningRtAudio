@@ -10,7 +10,8 @@
 #include "Components/FiltersComponent.h"
 #include "Components/PlayheadMarker.h"
 #include "Components/CircularBuffer.h"
-#include "Components/SimpleAdsrComponent.h"
+#include "Components/Envelopes/SimpleAdsrComponent.h"
+#include "Components/Envelopes/PercussiveEnvelope.h"
 
 namespace RtAudioNs
 { 
@@ -28,6 +29,7 @@ namespace RtAudioNs
     Components::FramesCounter frameCounter;
     std::unique_ptr<Components::CircularBuffer> circularBuffer;
     std::unique_ptr<Components::SimpleAdsrComponent> simpleAdsrComponent;
+    std::unique_ptr<Components::PercussiveEnvelope> percussiveEnvelope;
 
     RtWaveTableCallback();
 

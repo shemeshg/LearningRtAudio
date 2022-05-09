@@ -16,6 +16,7 @@ void RtWaveTableCallback::setupPlayersAndControls()
   playheadMarker = std::make_unique<Components::PlayheadMarker>(sampleRate, bufferFrames);
 
   simpleAdsrComponent = std::make_unique<Components::SimpleAdsrComponent>();
+  percussiveEnvelope = std::make_unique<Components::PercussiveEnvelope>();
 
   Components::PlayheadEvent phe{};
   phe.framesEvery = sampleRate * 4; // 1 sec
@@ -152,7 +153,9 @@ int RtWaveTableCallback::render(void *outputBuffer, void *inputBuffer, unsigned 
   //circularBuffer->render(inChannel3, outChannel01, delayOffset, delayFeedback);
 
 
-  simpleAdsrComponent->render(inChannel3, outChannel01);
+  //simpleAdsrComponent->render(inChannel3, outChannel01);
+  percussiveEnvelope->render(inChannel3, outChannel01);
+  
   // std::vector<double>
   //     inChannel4 = getInput(inBuffer, nBufferFrames, streamInParameters.nChannels, 3);
 

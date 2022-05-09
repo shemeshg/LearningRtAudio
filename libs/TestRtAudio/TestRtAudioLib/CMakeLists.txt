@@ -33,8 +33,12 @@ set(TestRtAudioLib_SRCS
   Components/FiltersComponent.cpp
   Components/PlayheadMarker.h
   Components/PlayheadMarker.cpp
-  Components/SimpleAdsrComponent.h
-  Components/SimpleAdsrComponent.cpp
+  Components/Envelopes/SimpleAdsrComponent.h
+  Components/Envelopes/SimpleAdsrComponent.cpp
+  Components/Envelopes/PercussiveEnvelope.h
+  Components/Envelopes/PercussiveEnvelope.cpp
+  Components/Envelopes/AdsrStep.h
+  Components/Envelopes/AdsrStep.cpp
 )
 
 add_subdirectory(RtAudioLib)
