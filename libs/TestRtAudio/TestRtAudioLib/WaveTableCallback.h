@@ -12,6 +12,7 @@
 #include "Components/CircularBuffer.h"
 #include "Components/Envelopes/SimpleAdsrComponent.h"
 #include "Components/Envelopes/PercussiveEnvelope.h"
+#include "Components/Envelopes/RampageEnvelope.h"
 
 namespace RtAudioNs
 { 
@@ -30,6 +31,7 @@ namespace RtAudioNs
     std::unique_ptr<Components::CircularBuffer> circularBuffer;
     std::unique_ptr<Components::SimpleAdsrComponent> simpleAdsrComponent;
     std::unique_ptr<Components::PercussiveEnvelope> percussiveEnvelope;
+    std::unique_ptr<Components::RampageEnvelope> rampageEnvelope;
 
     RtWaveTableCallback();
 

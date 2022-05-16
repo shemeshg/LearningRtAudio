@@ -39,6 +39,8 @@ void RtWaveTableCallback::setupPlayersAndControls()
 
   circularBuffer = std::make_unique<Components::CircularBuffer>(sampleRate * 60); // 1 Min
 
+  rampageEnvelope = std::make_unique<Components::RampageEnvelope>(sampleRate);
+
   // it is RtGuiSliderRefreshTableSetter to prevent aliassing on harmonics,
   // Maybe think how to do that, based on setter automaticlly,
   // but then we will have to manage MaxFrequency to restrigger RefreshTable
@@ -154,7 +156,10 @@ int RtWaveTableCallback::render(void *outputBuffer, void *inputBuffer, unsigned 
 
 
   //simpleAdsrComponent->render(inChannel3, outChannel01);
-  percussiveEnvelope->render(inChannel3, outChannel01);
+  std::vector<double> attackVec(nBufferFrames, 0.001);
+  std::vector<double> decayVec(nBufferFrames, 1);
+
+  rampageEnvelope->render(inChannel3, outChannel01, attackVec, decayVec);
   
   // std::vector<double>
   //     inChannel4 = getInput(inBuffer, nBufferFrames, streamInParameters.nChannels, 3);

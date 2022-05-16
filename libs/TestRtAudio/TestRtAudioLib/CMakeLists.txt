@@ -39,6 +39,8 @@ set(TestRtAudioLib_SRCS
   Components/Envelopes/PercussiveEnvelope.cpp
   Components/Envelopes/AdsrStep.h
   Components/Envelopes/AdsrStep.cpp
+  Components/Envelopes/RampageEnvelope.h 
+  Components/Envelopes/RampageEnvelope.cpp
 )
 
 add_subdirectory(RtAudioLib)
