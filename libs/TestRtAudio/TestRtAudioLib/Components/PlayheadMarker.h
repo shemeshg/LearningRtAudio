@@ -57,6 +57,15 @@ namespace RtAudioNs
       int countedFrames = 0;
     };
 
+    class MetronomParams
+    {
+    public:
+      unsigned int metronomUpperNum = 4;
+      const unsigned int metronomLowerNum = 4;
+      unsigned int metronomBpm = 120;
+
+    };
+
     class PlayheadEvent
     {
     public:
@@ -74,6 +83,7 @@ namespace RtAudioNs
     class PlayheadMarker
     {
     public:
+      MetronomParams metronomParams;
       PlayheadMarker(unsigned int _sampleRate, unsigned int _nBufferFrames);
 
       void incrementMarkerNext()
@@ -90,6 +100,14 @@ namespace RtAudioNs
       {
         return (double)markerBufferFrames / (double)sampleRate;
       }
+      
+      double getMarkerBufferBar(){
+         return (double)markerBufferFrames / ( (double)sampleRate * ( 60.0 / (double)metronomParams.metronomBpm) );
+       }
+
+      unsigned int getMarkerBufferBarNumUpper(){
+         return (int)getMarkerBufferBar()  % metronomParams.metronomUpperNum ;
+       }
 
     private:
       const unsigned int sampleRate;

@@ -13,6 +13,7 @@
 #include "Components/Envelopes/SimpleAdsrComponent.h"
 #include "Components/Envelopes/PercussiveEnvelope.h"
 #include "Components/Envelopes/RampageEnvelope.h"
+#include "Components/MetronomeComponent.h"
 
 namespace RtAudioNs
 { 
@@ -32,6 +33,7 @@ namespace RtAudioNs
     std::unique_ptr<Components::SimpleAdsrComponent> simpleAdsrComponent;
     std::unique_ptr<Components::PercussiveEnvelope> percussiveEnvelope;
     std::unique_ptr<Components::RampageEnvelope> rampageEnvelope;
+    std::unique_ptr<Components::MetronomeComponent> metronomeComponent;
 
     RtWaveTableCallback();
 

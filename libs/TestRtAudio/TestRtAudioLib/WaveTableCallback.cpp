@@ -15,8 +15,12 @@ void RtWaveTableCallback::setupPlayersAndControls()
 {
   playheadMarker = std::make_unique<Components::PlayheadMarker>(sampleRate, bufferFrames);
 
+  metronomeComponent = std::make_unique<Components::MetronomeComponent>(sampleRate, bufferFrames, *playheadMarker.get());
+  metronomeComponent->setupWaveTable();
+
   simpleAdsrComponent = std::make_unique<Components::SimpleAdsrComponent>();
   percussiveEnvelope = std::make_unique<Components::PercussiveEnvelope>();
+  
 
   Components::PlayheadEvent phe{};
   phe.framesEvery = sampleRate * 4; // 1 sec
@@ -156,11 +160,12 @@ int RtWaveTableCallback::render(void *outputBuffer, void *inputBuffer, unsigned 
 
 
   //simpleAdsrComponent->render(inChannel3, outChannel01);
-  std::vector<double> attackVec(nBufferFrames, 0.001);
-  std::vector<double> decayVec(nBufferFrames, 1);
+  //std::vector<double> attackVec(nBufferFrames, 0.001);
+  //std::vector<double> decayVec(nBufferFrames, 1);
 
-  rampageEnvelope->render(inChannel3, outChannel01, attackVec, decayVec);
-  
+  //rampageEnvelope->render(inChannel3, outChannel01, attackVec, decayVec);
+  metronomeComponent->render(outChannel01);
+
   // std::vector<double>
   //     inChannel4 = getInput(inBuffer, nBufferFrames, streamInParameters.nChannels, 3);
 
