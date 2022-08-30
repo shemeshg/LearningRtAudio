@@ -164,7 +164,7 @@ int RtWaveTableCallback::render(void *outputBuffer, void *inputBuffer, unsigned 
   //std::vector<double> decayVec(nBufferFrames, 1);
 
   //rampageEnvelope->render(inChannel3, outChannel01, attackVec, decayVec);
-  metronomeComponent->render(outChannel01);
+  //metronomeComponent->render(outChannel01);
 
   // std::vector<double>
   //     inChannel4 = getInput(inBuffer, nBufferFrames, streamInParameters.nChannels, 3);
