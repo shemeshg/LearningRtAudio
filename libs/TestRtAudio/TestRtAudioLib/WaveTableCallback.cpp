@@ -179,6 +179,10 @@ int RtWaveTableCallback::render(void *outputBuffer, void *inputBuffer, unsigned 
 
   // outChannel01 = inChannel2;
   // filters[0]->process_fc(outChannel01, inChannel3);
+  
+  //noiseAmount = create step every ...; keepStateConst = keep voltage constant for n buffers;
+  // The steps needs to be smoothed using Rampage...
+  debounceVca.process(inChannel3, outChannel01);
 
   sendOutput(outBuffer, nBufferFrames, streamOutParameters.nChannels, outChannel01, {0, 1});
   if (doScopelog)

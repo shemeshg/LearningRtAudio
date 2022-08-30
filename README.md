@@ -36,3 +36,4 @@ It is one to one the assignments in the course, but adjusted to desktop
 - lesson10   latency
 - lesson11   Circular_Buffers
 - lesson12   envelopes
+- lesson13   State Machines DebounceVca

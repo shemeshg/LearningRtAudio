@@ -43,6 +43,8 @@ set(TestRtAudioLib_SRCS
   Components/Envelopes/RampageEnvelope.cpp
   Components/MetronomeComponent.h
   Components/MetronomeComponent.cpp
+  Components/DebounceVca.h
+  Components/DebounceVca.cpp
 )
 
 add_subdirectory(RtAudioLib)
