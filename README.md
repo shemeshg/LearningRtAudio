@@ -35,5 +35,6 @@ It is one to one the assignments in the course, but adjusted to desktop
 - Lesson 9   Time - Scheduale events with a concept of Gate and Reset
 - lesson10   latency
 - lesson11   Circular_Buffers
-- lesson12   envelopes
+- lesson12   envelopes, linear adsr in *Time domain*
 - lesson13   State Machines DebounceVca
+- lesson14   ExponentialAdsr 

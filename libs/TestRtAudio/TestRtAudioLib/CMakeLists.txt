@@ -45,6 +45,12 @@ set(TestRtAudioLib_SRCS
   Components/MetronomeComponent.cpp
   Components/DebounceVca.h
   Components/DebounceVca.cpp
+  Components/Envelopes/ExponentialAdsr.h
+  Components/Envelopes/ExponentialAdsr.cpp
+  Components/Envelopes/LinearAdsr.h
+  Components/Envelopes/LinearAdsr.cpp
+  Components/Envelopes/AdsrStepTimeDomainPower.h
+  Components/Envelopes/AdsrStepTimeDomainPower.cpp
 )
 
 add_subdirectory(RtAudioLib)

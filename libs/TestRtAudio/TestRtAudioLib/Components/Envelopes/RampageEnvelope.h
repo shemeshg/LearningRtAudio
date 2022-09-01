@@ -1,3 +1,4 @@
+// Follow the original signal envelope
 #pragma once
 #include <vector>
 

@@ -1,34 +1,38 @@
 #pragma once
 #include <vector>
 #include <cmath>
-#include "AdsrStep.h"
+#include "AdsrStepTimeDomainPower.h"
 
 namespace RtAudioNs
 {
   namespace Components
   {
-    class AdsrStepA : public AdsrStep
+    class AdsrStepA : public AdsrStepTimeDomainPower
     {
     public:
       AdsrStepA(
           double &_returnVal,
           SimpleAdsrStatus &_simpleAdsrStatus,
           SimpleAdsrStatus _currentStatus,
-          SimpleAdsrStatus _beforeNextStatus) : AdsrStep(_returnVal, _simpleAdsrStatus, _currentStatus, _beforeNextStatus) {}
+          SimpleAdsrStatus _beforeNextStatus) : AdsrStepTimeDomainPower(_returnVal, _simpleAdsrStatus, _currentStatus, _beforeNextStatus) {}
 
       void updateReturnVal()
       {
         returnVal = getPowSignedZerowToOne(lineCurved);
+        position++;
       }
       void resetRetval()
       {
+        position = 0;
         returnVal = 0;
       }
-
+      bool moveNextStateCondition() {
+        return position >= totalFramesLen;
+      }
       double lineCurved = 0;
     };
 
-    class AdsrStepD : public AdsrStep
+    class AdsrStepD : public AdsrStepTimeDomainPower
     {
     public:
       AdsrStepD(
@@ -36,31 +40,35 @@ namespace RtAudioNs
           double &_returnVal,
           SimpleAdsrStatus &_simpleAdsrStatus,
           SimpleAdsrStatus _currentStatus,
-          SimpleAdsrStatus _beforeNextStatus) : AdsrStep(_returnVal, _simpleAdsrStatus, _currentStatus, _beforeNextStatus),
+          SimpleAdsrStatus _beforeNextStatus) : AdsrStepTimeDomainPower(_returnVal, _simpleAdsrStatus, _currentStatus, _beforeNextStatus),
                                                 sustainLevel{_sustainLevel} {}
 
       void updateReturnVal()
       {
         returnVal = (1.0 - sustainLevel) * (1.0 - getPowSignedZerowToOne(lineCurved)) + sustainLevel;
+        position++;
       }
       void resetRetval()
       {
+        position = 0;
         returnVal = 1;
       }
-
+      bool moveNextStateCondition() {
+        return position >= totalFramesLen;
+      }
       double lineCurved = 0;
     private:
       double &sustainLevel;
     };
 
-    class AdsrStepR : public AdsrStep
+    class AdsrStepR : public AdsrStepTimeDomainPower
     {
     public:
       AdsrStepR(
           double &_returnVal,
           SimpleAdsrStatus &_simpleAdsrStatus,
           SimpleAdsrStatus _currentStatus,
-          SimpleAdsrStatus _beforeNextStatus) : AdsrStep(_returnVal, _simpleAdsrStatus, _currentStatus, _beforeNextStatus) {}
+          SimpleAdsrStatus _beforeNextStatus) : AdsrStepTimeDomainPower(_returnVal, _simpleAdsrStatus, _currentStatus, _beforeNextStatus) {}
 
       void updateReturnVal()
       {
@@ -72,10 +80,15 @@ namespace RtAudioNs
         {
           returnVal = 0;
         }
+        position++;
       }
       void resetRetval()
       {
+        position = 0;
         sustainLevel = returnVal;
+      }
+      bool moveNextStateCondition() {
+        return position >= totalFramesLen;
       }
 
       double lineCurved = 0; 

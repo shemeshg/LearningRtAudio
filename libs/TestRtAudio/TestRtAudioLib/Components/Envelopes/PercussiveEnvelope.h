@@ -1,29 +1,36 @@
 #pragma once
 #include <vector>
-#include "AdsrStep.h"
+#include "AdsrStepTimeDomainPower.h"
 
 namespace RtAudioNs
 {
   namespace Components
   {
 
-    class AdsrStepPrecussiveR : public AdsrStep
+    class AdsrStepPrecussiveR : public AdsrStepTimeDomainPower
     {
     public:
       AdsrStepPrecussiveR(
           double &_returnVal,
           SimpleAdsrStatus &_simpleAdsrStatus,
           SimpleAdsrStatus _currentStatus,
-          SimpleAdsrStatus _beforeNextStatus) : AdsrStep(_returnVal, _simpleAdsrStatus, _currentStatus, _beforeNextStatus) {}
+          SimpleAdsrStatus _beforeNextStatus) : AdsrStepTimeDomainPower(_returnVal, _simpleAdsrStatus, _currentStatus, _beforeNextStatus) {}
 
       void updateReturnVal()
       {
         returnVal = returnVal * pow(0.01, (1.0 / (double)totalFramesLen));
+        position++;
       }
       void resetRetval()
       {
+        position = 0;
         returnVal = 1;
       }
+
+      bool moveNextStateCondition() {
+        return position >= totalFramesLen;
+      }
+
     };
 
     class PercussiveEnvelope

@@ -31,16 +31,13 @@ namespace RtAudioNs
       double &returnVal;
       virtual void updateReturnVal() = 0;
       virtual void resetRetval() = 0;
+      virtual bool moveNextStateCondition() = 0;
+      
 
-      unsigned int totalFramesLen = 44800;
-    protected:
-      unsigned int position = 0;      
-      double getPowSignedZerowToOne(const double val);
 
     private:
       SimpleAdsrStatus &simpleAdsrStatus, currentStatus, beforeNextStatus;
-      double rescalePower(const double signedFromZeroToOne);
-      const double maxCurvePower = 5;
+
 
     };
 
