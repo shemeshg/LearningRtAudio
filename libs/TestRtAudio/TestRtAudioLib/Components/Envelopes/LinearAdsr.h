@@ -27,9 +27,9 @@ namespace RtAudioNs
       }
       bool moveNextStateCondition()
       {
-        return returnVal == 1;
+        return returnVal >= 0.8;
       }
-      double incrementStep = 0.02;
+      double incrementStep = 0.00002;
     };
 
     class LAdsrStepD : public AdsrStep
@@ -53,10 +53,10 @@ namespace RtAudioNs
       }
       bool moveNextStateCondition()
       {
-        return returnVal == sustainLevel;
+        return returnVal <= sustainLevel;
       }
 
-      double incrementStep = -0.02;
+      double incrementStep = -0.0002;
 
     private:
       double &sustainLevel;
@@ -91,7 +91,7 @@ namespace RtAudioNs
         return returnVal == 0;
       }
 
-      double incrementStep = -0.02;
+      double incrementStep = -0.0002;
 
     private:
       double sustainLevel = 0;

@@ -11,6 +11,7 @@
 #include "Components/PlayheadMarker.h"
 #include "Components/CircularBuffer.h"
 #include "Components/Envelopes/SimpleAdsrComponent.h"
+#include "Components/Envelopes/LinearAdsr.h"
 #include "Components/Envelopes/PercussiveEnvelope.h"
 #include "Components/Envelopes/RampageEnvelope.h"
 #include "Components/MetronomeComponent.h"
@@ -32,6 +33,7 @@ namespace RtAudioNs
     Components::FramesCounter frameCounter;
     std::unique_ptr<Components::CircularBuffer> circularBuffer;
     std::unique_ptr<Components::SimpleAdsrComponent> simpleAdsrComponent;
+    std::unique_ptr<Components::LinearAdsrComponent> linearAdsr;
     std::unique_ptr<Components::PercussiveEnvelope> percussiveEnvelope;
     std::unique_ptr<Components::RampageEnvelope> rampageEnvelope;
     std::unique_ptr<Components::MetronomeComponent> metronomeComponent;

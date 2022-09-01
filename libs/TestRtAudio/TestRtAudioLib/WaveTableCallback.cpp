@@ -19,6 +19,7 @@ void RtWaveTableCallback::setupPlayersAndControls()
   metronomeComponent->setupWaveTable();
 
   simpleAdsrComponent = std::make_unique<Components::SimpleAdsrComponent>();
+  linearAdsr = std::make_unique<Components::LinearAdsrComponent>();
   percussiveEnvelope = std::make_unique<Components::PercussiveEnvelope>();
   
 
@@ -159,7 +160,9 @@ int RtWaveTableCallback::render(void *outputBuffer, void *inputBuffer, unsigned 
   //circularBuffer->render(inChannel3, outChannel01, delayOffset, delayFeedback);
 
 
-  //simpleAdsrComponent->render(inChannel3, outChannel01);
+  //simpleAdsrComponent->adsrRender.render(inChannel3, outChannel01);
+  //linearAdsr->adsrRender.render(inChannel3, outChannel01);
+
   //std::vector<double> attackVec(nBufferFrames, 0.001);
   //std::vector<double> decayVec(nBufferFrames, 1);
 
@@ -182,7 +185,7 @@ int RtWaveTableCallback::render(void *outputBuffer, void *inputBuffer, unsigned 
   
   //noiseAmount = create step every ...; keepStateConst = keep voltage constant for n buffers;
   // The steps needs to be smoothed using Rampage...
-  debounceVca.process(inChannel3, outChannel01);
+  //debounceVca.process(inChannel3, outChannel01);
 
   sendOutput(outBuffer, nBufferFrames, streamOutParameters.nChannels, outChannel01, {0, 1});
   if (doScopelog)
