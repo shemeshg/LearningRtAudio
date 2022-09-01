@@ -2,6 +2,7 @@
 #include <vector>
 #include <cmath>
 #include "AdsrStep.h"
+#include "AdsrRender.h"
 
 namespace RtAudioNs
 {
@@ -54,8 +55,9 @@ namespace RtAudioNs
       {
         return returnVal == sustainLevel;
       }
-      
+
       double incrementStep = -0.02;
+
     private:
       double &sustainLevel;
     };
@@ -79,7 +81,6 @@ namespace RtAudioNs
         {
           returnVal = 0;
         }
-
       }
       void resetRetval()
       {
@@ -91,30 +92,32 @@ namespace RtAudioNs
       }
 
       double incrementStep = -0.02;
-      
 
     private:
       double sustainLevel = 0;
     };
 
-    
+
+
     class LinearAdsrComponent
     {
     public:
-      void render(std::vector<double> &vGate, std::vector<double> &vOut);
       LinearAdsrComponent() : stepA(returnVal, simpleAdsrStatus, SimpleAdsrStatus::a, SimpleAdsrStatus::beforeD),
                               stepD(sustainLevel, returnVal, simpleAdsrStatus, SimpleAdsrStatus::d, SimpleAdsrStatus::s),
-                              stepR(returnVal, simpleAdsrStatus, SimpleAdsrStatus::r, SimpleAdsrStatus::idle)
+                              stepR(returnVal, simpleAdsrStatus, SimpleAdsrStatus::r, SimpleAdsrStatus::idle),
+                              adsrRender(stepA, stepD, stepR, sustainLevel, simpleAdsrStatus)
       {
       }
 
+    AdsrRender adsrRender;
+    protected:
       double sustainLevel = 0.7;
-
+      
     private:
       double returnVal = 0;
 
       SimpleAdsrStatus simpleAdsrStatus = SimpleAdsrStatus::idle;
-
+      
       LAdsrStepA stepA;
       LAdsrStepD stepD;
       LAdsrStepR stepR;

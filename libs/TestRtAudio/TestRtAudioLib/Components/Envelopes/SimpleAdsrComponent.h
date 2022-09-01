@@ -2,6 +2,7 @@
 #include <vector>
 #include <cmath>
 #include "AdsrStepTimeDomainPower.h"
+#include "AdsrRender.h"
 
 namespace RtAudioNs
 {
@@ -103,16 +104,25 @@ namespace RtAudioNs
       void render(std::vector<double> &vGate, std::vector<double> &vOut);
       SimpleAdsrComponent() : stepA(returnVal, simpleAdsrStatus, SimpleAdsrStatus::a, SimpleAdsrStatus::beforeD),
                               stepD(sustainLevel, returnVal, simpleAdsrStatus, SimpleAdsrStatus::d, SimpleAdsrStatus::s),
-                              stepR(returnVal, simpleAdsrStatus, SimpleAdsrStatus::r, SimpleAdsrStatus::idle)
+                              stepR(returnVal, simpleAdsrStatus, SimpleAdsrStatus::r, SimpleAdsrStatus::idle),
+                              adsrRender(stepA, stepD, stepR, sustainLevel, simpleAdsrStatus)
       {
+        stepA.lineCurved = 0.2; //This is zero to one, see in header constant 5 as max power.
+        stepD.lineCurved = - 0.2;
+        stepR.lineCurved = 0.4;
+        stepA.totalFramesLen = 44800; //This is the buffer len(time)
+        stepD.totalFramesLen = 44800;
+        stepR.totalFramesLen = 44800;
       }
 
       double sustainLevel = 0.7;
-
+      AdsrRender adsrRender;
     private:
       double returnVal = 0;
 
       SimpleAdsrStatus simpleAdsrStatus = SimpleAdsrStatus::idle;
+
+      
 
       AdsrStepA stepA;
       AdsrStepD stepD;

@@ -51,6 +51,8 @@ set(TestRtAudioLib_SRCS
   Components/Envelopes/LinearAdsr.cpp
   Components/Envelopes/AdsrStepTimeDomainPower.h
   Components/Envelopes/AdsrStepTimeDomainPower.cpp
+  Components/Envelopes/AdsrRender.h
+  Components/Envelopes/AdsrRender.cpp
 )
 
 add_subdirectory(RtAudioLib)
