@@ -8,6 +8,8 @@ namespace RtAudioNs
 {
   namespace Components
   {
+
+
     class LAdsrStepA : public AdsrStep
     {
     public:
@@ -97,8 +99,6 @@ namespace RtAudioNs
       double sustainLevel = 0;
     };
 
-
-
     class LinearAdsrComponent
     {
     public:
@@ -109,15 +109,16 @@ namespace RtAudioNs
       {
       }
 
-    AdsrRender adsrRender;
+      AdsrRender adsrRender;
+
     protected:
       double sustainLevel = 0.7;
-      
+
     private:
       double returnVal = 0;
 
       SimpleAdsrStatus simpleAdsrStatus = SimpleAdsrStatus::idle;
-      
+
       LAdsrStepA stepA;
       LAdsrStepD stepD;
       LAdsrStepR stepR;

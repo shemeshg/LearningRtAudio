@@ -20,6 +20,7 @@ void RtWaveTableCallback::setupPlayersAndControls()
 
   simpleAdsrComponent = std::make_unique<Components::SimpleAdsrComponent>();
   linearAdsr = std::make_unique<Components::LinearAdsrComponent>();
+  exponentialAdsr = std::make_unique<Components::ExponentialAdsr>();
   percussiveEnvelope = std::make_unique<Components::PercussiveEnvelope>();
   
 
@@ -162,6 +163,7 @@ int RtWaveTableCallback::render(void *outputBuffer, void *inputBuffer, unsigned 
 
   //simpleAdsrComponent->adsrRender.render(inChannel3, outChannel01);
   //linearAdsr->adsrRender.render(inChannel3, outChannel01);
+  exponentialAdsr->adsrRender.render(inChannel3, outChannel01);
 
   //std::vector<double> attackVec(nBufferFrames, 0.001);
   //std::vector<double> decayVec(nBufferFrames, 1);
