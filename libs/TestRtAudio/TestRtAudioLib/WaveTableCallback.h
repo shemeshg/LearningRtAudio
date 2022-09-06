@@ -17,6 +17,7 @@
 #include "Components/Envelopes/RampageEnvelope.h"
 #include "Components/MetronomeComponent.h"
 #include "Components/DebounceVca.h"
+#include "Components/MidiComponent/MidiComponent.h"
 
 namespace RtAudioNs
 { 
@@ -39,6 +40,7 @@ namespace RtAudioNs
     std::unique_ptr<Components::PercussiveEnvelope> percussiveEnvelope;
     std::unique_ptr<Components::RampageEnvelope> rampageEnvelope;
     std::unique_ptr<Components::MetronomeComponent> metronomeComponent;
+    std::unique_ptr<Components::MidiComponent> midiComponent;
     Components::DebounceVca debounceVca;
 
     RtWaveTableCallback();

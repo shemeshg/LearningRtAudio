@@ -47,6 +47,11 @@ void RtWaveTableCallback::setupPlayersAndControls()
 
   rampageEnvelope = std::make_unique<Components::RampageEnvelope>(sampleRate);
 
+  midiComponent = std::make_unique<Components::MidiComponent>();
+  midiComponent->refrehInPorts();
+  midiComponent->printInPorts();
+  midiComponent->openInPort(1);
+
   // it is RtGuiSliderRefreshTableSetter to prevent aliassing on harmonics,
   // Maybe think how to do that, based on setter automaticlly,
   // but then we will have to manage MaxFrequency to restrigger RefreshTable
@@ -150,6 +155,7 @@ int RtWaveTableCallback::render(void *outputBuffer, void *inputBuffer, unsigned 
   std::vector<double>
       inChannel3 = getInput(inBuffer, nBufferFrames, streamInParameters.nChannels, 2);
 
+  midiComponent->getMessage(1);
   //std::vector<double>
   //    inChannel4 = getInput(inBuffer, nBufferFrames, streamInParameters.nChannels, 3);
   //std::vector<int> delayOffset(nBufferFrames, 0);     
@@ -163,7 +169,7 @@ int RtWaveTableCallback::render(void *outputBuffer, void *inputBuffer, unsigned 
 
   //simpleAdsrComponent->adsrRender.render(inChannel3, outChannel01);
   //linearAdsr->adsrRender.render(inChannel3, outChannel01);
-  exponentialAdsr->adsrRender.render(inChannel3, outChannel01);
+  //exponentialAdsr->adsrRender.render(inChannel3, outChannel01);
 
   //std::vector<double> attackVec(nBufferFrames, 0.001);
   //std::vector<double> decayVec(nBufferFrames, 1);

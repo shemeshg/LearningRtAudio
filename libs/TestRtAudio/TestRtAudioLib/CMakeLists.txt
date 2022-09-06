@@ -53,15 +53,18 @@ set(TestRtAudioLib_SRCS
   Components/Envelopes/AdsrStepTimeDomainPower.cpp
   Components/Envelopes/AdsrRender.h
   Components/Envelopes/AdsrRender.cpp
+  Components/MidiComponent/MidiComponent.h
+  Components/MidiComponent/MidiComponent.cpp
 )
 
 add_subdirectory(RtAudioLib)
+add_subdirectory(RtMidiLib)
 
 # Declare the library
 add_library(TestRtAudioLib STATIC
     ${TestRtAudioLib_SRCS}
 )
-target_link_libraries (TestRtAudioLib PUBLIC RtAudioLib ${LINKLIBS})
+target_link_libraries (TestRtAudioLib PUBLIC RtAudioLib RtMidiLib ${LINKLIBS})
 
 target_link_libraries(TestRtAudioLib PRIVATE ${LIBSNDFILE_LIBRARIES})
 
