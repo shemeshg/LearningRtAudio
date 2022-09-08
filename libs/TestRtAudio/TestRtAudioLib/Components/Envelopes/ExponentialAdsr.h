@@ -50,6 +50,24 @@ namespace RtAudioNs
       double _currentVal = 0;
     };
 
+    namespace  {
+    constexpr double AcurrentVal=0;
+    constexpr double AtargetValue = 0.8;
+    constexpr double AovershootRatio=1.01;
+    constexpr double Atime=2.0;
+    constexpr double sampeRate = 48800;
+
+    constexpr double DcurrentVal=0.8;
+    constexpr double DovershootRatio=1.1;
+    constexpr double Dtime=1.0;
+
+    constexpr double RtargetValue = 0;
+    constexpr double RovershootRatio=1.1;
+    constexpr double Rtime=1.0;
+
+    constexpr double AdsrSustainLevel = 0.7;
+    };
+
     class EAdsrStepA : public AdsrStepExp
     {
     public:
@@ -69,13 +87,13 @@ namespace RtAudioNs
       void resetRetval() override
       {
         double &returnVal = getReturnVal();
-        rampToMultiplier(0, 0.8, 1.01, 2.0, 48800);
+        rampToMultiplier(AcurrentVal, AtargetValue, AovershootRatio, Atime, sampeRate);
         returnVal = 0;
       }
       bool moveNextStateCondition() override
       {
         double &returnVal = getReturnVal();
-        return returnVal >= 0.8;
+        return returnVal >= AtargetValue;
       }
 
     };
@@ -100,8 +118,8 @@ namespace RtAudioNs
       void resetRetval() override
       {
         double &returnVal = getReturnVal();
-        returnVal = 0.8;
-        rampToMultiplier(0.8, sustainLevel, 1.1, 1, 48800);
+        returnVal = DcurrentVal;
+        rampToMultiplier(DcurrentVal, sustainLevel, DovershootRatio, Dtime, sampeRate);
       }
       bool moveNextStateCondition() override
       {
@@ -139,7 +157,7 @@ namespace RtAudioNs
       {
         double &returnVal = getReturnVal();
         sustainLevel = returnVal;
-        rampToMultiplier(sustainLevel, 0, 1.1, 1, 48800);
+        rampToMultiplier(sustainLevel, RtargetValue, RovershootRatio, Rtime, sampeRate);
       }
       bool moveNextStateCondition() override
       {
@@ -154,17 +172,17 @@ namespace RtAudioNs
     class ExponentialAdsr
     {
     public:
-      ExponentialAdsr() : stepA(returnVal, simpleAdsrStatus, SimpleAdsrStatus::a, SimpleAdsrStatus::beforeD),
+      ExponentialAdsr() : adsrRender(stepA, stepD, stepR, sustainLevel, simpleAdsrStatus),
+                          stepA(returnVal, simpleAdsrStatus, SimpleAdsrStatus::a, SimpleAdsrStatus::beforeD),
                           stepD(sustainLevel, returnVal, simpleAdsrStatus, SimpleAdsrStatus::d, SimpleAdsrStatus::s),
-                          stepR(returnVal, simpleAdsrStatus, SimpleAdsrStatus::r, SimpleAdsrStatus::idle),
-                          adsrRender(stepA, stepD, stepR, sustainLevel, simpleAdsrStatus)
+                          stepR(returnVal, simpleAdsrStatus, SimpleAdsrStatus::r, SimpleAdsrStatus::idle)
       {
       }
 
       AdsrRender adsrRender;
 
     protected:
-      double sustainLevel = 0.7;
+      double sustainLevel = AdsrSustainLevel;
 
     private:
       double returnVal = 0;

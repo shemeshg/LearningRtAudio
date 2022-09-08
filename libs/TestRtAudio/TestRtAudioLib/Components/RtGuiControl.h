@@ -10,7 +10,7 @@ namespace RtAudioNs
     class RtGuiControl
     {
     public:
-      RtGuiControl(std::string name, float &val, float min, float max, float step) : name(name), val(val), min(min), max(max), step(step)
+      RtGuiControl(std::string name, float &val, float min, float max, float step) : val(val), min(min), max(max), step(step), name(name)
       {
       }
 
