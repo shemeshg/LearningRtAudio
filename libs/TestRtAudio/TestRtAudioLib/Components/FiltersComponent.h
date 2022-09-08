@@ -2,6 +2,11 @@
 #include "DSP-Cpp-filters/lib/filter_common.h"
 #include "DSP-Cpp-filters/lib/filter_includes.h"
 
+namespace {
+    constexpr int default_fs = 48000;
+    constexpr int default_fc = 5000;
+}
+
 namespace RtAudioNs
 {
   namespace Components
@@ -9,7 +14,7 @@ namespace RtAudioNs
     class FiltersComponent
     {
     public:
-      std::unique_ptr<Biquad> filter;
+
       enum FILTER_TYPE
       {
 
@@ -214,7 +219,7 @@ namespace RtAudioNs
         }
       }
 
-      void setQ(unsigned int _Q)
+      void setQ(float _Q)
       {
         if (_Q != Q)
         {
@@ -223,7 +228,7 @@ namespace RtAudioNs
         }
       }
 
-      void setGain_db(unsigned int _gain_db)
+      void setGain_db(float _gain_db)
       {
         if (_gain_db != gain_db)
         {
@@ -232,7 +237,7 @@ namespace RtAudioNs
         }
       }
 
-      void setBw(unsigned int _bw)
+      void setBw(float _bw)
       {
         if (_bw != bw)
         {
@@ -242,8 +247,9 @@ namespace RtAudioNs
       }
 
     private:
-      int fs = 48000;
-      int fc = 5000;
+      std::unique_ptr<Biquad> filter;
+      int fs = default_fs;
+      int fc = default_fc;
       float Q = 1;
       float gain_db = 0;
       float bw = 0;
