@@ -1,6 +1,24 @@
 #pragma once
-#include "DSP-Cpp-filters/lib/filter_common.h"
-#include "DSP-Cpp-filters/lib/filter_includes.h"
+#include "DSP-Cpp-filters/lib/biquad.h"
+#include "DSP-Cpp-filters/lib/fo_apf.h"
+#include "DSP-Cpp-filters/lib/fo_hpf.h"
+#include "DSP-Cpp-filters/lib/fo_lpf.h"
+#include "DSP-Cpp-filters/lib/fo_shelving_high.h"
+#include "DSP-Cpp-filters/lib/fo_shelving_low.h"
+#include "DSP-Cpp-filters/lib/so_apf.h"
+#include "DSP-Cpp-filters/lib/so_bpf.h"
+#include "DSP-Cpp-filters/lib/so_bsf.h"
+#include "DSP-Cpp-filters/lib/so_lpf.h"
+#include "DSP-Cpp-filters/lib/so_hpf.h"
+#include "DSP-Cpp-filters/lib/so_butterworth_bpf.h"
+#include "DSP-Cpp-filters/lib/so_butterworth_bsf.h"
+#include "DSP-Cpp-filters/lib/so_butterworth_hpf.h"
+#include "DSP-Cpp-filters/lib/so_butterworth_lpf.h"
+#include "DSP-Cpp-filters/lib/so_linkwitz_riley_hpf.h"
+#include "DSP-Cpp-filters/lib/so_linkwitz_riley_lpf.h"
+#include "DSP-Cpp-filters/lib/so_parametric_cq_boost.h"
+#include "DSP-Cpp-filters/lib/so_parametric_cq_cut.h"
+#include "DSP-Cpp-filters/lib/so_parametric_ncq.h"
 
 namespace {
     constexpr int default_fs = 48000;
