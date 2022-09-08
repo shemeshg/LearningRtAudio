@@ -16,7 +16,7 @@ namespace RtAudioNs
       }
       void render(std::vector<double> &vGate, std::vector<double> &vOut);
 
-    protected:
+    private:
       double &sustainLevel;
       SimpleAdsrStatus &simpleAdsrStatus;
       AdsrStep &stepA;

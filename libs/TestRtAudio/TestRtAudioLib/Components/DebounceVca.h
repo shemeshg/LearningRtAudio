@@ -1,6 +1,12 @@
 #pragma once
 #include <vector>
 
+namespace {
+  constexpr double defautlNoiseAmount = 0.05;
+  constexpr int defaultKeepStateConst = 1000; 
+
+}
+
 namespace RtAudioNs
 {
   namespace Components
@@ -9,10 +15,11 @@ namespace RtAudioNs
     {
     public:
       void process(std::vector<double> &channelData, std::vector<double> &out_vector);
-
-      double noiseAmount = 0.05;
-      int keepStateConst = 1000;
+   
     private:
+      double noiseAmount = defautlNoiseAmount;
+      int keepStateConst = defaultKeepStateConst; 
+      
       enum MOVE_TO
       {
         UP,

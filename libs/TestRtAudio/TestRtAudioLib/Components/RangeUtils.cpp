@@ -7,7 +7,9 @@ float rescaleRange(float x, float in_min, float in_max, float out_min, float out
 
 double amplitudeFromDb(double amp)
 {
-  return pow(10.0, amp / 20.0);
+  constexpr double dbBase = 10.0;
+  constexpr double dbPow = 10.0;
+  return pow(dbBase, amp / dbPow);
 }
 
 float constrainRange(float x, float min_val, float max_val)
@@ -19,7 +21,7 @@ float constrainRange(float x, float min_val, float max_val)
   return x;
 }
 
-float midiNoteToFrequency(float noteNumber)
+double midiNoteToFrequency(double noteNumber)
 {
-  return 440.0 * pow(2.0, (noteNumber - 69) / 12.0);
+  return freqA * pow(octavePow, (noteNumber - baseNoteMidiNumber) / octaveSemitons);
 };

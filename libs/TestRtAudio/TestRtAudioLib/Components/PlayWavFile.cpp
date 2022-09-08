@@ -74,14 +74,14 @@ namespace RtAudioNs
       std::vector<std::vector<double>> v;
       if (channels * bufferSize == 0){return v;}
 
-      double buffer[channels * bufferSize];
+      std::vector<double> buffer(channels * bufferSize,0);      
       double *bufferStart = &buffer[0];
       double *bufferCurrent = &buffer[0];
 
-      int icount = 0;
-      if ((icount = sndfile->readf(buffer, bufferSize)) != bufferSize && isLoopback)
-      {
-        bufferCurrent += icount;
+      int64_t icount = 0;
+      if ((icount = sndfile->readf(&buffer[0], bufferSize)) != bufferSize && isLoopback)
+      {        
+        bufferCurrent += icount; // NOLINT
         sndfile->seek(0, 0);
         sndfile->readf(bufferCurrent, bufferSize - icount);
       }
@@ -97,7 +97,7 @@ namespace RtAudioNs
 
         for (unsigned int ch = 0; ch < channels; ch++)
         {
-          v[ch][i] = *(bufferStart + i * (channels));
+          v[ch][i] = *(bufferStart + i * (channels)); // NOLINT
         }
       }
       return v;

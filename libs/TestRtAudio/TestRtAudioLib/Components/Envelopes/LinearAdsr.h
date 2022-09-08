@@ -17,7 +17,7 @@ namespace RtAudioNs
           double &_returnVal,
           SimpleAdsrStatus &_simpleAdsrStatus,
           SimpleAdsrStatus _currentStatus,
-          SimpleAdsrStatus _beforeNextStatus) : AdsrStep(_returnVal, _simpleAdsrStatus, _currentStatus, _beforeNextStatus) {}
+          SimpleAdsrStatus _beforeNextStatus) : returnVal{_returnVal},AdsrStep(_returnVal, _simpleAdsrStatus, _currentStatus, _beforeNextStatus) {}
 
       void updateReturnVal()
       {
@@ -32,6 +32,8 @@ namespace RtAudioNs
         return returnVal >= 0.8;
       }
       double incrementStep = 0.00002;
+      private:
+        double &returnVal;
     };
 
     class LAdsrStepD : public AdsrStep
@@ -42,7 +44,7 @@ namespace RtAudioNs
           double &_returnVal,
           SimpleAdsrStatus &_simpleAdsrStatus,
           SimpleAdsrStatus _currentStatus,
-          SimpleAdsrStatus _beforeNextStatus) : AdsrStep(_returnVal, _simpleAdsrStatus, _currentStatus, _beforeNextStatus),
+          SimpleAdsrStatus _beforeNextStatus) : returnVal{_returnVal}, AdsrStep(_returnVal, _simpleAdsrStatus, _currentStatus, _beforeNextStatus),
                                                 sustainLevel{_sustainLevel} {}
 
       void updateReturnVal()
@@ -62,6 +64,7 @@ namespace RtAudioNs
 
     private:
       double &sustainLevel;
+        double &returnVal;
     };
 
     class LAdsrStepR : public AdsrStep
@@ -71,7 +74,7 @@ namespace RtAudioNs
           double &_returnVal,
           SimpleAdsrStatus &_simpleAdsrStatus,
           SimpleAdsrStatus _currentStatus,
-          SimpleAdsrStatus _beforeNextStatus) : AdsrStep(_returnVal, _simpleAdsrStatus, _currentStatus, _beforeNextStatus) {}
+          SimpleAdsrStatus _beforeNextStatus) : returnVal{_returnVal},AdsrStep(_returnVal, _simpleAdsrStatus, _currentStatus, _beforeNextStatus) {}
 
       void updateReturnVal()
       {
@@ -97,6 +100,7 @@ namespace RtAudioNs
 
     private:
       double sustainLevel = 0;
+      double &returnVal;
     };
 
     class LinearAdsrComponent

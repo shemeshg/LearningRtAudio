@@ -15,7 +15,9 @@ namespace RtAudioNs
           double &_returnVal,
           SimpleAdsrStatus &_simpleAdsrStatus,
           SimpleAdsrStatus _currentStatus,
-          SimpleAdsrStatus _beforeNextStatus) : AdsrStepTimeDomainPower(_returnVal, _simpleAdsrStatus, _currentStatus, _beforeNextStatus) {}
+          SimpleAdsrStatus _beforeNextStatus) : 
+            AdsrStepTimeDomainPower(_returnVal, _simpleAdsrStatus, _currentStatus, _beforeNextStatus),
+            returnVal{_returnVal} {}
 
       void updateReturnVal()
       {
@@ -31,6 +33,9 @@ namespace RtAudioNs
         return position >= totalFramesLen;
       }
       double lineCurved = 0;
+
+      private:
+        double &returnVal;
     };
 
     class AdsrStepD : public AdsrStepTimeDomainPower
@@ -42,7 +47,8 @@ namespace RtAudioNs
           SimpleAdsrStatus &_simpleAdsrStatus,
           SimpleAdsrStatus _currentStatus,
           SimpleAdsrStatus _beforeNextStatus) : AdsrStepTimeDomainPower(_returnVal, _simpleAdsrStatus, _currentStatus, _beforeNextStatus),
-                                                sustainLevel{_sustainLevel} {}
+                                                sustainLevel{_sustainLevel},
+                                                returnVal{_returnVal}  {}
 
       void updateReturnVal()
       {
@@ -60,6 +66,7 @@ namespace RtAudioNs
       double lineCurved = 0;
     private:
       double &sustainLevel;
+      double &returnVal;
     };
 
     class AdsrStepR : public AdsrStepTimeDomainPower
@@ -69,7 +76,9 @@ namespace RtAudioNs
           double &_returnVal,
           SimpleAdsrStatus &_simpleAdsrStatus,
           SimpleAdsrStatus _currentStatus,
-          SimpleAdsrStatus _beforeNextStatus) : AdsrStepTimeDomainPower(_returnVal, _simpleAdsrStatus, _currentStatus, _beforeNextStatus) {}
+          SimpleAdsrStatus _beforeNextStatus) : 
+            AdsrStepTimeDomainPower(_returnVal, _simpleAdsrStatus, _currentStatus, _beforeNextStatus),
+            returnVal{_returnVal}  {}
 
       void updateReturnVal()
       {
@@ -96,6 +105,7 @@ namespace RtAudioNs
 
     private:
       double sustainLevel = 0;
+      double &returnVal;
     };
 
     class SimpleAdsrComponent

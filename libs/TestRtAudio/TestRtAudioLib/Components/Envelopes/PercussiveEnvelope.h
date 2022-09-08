@@ -14,7 +14,10 @@ namespace RtAudioNs
           double &_returnVal,
           SimpleAdsrStatus &_simpleAdsrStatus,
           SimpleAdsrStatus _currentStatus,
-          SimpleAdsrStatus _beforeNextStatus) : AdsrStepTimeDomainPower(_returnVal, _simpleAdsrStatus, _currentStatus, _beforeNextStatus) {}
+          SimpleAdsrStatus _beforeNextStatus) : 
+                AdsrStepTimeDomainPower(_returnVal, _simpleAdsrStatus, _currentStatus, _beforeNextStatus),
+                returnVal{_returnVal}
+                           {}
 
       void updateReturnVal()
       {
@@ -31,6 +34,8 @@ namespace RtAudioNs
         return position >= totalFramesLen;
       }
 
+      private:
+        double &returnVal;
     };
 
     class PercussiveEnvelope
