@@ -20,7 +20,7 @@ namespace RtAudioNs
                   std::vector<int> &posisionOffset,
                   std::vector<double> &feedback)
       {
-        const int size = vec.size();
+        const int size = (int)vec.size();
         for (int i = 0; i < outVector.size(); i++)
         {
           const int readHeadPosision = mod((writeHead - posisionOffset[i]), size);

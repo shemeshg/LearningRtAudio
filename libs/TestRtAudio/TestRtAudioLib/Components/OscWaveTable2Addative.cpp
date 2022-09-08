@@ -20,7 +20,7 @@ namespace RtAudioNs
 
     int OscWaveTable2Addative::render(std::vector<double> &channelData, std::vector<double> &cvPitchChange)
     {
-      float detuneFrequency = customMidiScale.cMidiNoteToFrequency(detuneNoteNumber);
+      float detuneFrequency = (float)customMidiScale.cMidiNoteToFrequency(detuneNoteNumber);
       oscSine1->harmoniesLevels = harmoniesLevels;
       oscSine1->gFrequency = detuneFrequency + detuneOscsAmount;
       oscSine1->render(channelData, cvPitchChange);
