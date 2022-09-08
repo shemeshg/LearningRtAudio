@@ -21,17 +21,17 @@ namespace RtAudioNs
 
       void updateReturnVal()
       {
-        returnVal = returnVal * pow(0.01, (1.0 / (double)totalFramesLen));
-        position++;
+        returnVal = returnVal * pow(0.01, (1.0 / (double)getTotalFramesLen()));
+        getPosition()++;
       }
       void resetRetval()
       {
-        position = 0;
+        getPosition() = 0;
         returnVal = 1;
       }
 
       bool moveNextStateCondition() {
-        return position >= totalFramesLen;
+        return getPosition() >= getTotalFramesLen();
       }
 
       private:

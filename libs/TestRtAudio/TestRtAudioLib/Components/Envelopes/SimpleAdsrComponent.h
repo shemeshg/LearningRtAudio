@@ -19,22 +19,32 @@ namespace RtAudioNs
             AdsrStepTimeDomainPower(_returnVal, _simpleAdsrStatus, _currentStatus, _beforeNextStatus),
             returnVal{_returnVal} {}
 
-      void updateReturnVal()
+      void updateReturnVal() override
       {
         returnVal = getPowSignedZerowToOne(lineCurved);
-        position++;
+        getPosition()++;
       }
-      void resetRetval()
+      void resetRetval() override
       {
-        position = 0;
+        getPosition() = 0;
         returnVal = 0;
       }
-      bool moveNextStateCondition() {
-        return position >= totalFramesLen;
+      bool moveNextStateCondition() override {
+        return getPosition() >= getTotalFramesLen();
       }
-      double lineCurved = 0;
+      
+        double getLineCurved(){
+          return lineCurved;
+        }
+        void setLineCurved(double val){
+          lineCurved = val;
+        }
+
+
+
 
       private:
+        double lineCurved = 0;
         double &returnVal;
     };
 
@@ -50,21 +60,29 @@ namespace RtAudioNs
                                                 sustainLevel{_sustainLevel},
                                                 returnVal{_returnVal}  {}
 
-      void updateReturnVal()
+      void updateReturnVal() override
       {
         returnVal = (1.0 - sustainLevel) * (1.0 - getPowSignedZerowToOne(lineCurved)) + sustainLevel;
-        position++;
+        getPosition()++;
       }
-      void resetRetval()
+      void resetRetval() override
       {
-        position = 0;
+        getPosition() = 0;
         returnVal = 1;
       }
-      bool moveNextStateCondition() {
-        return position >= totalFramesLen;
+      bool moveNextStateCondition() override {
+        return getPosition() >= getTotalFramesLen();
       }
-      double lineCurved = 0;
+
+        double getLineCurved(){
+          return lineCurved;
+        }
+        void setLineCurved(double val){
+          lineCurved = val;
+        } 
+      
     private:
+      double lineCurved = 0;
       double &sustainLevel;
       double &returnVal;
     };
@@ -80,7 +98,7 @@ namespace RtAudioNs
             AdsrStepTimeDomainPower(_returnVal, _simpleAdsrStatus, _currentStatus, _beforeNextStatus),
             returnVal{_returnVal}  {}
 
-      void updateReturnVal()
+      void updateReturnVal() override
       {
         if (returnVal > 0)
         {
@@ -90,20 +108,26 @@ namespace RtAudioNs
         {
           returnVal = 0;
         }
-        position++;
+        getPosition()++;
       }
-      void resetRetval()
+      void resetRetval() override
       {
-        position = 0;
+        getPosition() = 0;
         sustainLevel = returnVal;
       }
-      bool moveNextStateCondition() {
-        return position >= totalFramesLen;
+      bool moveNextStateCondition() override {
+        return getPosition() >= getTotalFramesLen();
       }
-
-      double lineCurved = 0; 
+        double getLineCurved(){
+          return lineCurved;
+        }
+        void setLineCurved(double val){
+          lineCurved = val;
+        }
+      
 
     private:
+      double lineCurved = 0; 
       double sustainLevel = 0;
       double &returnVal;
     };
@@ -117,12 +141,10 @@ namespace RtAudioNs
                               stepR(returnVal, simpleAdsrStatus, SimpleAdsrStatus::r, SimpleAdsrStatus::idle),
                               adsrRender(stepA, stepD, stepR, sustainLevel, simpleAdsrStatus)
       {
-        stepA.lineCurved = 0.2; //This is zero to one, see in header constant 5 as max power.
-        stepD.lineCurved = - 0.2;
-        stepR.lineCurved = 0.4;
-        stepA.totalFramesLen = 44800; //This is the buffer len(time)
-        stepD.totalFramesLen = 44800;
-        stepR.totalFramesLen = 44800;
+        stepA.setLineCurved(0.2); //This is zero to one, see in header constant 5 as max power.
+        stepD.setLineCurved( - 0.2);
+        stepR.setLineCurved( 0.4);
+
       }
 
       double sustainLevel = 0.7;

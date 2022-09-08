@@ -39,6 +39,11 @@ namespace RtAudioNs
       AdsrStep(AdsrStep&&) = delete;
       AdsrStep& operator=(AdsrStep&&) = delete; 
       
+    protected:
+       double &getReturnVal(){
+        return returnVal;
+       }
+
     private:
       double &returnVal;
       SimpleAdsrStatus &simpleAdsrStatus, currentStatus, beforeNextStatus;

@@ -57,26 +57,27 @@ namespace RtAudioNs
           double &_returnVal,
           SimpleAdsrStatus &_simpleAdsrStatus,
           SimpleAdsrStatus _currentStatus,
-          SimpleAdsrStatus _beforeNextStatus) : returnVal{_returnVal},AdsrStepExp(_returnVal, _simpleAdsrStatus, _currentStatus, _beforeNextStatus) {
+          SimpleAdsrStatus _beforeNextStatus) : AdsrStepExp(_returnVal, _simpleAdsrStatus, _currentStatus, _beforeNextStatus) {
           }
 
-      void updateReturnVal()
+      void updateReturnVal() override
       {
+        double &returnVal = getReturnVal();
         returnVal = incrementCurrentVal();         
         incrementExpVal();
       }
-      void resetRetval()
+      void resetRetval() override
       {
+        double &returnVal = getReturnVal();
         rampToMultiplier(0, 0.8, 1.01, 2.0, 48800);
         returnVal = 0;
       }
-      bool moveNextStateCondition()
+      bool moveNextStateCondition() override
       {
+        double &returnVal = getReturnVal();
         return returnVal >= 0.8;
       }
 
-      private:
-        double &returnVal;
     };
 
     class EAdsrStepD : public AdsrStepExp
@@ -88,28 +89,28 @@ namespace RtAudioNs
           SimpleAdsrStatus &_simpleAdsrStatus,
           SimpleAdsrStatus _currentStatus,
           SimpleAdsrStatus _beforeNextStatus) : AdsrStepExp(_returnVal, _simpleAdsrStatus, _currentStatus, _beforeNextStatus),
-                                                returnVal{_returnVal},
                                                 sustainLevel{_sustainLevel} {}
 
-      void updateReturnVal()
+      void updateReturnVal() override
       {
+        double &returnVal = getReturnVal();
         returnVal = incrementCurrentVal();
         incrementExpVal();
       }
-      void resetRetval()
+      void resetRetval() override
       {
+        double &returnVal = getReturnVal();
         returnVal = 0.8;
         rampToMultiplier(0.8, sustainLevel, 1.1, 1, 48800);
       }
-      bool moveNextStateCondition()
+      bool moveNextStateCondition() override
       {
+        double &returnVal = getReturnVal();
         return returnVal <= sustainLevel;
       }
 
     private:
       double &sustainLevel;
-      double &returnVal;
-
     };
 
     class EAdsrStepR : public AdsrStepExp
@@ -119,11 +120,11 @@ namespace RtAudioNs
           double &_returnVal,
           SimpleAdsrStatus &_simpleAdsrStatus,
           SimpleAdsrStatus _currentStatus,
-          SimpleAdsrStatus _beforeNextStatus) : AdsrStepExp(_returnVal, _simpleAdsrStatus, _currentStatus, _beforeNextStatus),
-                                                returnVal{_returnVal} {}
+          SimpleAdsrStatus _beforeNextStatus) : AdsrStepExp(_returnVal, _simpleAdsrStatus, _currentStatus, _beforeNextStatus){}
 
-      void updateReturnVal()
+      void updateReturnVal() override
       {
+        double &returnVal = getReturnVal();
         if (returnVal > 0)
         {
           returnVal = incrementCurrentVal();
@@ -134,19 +135,20 @@ namespace RtAudioNs
           returnVal = 0;
         }
       }
-      void resetRetval()
+      void resetRetval() override
       {
+        double &returnVal = getReturnVal();
         sustainLevel = returnVal;
         rampToMultiplier(sustainLevel, 0, 1.1, 1, 48800);
       }
-      bool moveNextStateCondition()
+      bool moveNextStateCondition() override
       {
+        double &returnVal = getReturnVal();
         return returnVal == 0;
       }
 
     private:
       double sustainLevel = 0;
-      double &returnVal;
     };
 
     class ExponentialAdsr

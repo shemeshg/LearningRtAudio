@@ -9,7 +9,6 @@ namespace RtAudioNs
 
     void PercussiveEnvelope::render(std::vector<double> &vGate, std::vector<double> &vOut)
     {
-      stepR.totalFramesLen = 44800;
 
       for (unsigned int i = 0; i < vGate.size(); i++)
       {

@@ -8,8 +8,6 @@ namespace RtAudioNs
 {
   namespace Components
   {
-
-
     class LAdsrStepA : public AdsrStep
     {
     public:
@@ -17,23 +15,29 @@ namespace RtAudioNs
           double &_returnVal,
           SimpleAdsrStatus &_simpleAdsrStatus,
           SimpleAdsrStatus _currentStatus,
-          SimpleAdsrStatus _beforeNextStatus) : returnVal{_returnVal},AdsrStep(_returnVal, _simpleAdsrStatus, _currentStatus, _beforeNextStatus) {}
+          SimpleAdsrStatus _beforeNextStatus) : AdsrStep(_returnVal, _simpleAdsrStatus, _currentStatus, _beforeNextStatus) {}
 
       void updateReturnVal() override
       {
+        double &returnVal = getReturnVal();
         returnVal = returnVal + incrementStep;
       }
       void resetRetval() override
       {
+        double &returnVal = getReturnVal();
         returnVal = 0;
       }
       bool moveNextStateCondition() override
       {
-        return returnVal >= 0.8;
+        double &returnVal = getReturnVal();
+        return returnVal >= maxAStepLevel;
       }
-      double incrementStep = 0.00002;
-      private:
-        double &returnVal;
+      
+
+    private:
+      const double incrementStep = 0.00002;
+      const double maxAStepLevel = 0.8;
+
     };
 
     class LAdsrStepD : public AdsrStep
@@ -44,19 +48,22 @@ namespace RtAudioNs
           double &_returnVal,
           SimpleAdsrStatus &_simpleAdsrStatus,
           SimpleAdsrStatus _currentStatus,
-          SimpleAdsrStatus _beforeNextStatus) : returnVal{_returnVal}, AdsrStep(_returnVal, _simpleAdsrStatus, _currentStatus, _beforeNextStatus),
+          SimpleAdsrStatus _beforeNextStatus) : AdsrStep(_returnVal, _simpleAdsrStatus, _currentStatus, _beforeNextStatus),
                                                 sustainLevel{_sustainLevel} {}
 
-      void updateReturnVal()
+      void updateReturnVal() override
       {
+        double &returnVal = getReturnVal();
         returnVal = returnVal + incrementStep;
       }
-      void resetRetval()
+      void resetRetval() override
       {
+        double &returnVal = getReturnVal();
         returnVal = 1;
       }
-      bool moveNextStateCondition()
+      bool moveNextStateCondition() override
       {
+        double &returnVal = getReturnVal();
         return returnVal <= sustainLevel;
       }
 
@@ -64,7 +71,6 @@ namespace RtAudioNs
 
     private:
       double &sustainLevel;
-        double &returnVal;
     };
 
     class LAdsrStepR : public AdsrStep
@@ -74,10 +80,11 @@ namespace RtAudioNs
           double &_returnVal,
           SimpleAdsrStatus &_simpleAdsrStatus,
           SimpleAdsrStatus _currentStatus,
-          SimpleAdsrStatus _beforeNextStatus) : returnVal{_returnVal},AdsrStep(_returnVal, _simpleAdsrStatus, _currentStatus, _beforeNextStatus) {}
+          SimpleAdsrStatus _beforeNextStatus) :  AdsrStep(_returnVal, _simpleAdsrStatus, _currentStatus, _beforeNextStatus) {}
 
-      void updateReturnVal()
+      void updateReturnVal() override
       {
+        double &returnVal = getReturnVal();
         if (returnVal > 0)
         {
           returnVal = returnVal + incrementStep;
@@ -87,12 +94,14 @@ namespace RtAudioNs
           returnVal = 0;
         }
       }
-      void resetRetval()
+      void resetRetval() override
       {
+        double &returnVal = getReturnVal();
         sustainLevel = returnVal;
       }
-      bool moveNextStateCondition()
+      bool moveNextStateCondition() override
       {
+        double &returnVal = getReturnVal();
         return returnVal == 0;
       }
 
@@ -100,7 +109,6 @@ namespace RtAudioNs
 
     private:
       double sustainLevel = 0;
-      double &returnVal;
     };
 
     class LinearAdsrComponent
