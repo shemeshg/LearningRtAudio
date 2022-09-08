@@ -12,8 +12,11 @@ GuiSlider::GuiSlider(RtAudioNs::Components::RtGuiControl &rtg, QWidget *parent)
     ui->horizontalSlider->setRange(0,INT_MAX);
 
     float val=rtg.getVal();
-    ui->horizontalSlider->setValue(rescaleRange(val, rtg.getMin(), rtg.getMax(), 0,(float)INT_MAX));
+    ui->horizontalSlider->setValue((int)rescaleRange(val, rtg.getMin(), rtg.getMax(), 0,(double)INT_MAX));
     ui->lineEdit->setText(QString::number(rtg.getVal()));
+
+    connect(ui->lineEdit, &QLineEdit::editingFinished, this, &GuiSlider::onLineEditEditingFinished);
+    connect(ui->horizontalSlider, &QSlider::sliderMoved, this, &GuiSlider::onHorizontalSliderSliderMoved);
 }
 
 GuiSlider::~GuiSlider()
@@ -28,7 +31,7 @@ GuiSlider::~GuiSlider()
 
 
 
-void GuiSlider::on_lineEdit_editingFinished()
+void GuiSlider::onLineEditEditingFinished()
 {
     float val=(int)ui->lineEdit->text().toFloat();
     ui->horizontalSlider->setValue(rescaleRange(val, rtg.getMin(), rtg.getMax(), 0,(float)INT_MAX));
@@ -36,7 +39,7 @@ void GuiSlider::on_lineEdit_editingFinished()
 }
 
 
-void GuiSlider::on_horizontalSlider_sliderMoved(int position)
+void GuiSlider::onHorizontalSliderSliderMoved(int position)
 {    
     float val=rescaleRange(position, 0,(float)INT_MAX,rtg.getMin(), rtg.getMax());
     val=int(val/rtg.getStep()) * rtg.getStep();

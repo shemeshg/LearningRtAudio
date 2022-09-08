@@ -2,7 +2,8 @@
 #define GUISLIDER_H
 
 #include <QWidget>
-#include "WaveTableCallback.h"
+#include "Components/RtGuiControl.h"
+
 
 namespace Ui { class GuiSlider; }
 
@@ -13,13 +14,18 @@ class GuiSlider : public QWidget
 
 public:
     GuiSlider(RtAudioNs::Components::RtGuiControl &rtg,QWidget *parent = nullptr);
-    ~GuiSlider();
+    ~GuiSlider() override;
+
+    GuiSlider(const GuiSlider&) = delete;
+    GuiSlider& operator=(const GuiSlider&)= delete;
+    GuiSlider(GuiSlider&&) = delete;
+    GuiSlider& operator=(GuiSlider&&) = delete;
 
 private slots:
 
-    void on_lineEdit_editingFinished();
+    void onLineEditEditingFinished();
 
-    void on_horizontalSlider_sliderMoved(int position);
+    void onHorizontalSliderSliderMoved(int position);
 
 
 
