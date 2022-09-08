@@ -179,12 +179,13 @@ namespace RtAudioNs
       {
       }
 
-      AdsrRender adsrRender;
-
-    protected:
-      double sustainLevel = AdsrSustainLevel;
+    void render(std::vector<double> &vGate, std::vector<double> &vOut){
+        adsrRender.render(vGate,vOut);
+    }
 
     private:
+      AdsrRender adsrRender;
+      double sustainLevel = AdsrSustainLevel;
       double returnVal = 0;
 
       SimpleAdsrStatus simpleAdsrStatus = SimpleAdsrStatus::idle;

@@ -167,9 +167,9 @@ int RtWaveTableCallback::render(void *outputBuffer, void *inputBuffer, unsigned 
   //circularBuffer->render(inChannel3, outChannel01, delayOffset, delayFeedback);
 
 
-  simpleAdsrComponent->render(inChannel3, outChannel01);
+  //simpleAdsrComponent->render(inChannel3, outChannel01);
   //linearAdsr->adsrRender.render(inChannel3, outChannel01);
-  //exponentialAdsr->adsrRender.render(inChannel3, outChannel01);
+  //exponentialAdsr->render(inChannel3, outChannel01);
 
   //std::vector<double> attackVec(nBufferFrames, 0.001);
   //std::vector<double> decayVec(nBufferFrames, 1);
