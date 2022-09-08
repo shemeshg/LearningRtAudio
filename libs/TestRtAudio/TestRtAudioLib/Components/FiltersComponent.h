@@ -34,7 +34,7 @@ namespace RtAudioNs
         FILTER_SO_PARAMETRIC_NCQ,
       };
 
-      FiltersComponent(const FILTER_TYPE _filterType, unsigned int sampleRate) : fs{sampleRate}
+      FiltersComponent(const FILTER_TYPE _filterType,  int sampleRate) : fs{sampleRate}
       {
         setFilterType(_filterType);
       }
@@ -46,62 +46,62 @@ namespace RtAudioNs
         filterType = _filterType;
         switch (filterType)
         {
-        case FILTER_FO_APF:
-          filter.reset(new FO_APF);
+        case FILTER_FO_APF:            
+          filter = std::make_unique<FO_APF>();
           break;
         case FILTER_FO_HPF:
-          filter.reset(new FO_HPF);
+          filter = std::make_unique<FO_HPF>();
           break;
         case FILTER_FO_LPF:
-          filter.reset(new FO_LPF);
+          filter = std::make_unique<FO_LPF>();
           break;
         case FILTER_FO_SHELVING_HIGH:
-          filter.reset(new FO_SHELVING_HIGH);
+          filter = std::make_unique<FO_SHELVING_HIGH>();
           break;
         case FILTER_FO_SHELVING_LOW:
-          filter.reset(new FO_SHELVING_LOW);
+          filter = std::make_unique<FO_SHELVING_LOW>();
           break;
         case FILTER_SO_APF:
-          filter.reset(new SO_APF);
+          filter = std::make_unique<SO_APF>();
           break;
         case FILTER_SO_BPF:
-          filter.reset(new SO_BPF);
+          filter = std::make_unique<SO_BPF>();
           break;
         case FILTER_SO_BSF:
-          filter.reset(new SO_BSF);
+          filter = std::make_unique<SO_BSF>();
           break;
         case FILTER_SO_BUTTERWORTH_BPF:
-          filter.reset(new SO_BUTTERWORTH_BPF);
+          filter = std::make_unique<SO_BUTTERWORTH_BPF>();
           break;
         case FILTER_SO_BUTTERWORTH_BSF:
-          filter.reset(new SO_BUTTERWORTH_BSF);
+          filter = std::make_unique<SO_BUTTERWORTH_BSF>();
           break;
         case FILTER_SO_BUTTERWORTH_HPF:
-          filter.reset(new SO_BUTTERWORTH_HPF);
+          filter = std::make_unique<SO_BUTTERWORTH_HPF>();
           break;
         case FILTER_SO_BUTTERWORTH_LPF:
-          filter.reset(new SO_BUTTERWORTH_LPF);
+          filter = std::make_unique<SO_BUTTERWORTH_LPF>();
           break;
         case FILTER_SO_LPF:
-          filter.reset(new SO_LPF);
+          filter = std::make_unique<SO_LPF>();
           break;
         case FILTER_SO_HPF:
-          filter.reset(new SO_HPF);
+          filter = std::make_unique<SO_HPF>();
           break;
         case FILTER_SO_LINKWITZ_RILEY_HPF:
-          filter.reset(new SO_LINKWITZ_RILEY_HPF);
+          filter = std::make_unique<SO_LINKWITZ_RILEY_HPF>();
           break;
         case FILTER_SO_LINKWITZ_RILEY_LPF:
-          filter.reset(new SO_LINKWITZ_RILEY_LPF);
+          filter = std::make_unique<SO_LINKWITZ_RILEY_LPF>();
           break;
         case FILTER_SO_PARAMETRIC_CQ_BOOST:
-          filter.reset(new SO_PARAMETRIC_CQ_BOOST);
+          filter = std::make_unique<SO_PARAMETRIC_CQ_BOOST>();
           break;
         case FILTER_SO_PARAMETRIC_CQ_CUT:
-          filter.reset(new SO_PARAMETRIC_CQ_CUT);
+          filter = std::make_unique<SO_PARAMETRIC_CQ_CUT>();
           break;
         case FILTER_SO_PARAMETRIC_NCQ:
-          filter.reset(new SO_PARAMETRIC_NCQ);
+          filter = std::make_unique<SO_PARAMETRIC_NCQ>();
           break;
         }
       }
@@ -110,102 +110,102 @@ namespace RtAudioNs
       {
         if (filterType == FILTER_FO_APF)
         {
-          FO_APF *a = (FO_APF *)filter.get();
+          FO_APF *a =  dynamic_cast<FO_APF *>(filter.get());
           a->calculate_coeffs(fc, fs);
         }
         else if (filterType == FILTER_FO_HPF)
         {
-          FO_HPF *a = (FO_HPF *)filter.get();
+          FO_HPF *a = dynamic_cast<FO_HPF *>(filter.get());
           a->calculate_coeffs(fc, fs);
         }
         else if (filterType == FILTER_FO_LPF)
         {
-          FO_LPF *a = (FO_LPF *)filter.get();
+          FO_LPF *a = dynamic_cast<FO_LPF *>(filter.get());
           a->calculate_coeffs(fc, fs);
         }
         else if (filterType == FILTER_FO_SHELVING_HIGH)
         {
-          FO_SHELVING_HIGH *a = (FO_SHELVING_HIGH *)filter.get();
+          FO_SHELVING_HIGH *a = dynamic_cast<FO_SHELVING_HIGH *>(filter.get());
           a->calculate_coeffs(gain_db, fc, fs);
         }
         else if (filterType == FILTER_FO_SHELVING_LOW)
         {
-          FO_SHELVING_LOW *a = (FO_SHELVING_LOW *)filter.get();
+          FO_SHELVING_LOW *a = dynamic_cast<FO_SHELVING_LOW *>(filter.get());
           a->calculate_coeffs(gain_db, fc, fs);
         }
         else if (filterType == FILTER_SO_APF)
         {
-          SO_APF *a = (SO_APF *)filter.get();
+          SO_APF *a = dynamic_cast<SO_APF *>(filter.get());
           a->calculate_coeffs(Q, fs);
         }
         else if (filterType == FILTER_SO_BPF)
         {
-          SO_BPF *a = (SO_BPF *)filter.get();
+          SO_BPF *a =dynamic_cast<SO_BPF *>(filter.get());
           a->calculate_coeffs(Q, fc, fs);
         }
         else if (filterType == FILTER_SO_BSF)
         {
-          SO_BSF *a = (SO_BSF *)filter.get();
+          SO_BSF *a = dynamic_cast<SO_BSF *>(filter.get());
           a->calculate_coeffs(Q, fc, fs);
         }
         else if (filterType == FILTER_SO_BUTTERWORTH_BPF)
         {
-          SO_BUTTERWORTH_BPF *a = (SO_BUTTERWORTH_BPF *)filter.get();
+          SO_BUTTERWORTH_BPF *a = dynamic_cast<SO_BUTTERWORTH_BPF *>(filter.get());
           a->calculate_coeffs(bw, fc, fs);
         }
         else if (filterType == FILTER_SO_BUTTERWORTH_BSF)
         {
-          SO_BUTTERWORTH_BSF *a = (SO_BUTTERWORTH_BSF *)filter.get();
+          SO_BUTTERWORTH_BSF *a = dynamic_cast<SO_BUTTERWORTH_BSF *>(filter.get());
           a->calculate_coeffs(bw, fc, fs);
         }
         else if (filterType == FILTER_SO_BUTTERWORTH_HPF)
         {
-          SO_BUTTERWORTH_HPF *a = (SO_BUTTERWORTH_HPF *)filter.get();
+          SO_BUTTERWORTH_HPF *a = dynamic_cast<SO_BUTTERWORTH_HPF *>(filter.get());
           a->calculate_coeffs(fc, fs);
         }
         else if (filterType == FILTER_SO_BUTTERWORTH_LPF)
         {
-          SO_BUTTERWORTH_LPF *a = (SO_BUTTERWORTH_LPF *)filter.get();
+          SO_BUTTERWORTH_LPF *a = dynamic_cast<SO_BUTTERWORTH_LPF *>(filter.get());
           a->calculate_coeffs(fc, fs);
         }
         else if (filterType == FILTER_SO_LPF)
         {
-          SO_LPF *a = (SO_LPF *)filter.get();
+          SO_LPF *a = dynamic_cast<SO_LPF *>(filter.get());
           a->calculate_coeffs(Q, fc, fs);
         }
         else if (filterType == FILTER_SO_HPF)
         {
-          SO_HPF *a = (SO_HPF *)filter.get();
+          SO_HPF *a = dynamic_cast<SO_HPF *>(filter.get());
           a->calculate_coeffs(Q, fc, fs);
         }
         else if (filterType == FILTER_SO_LINKWITZ_RILEY_HPF)
         {
-          SO_LINKWITZ_RILEY_HPF *a = (SO_LINKWITZ_RILEY_HPF *)filter.get();
+          SO_LINKWITZ_RILEY_HPF *a = dynamic_cast<SO_LINKWITZ_RILEY_HPF *>(filter.get());
           a->calculate_coeffs(fc, fs);
         }
         else if (filterType == FILTER_SO_LINKWITZ_RILEY_LPF)
         {
-          SO_LINKWITZ_RILEY_LPF *a = (SO_LINKWITZ_RILEY_LPF *)filter.get();
+          SO_LINKWITZ_RILEY_LPF *a = dynamic_cast<SO_LINKWITZ_RILEY_LPF *>(filter.get());
           a->calculate_coeffs(fc, fs);
         }
         else if (filterType == FILTER_SO_PARAMETRIC_CQ_BOOST)
         {
-          SO_PARAMETRIC_CQ_BOOST *a = (SO_PARAMETRIC_CQ_BOOST *)filter.get();
+          SO_PARAMETRIC_CQ_BOOST *a = dynamic_cast<SO_PARAMETRIC_CQ_BOOST *>(filter.get());
           a->calculate_coeffs(gain_db, Q, fc, fs);
         }
         else if (filterType == FILTER_SO_PARAMETRIC_CQ_CUT)
         {
-          SO_PARAMETRIC_CQ_CUT *a = (SO_PARAMETRIC_CQ_CUT *)filter.get();
+          SO_PARAMETRIC_CQ_CUT *a = dynamic_cast<SO_PARAMETRIC_CQ_CUT *>(filter.get());
           a->calculate_coeffs(gain_db, Q, fc, fs);
         }
         else if (filterType == FILTER_SO_PARAMETRIC_NCQ)
         {
-          SO_PARAMETRIC_NCQ *a = (SO_PARAMETRIC_NCQ *)filter.get();
+          SO_PARAMETRIC_NCQ *a = dynamic_cast<SO_PARAMETRIC_NCQ *>(filter.get());
           a->calculate_coeffs(gain_db, Q, fc, fs);
         }
       }
 
-      void setFc(unsigned int _fc)
+      void setFc(int _fc)
       {
         if (_fc != fc)
         {
@@ -242,8 +242,8 @@ namespace RtAudioNs
       }
 
     private:
-      unsigned int fs = 48000;
-      unsigned int fc = 5000;
+      int fs = 48000;
+      int fc = 5000;
       float Q = 1;
       float gain_db = 0;
       float bw = 0;

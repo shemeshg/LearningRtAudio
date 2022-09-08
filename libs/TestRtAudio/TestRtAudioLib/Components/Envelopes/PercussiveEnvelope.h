@@ -7,6 +7,10 @@ namespace RtAudioNs
   namespace Components
   {
 
+  namespace {
+    constexpr double updateReturnStep = 0.01;
+  }
+
     class AdsrStepPrecussiveR : public AdsrStepTimeDomainPower
     {
     public:
@@ -19,18 +23,18 @@ namespace RtAudioNs
                 returnVal{_returnVal}
                            {}
 
-      void updateReturnVal()
+      void updateReturnVal() override
       {
-        returnVal = returnVal * pow(0.01, (1.0 / (double)getTotalFramesLen()));
+        returnVal = returnVal * pow(updateReturnStep, (1.0 / (double)getTotalFramesLen()));
         getPosition()++;
       }
-      void resetRetval()
+      void resetRetval() override
       {
         getPosition() = 0;
         returnVal = 1;
       }
 
-      bool moveNextStateCondition() {
+      bool moveNextStateCondition() override {
         return getPosition() >= getTotalFramesLen();
       }
 
