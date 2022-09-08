@@ -19,15 +19,15 @@ namespace RtAudioNs
           SimpleAdsrStatus _currentStatus,
           SimpleAdsrStatus _beforeNextStatus) : returnVal{_returnVal},AdsrStep(_returnVal, _simpleAdsrStatus, _currentStatus, _beforeNextStatus) {}
 
-      void updateReturnVal()
+      void updateReturnVal() override
       {
         returnVal = returnVal + incrementStep;
       }
-      void resetRetval()
+      void resetRetval() override
       {
         returnVal = 0;
       }
-      bool moveNextStateCondition()
+      bool moveNextStateCondition() override
       {
         return returnVal >= 0.8;
       }
