@@ -33,17 +33,17 @@ GuiSlider::~GuiSlider()
 
 void GuiSlider::onLineEditEditingFinished()
 {
-    float val=(int)ui->lineEdit->text().toFloat();
-    ui->horizontalSlider->setValue(rescaleRange(val, rtg.getMin(), rtg.getMax(), 0,(float)INT_MAX));
+    float val=ui->lineEdit->text().toFloat();
+    ui->horizontalSlider->setValue((int)rescaleRange(val, rtg.getMin(), rtg.getMax(), 0,(float)INT_MAX));
     rtg.setVal( val);
 }
 
 
 void GuiSlider::onHorizontalSliderSliderMoved(int position)
 {    
-    float val=rescaleRange(position, 0,(float)INT_MAX,rtg.getMin(), rtg.getMax());
-    val=int(val/rtg.getStep()) * rtg.getStep();
-    val=constrainRange(val,rtg.getMin(),rtg.getMax());
+    float val=(float)rescaleRange(position, 0,(double)INT_MAX,rtg.getMin(), rtg.getMax());
+    val=(float)( int(val/rtg.getStep()) ) * rtg.getStep();
+    val=(float)constrainRange(val,rtg.getMin(),rtg.getMax());
     ui->lineEdit->setText(QString::number(val));
     rtg.setVal( val);
 }
