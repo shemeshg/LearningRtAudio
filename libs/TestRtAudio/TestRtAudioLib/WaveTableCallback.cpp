@@ -167,7 +167,7 @@ int RtWaveTableCallback::render(void *outputBuffer, void *inputBuffer, unsigned 
   //circularBuffer->render(inChannel3, outChannel01, delayOffset, delayFeedback);
 
 
-  simpleAdsrComponent->adsrRender.render(inChannel3, outChannel01);
+  simpleAdsrComponent->render(inChannel3, outChannel01);
   //linearAdsr->adsrRender.render(inChannel3, outChannel01);
   //exponentialAdsr->adsrRender.render(inChannel3, outChannel01);
 

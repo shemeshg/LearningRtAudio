@@ -135,7 +135,6 @@ namespace RtAudioNs
     class SimpleAdsrComponent
     {
     public:
-      void render(std::vector<double> &vGate, std::vector<double> &vOut);
       SimpleAdsrComponent() : stepA(returnVal, simpleAdsrStatus, SimpleAdsrStatus::a, SimpleAdsrStatus::beforeD),
                               stepD(sustainLevel, returnVal, simpleAdsrStatus, SimpleAdsrStatus::d, SimpleAdsrStatus::s),
                               stepR(returnVal, simpleAdsrStatus, SimpleAdsrStatus::r, SimpleAdsrStatus::idle),
@@ -147,9 +146,13 @@ namespace RtAudioNs
 
       }
 
-      double sustainLevel = 0.7;
-      AdsrRender adsrRender;
+      void render(std::vector<double> &vGate, std::vector<double> &vOut){
+        adsrRender.render(vGate, vOut);
+      }
+      
     private:
+      AdsrRender adsrRender;
+      double sustainLevel = 0.7;    
       double returnVal = 0;
 
       SimpleAdsrStatus simpleAdsrStatus = SimpleAdsrStatus::idle;
