@@ -67,9 +67,9 @@ void RtWaveTableCallback::setupPlayersAndControls()
   std::vector<double> sacOption1(bufferFrames, 0);
   std::vector<double> sacOption2(bufferFrames, 0.2);
   std::vector<double> sacOption3(bufferFrames, 0.4);
-  sac->outVals.push_back(std::move(sacOption1));
-  sac->outVals.push_back(std::move(sacOption2));
-  sac->outVals.push_back(std::move(sacOption3));
+  sac->getOutVals().push_back(std::move(sacOption1));
+  sac->getOutVals().push_back(std::move(sacOption2));
+  sac->getOutVals().push_back(std::move(sacOption3));
   /*
   for (unsigned int i = 0; i < Osc2Sine->harmoniesLevels.size(); i++)
   {
