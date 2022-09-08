@@ -19,8 +19,7 @@ namespace RtAudioNs
 
     class MidiComponent
     {
-    public:
-      std::map<int, MidiInPort> midiInPorts;
+    public:      
       void refrehInPorts()
       {
         midiInPorts.clear();
@@ -49,9 +48,9 @@ namespace RtAudioNs
             throw error;
           }
           MidiInPort mip;
-          mip.portId = i;
+          mip.portId = (int)i;
           mip.portName = portName;
-          midiInPorts[i] = std::move(mip);
+          midiInPorts[mip.portId] = std::move(mip);
         }        
       }
 
@@ -83,10 +82,10 @@ namespace RtAudioNs
 
       void getMessage(int portNumber){
         std::vector<unsigned char> message;
-        int nBytes;
-        double stamp;
+        int nBytes=0;
+        double stamp=0;
         stamp = midiInPorts[portNumber].rtMidiIn->getMessage( &message );
-        nBytes = message.size();
+        nBytes = (int)message.size();
         if ( nBytes > 0 ){
           std::cout << "stamp = " << stamp << " first char"<<(int)message[0]<<std::endl;
         } 
@@ -94,6 +93,7 @@ namespace RtAudioNs
       }
 
     private:
+      std::map<int, MidiInPort> midiInPorts;
       std::unique_ptr<RtMidiIn> rtMidiIn;
     };
   }

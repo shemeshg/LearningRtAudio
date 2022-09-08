@@ -22,8 +22,11 @@ namespace RtAudioNs
 
         percussiveEnvelope = std::make_unique<Components::PercussiveEnvelope>();
 
-        playheadEvent.framesEvery = sampleRate * 60 / playheadMarker.metronomParams.metronomBpm;
-        playheadEvent.framesLen = playheadEvent.framesEvery * 0.5;
+        constexpr unsigned int bitPerSec = 60;
+        constexpr float hiBitEvery = 0.5;
+
+        playheadEvent.framesEvery = sampleRate * bitPerSec / playheadMarker.metronomParams.metronomBpm;
+        playheadEvent.framesLen = (int)( (float)playheadEvent.framesEvery * hiBitEvery);
         playheadEvent.frameStart = 0;
         playheadEvent.repeatCount = -1;
       }
@@ -46,8 +49,8 @@ namespace RtAudioNs
       const unsigned int sampleRate;
       unsigned int nBufferFrames;
 
-      int hiFreq = 1000;
-      int lowFreq = 500;
+      const float hiFreq = 1000;
+      const float lowFreq = 500;
       PlayheadMarker &playheadMarker;
       PlayheadEvent playheadEvent{};
     };

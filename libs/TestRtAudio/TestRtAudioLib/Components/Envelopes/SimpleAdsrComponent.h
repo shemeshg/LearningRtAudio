@@ -132,17 +132,22 @@ namespace RtAudioNs
       double &returnVal;
     };
 
+    namespace {
+        constexpr double defaultSustainLevel = 0.7;
+    }
+
     class SimpleAdsrComponent
     {
     public:
-      SimpleAdsrComponent() : stepA(returnVal, simpleAdsrStatus, SimpleAdsrStatus::a, SimpleAdsrStatus::beforeD),
-                              stepD(sustainLevel, returnVal, simpleAdsrStatus, SimpleAdsrStatus::d, SimpleAdsrStatus::s),
-                              stepR(returnVal, simpleAdsrStatus, SimpleAdsrStatus::r, SimpleAdsrStatus::idle),
-                              adsrRender(stepA, stepD, stepR, sustainLevel, simpleAdsrStatus)
+        SimpleAdsrComponent() : adsrRender(stepA, stepD, stepR, sustainLevel, simpleAdsrStatus),
+            stepA(returnVal, simpleAdsrStatus, SimpleAdsrStatus::a, SimpleAdsrStatus::beforeD),
+            stepD(sustainLevel, returnVal, simpleAdsrStatus, SimpleAdsrStatus::d, SimpleAdsrStatus::s),
+            stepR(returnVal, simpleAdsrStatus, SimpleAdsrStatus::r, SimpleAdsrStatus::idle)
       {
-        stepA.setLineCurved(0.2); //This is zero to one, see in header constant 5 as max power.
-        stepD.setLineCurved( - 0.2);
-        stepR.setLineCurved( 0.4);
+        constexpr double a=0.2, d=-0.2, r=0.4;
+        stepA.setLineCurved(a); //This is zero to one, see in header constant 5 as max power.
+        stepD.setLineCurved( d);
+        stepR.setLineCurved( r);
 
       }
 
@@ -152,7 +157,7 @@ namespace RtAudioNs
       
     private:
       AdsrRender adsrRender;
-      double sustainLevel = 0.7;    
+      double sustainLevel = defaultSustainLevel;
       double returnVal = 0;
 
       SimpleAdsrStatus simpleAdsrStatus = SimpleAdsrStatus::idle;
