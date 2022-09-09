@@ -21,7 +21,7 @@ namespace RtAudioNs
           if (vGateStart[i] > gateThreshold)
           {
             countedFrames = 0;
-            countFromFrame = i;
+            countFromFrame = (int)i;
             isCounting = true;
             return;
           }
@@ -57,33 +57,62 @@ namespace RtAudioNs
       int countedFrames = 0;
     };
 
+    namespace {
+        constexpr unsigned int defaultMetronomBpm=120;
+    }
     class MetronomParams
     {
     public:
       unsigned int metronomUpperNum = 4;
       const unsigned int metronomLowerNum = 4;
-      unsigned int metronomBpm = 120;
+
+      unsigned int metronomBpm = defaultMetronomBpm;
 
     };
 
+    namespace {
+        constexpr unsigned int defaultFramesEvery=100;
+        constexpr int defaultFramesLen = 7;
+        constexpr int defaultFrameStart = 2000;
+        constexpr int defaultRepeatCount = -1;
+    }
     class PlayheadEvent
     {
     public:
-      unsigned int framesEvery = 100;
-      int framesLen = 7;
-      int frameStart = 2000;
-      int repeatCount = -1;
-      unsigned long int markerBufferFrames = 0;
       void render(std::vector<double> &triggerIn, std::vector<double> &triggerResetIn);
+      unsigned int &getFramesEvery(){
+          return framesEvery;
+      }
 
+      int &getFramesLen(){
+          return framesLen;
+      }
+
+      int &getFrameStart(){
+          return frameStart;
+      }
+
+      int &getRepeatCount(){
+          return repeatCount;
+      }
+
+      unsigned long int &getMarkerBufferFrames(){
+          return markerBufferFrames;
+      }
     private:
+      unsigned int framesEvery = defaultFramesEvery;
+      int framesLen = defaultFramesLen;
+      int frameStart = defaultFrameStart;
+      int repeatCount = defaultRepeatCount;
+      unsigned long int markerBufferFrames = 0;
+
       int framesRemainedToPLay = 0;
     };
 
     class PlayheadMarker
     {
     public:
-      MetronomParams metronomParams;
+
       PlayheadMarker(unsigned int _sampleRate, unsigned int _nBufferFrames);
 
       void incrementMarkerNext()
@@ -91,28 +120,33 @@ namespace RtAudioNs
         markerBufferFrames += nBufferFrames;
       }
 
-      const unsigned long int getMarkerBufferFrames()
+      unsigned long int getMarkerBufferFrames()
       {
         return markerBufferFrames;
       }
 
-      const double getMarkerSeconds()
+      double getMarkerSeconds()
       {
         return (double)markerBufferFrames / (double)sampleRate;
       }
       
       double getMarkerBufferBar(){
-         return (double)markerBufferFrames / ( (double)sampleRate * ( 60.0 / (double)metronomParams.metronomBpm) );
+          constexpr double secPerMin=60;
+         return (double)markerBufferFrames / ( (double)sampleRate * ( secPerMin / (double)metronomParams.metronomBpm) );
        }
 
       unsigned int getMarkerBufferBarNumUpper(){
          return (int)getMarkerBufferBar()  % metronomParams.metronomUpperNum ;
        }
 
+      MetronomParams &getMetronomParams(){
+          return metronomParams;
+      }
     private:
       const unsigned int sampleRate;
       const unsigned int nBufferFrames;
       unsigned long int markerBufferFrames = 0;
+      MetronomParams metronomParams;
     };
 
   }

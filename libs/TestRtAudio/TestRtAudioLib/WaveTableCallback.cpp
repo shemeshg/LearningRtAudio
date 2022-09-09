@@ -3,7 +3,6 @@
 #include "Components/OscWaveTable2Addative.h"
 #include "Components/VcaGateComponent.h"
 #include "Components/SwitchAmpComponent.h"
-#include "Components/RangeUtils.h"
 #include <string>
 using namespace RtAudioNs;
 
@@ -25,16 +24,18 @@ void RtWaveTableCallback::setupPlayersAndControls()
   
 
   Components::PlayheadEvent phe{};
-  phe.framesEvery = sampleRate * 4; // 1 sec
-  phe.framesLen = sampleRate * 0.2; // 1 sec
-  phe.frameStart = 0;
-  phe.repeatCount = -1;
+  phe.getFramesEvery() = sampleRate * 4; // 1 sec
+  constexpr float framesLenInSec=0.2;
+  phe.getFramesLen() = (int)((float)sampleRate * framesLenInSec); // 1 sec
+  phe.getFrameStart() = 0;
+  phe.getRepeatCount() = -1;
   playheadEvents.push_back(std::move(phe));
 
   auto osc2Sine = std::make_unique<Components::OscWaveTable2Addative>(sampleRate);
   osc2Sine->setupWaveTable();
   auto vca1 = std::make_unique<Components::VcaContainer>();
-  vca1->multAmp = -20;
+  constexpr float defaultMultAmp = -20;
+  vca1->multAmp = defaultMultAmp;
 
   auto filter = std::make_unique<Components::FiltersComponent>(
       Components::FiltersComponent::FILTER_TYPE::FILTER_FO_LPF,
@@ -43,7 +44,8 @@ void RtWaveTableCallback::setupPlayersAndControls()
   auto playWavfile = std::make_unique<Components::PlayWavFile>("//Volumes//TEMP//DeleteME//tmp/sampleWav.wav");
   playWavfile->openFile();
 
-  circularBuffer = std::make_unique<Components::CircularBuffer>(sampleRate * 60); // 1 Min
+  constexpr int secPerMin = 60;
+  circularBuffer = std::make_unique<Components::CircularBuffer>(sampleRate * secPerMin); // 1 Min
 
   rampageEnvelope = std::make_unique<Components::RampageEnvelope>(sampleRate);
 
@@ -55,9 +57,15 @@ void RtWaveTableCallback::setupPlayersAndControls()
   // it is RtGuiSliderRefreshTableSetter to prevent aliassing on harmonics,
   // Maybe think how to do that, based on setter automaticlly,
   // but then we will have to manage MaxFrequency to restrigger RefreshTable
-  std::unique_ptr<Components::RtGuiControl> rs1(new Components::RtGuiSliderRefreshTableSetter(*osc2Sine, "Note Number", osc2Sine->detuneNoteNumber, 21, 108, 1));
-  std::unique_ptr<Components::RtGuiControl> rs2(new Components::RtGuiSlider("Amplitude Db", vca1->multAmp, -40, 0, 0.1));
-  std::unique_ptr<Components::RtGuiControl> rs3(new Components::RtGuiSlider("detuneOscs", osc2Sine->detuneOscsAmount, 0, 100, 0.1));
+  constexpr double minNoteNumber=21;
+  constexpr double maxNoteNumber=108;
+  std::unique_ptr<Components::RtGuiControl> rs1(new Components::RtGuiSliderRefreshTableSetter(*osc2Sine, "Note Number", osc2Sine->getDetuneNoteNumber(),
+                                                                             minNoteNumber, maxNoteNumber, 1));
+  constexpr double minDbLevel = -40;
+  constexpr double sliderStep = 0.1;
+  std::unique_ptr<Components::RtGuiControl> rs2(new Components::RtGuiSlider("Amplitude Db", vca1->multAmp, minDbLevel, 0, sliderStep));
+  constexpr double maxDetuneAmount = 100;
+  std::unique_ptr<Components::RtGuiControl> rs3(new Components::RtGuiSlider("detuneOscs", osc2Sine->getDetuneOscsAmount(), 0, maxDetuneAmount, sliderStep));
 
   rtGuiSliders.push_back(std::move(rs1));
   rtGuiSliders.push_back(std::move(rs2));
@@ -65,8 +73,10 @@ void RtWaveTableCallback::setupPlayersAndControls()
 
   auto sac = std::make_unique<Components::SwitchAmpComponent>();
   std::vector<double> sacOption1(bufferFrames, 0);
-  std::vector<double> sacOption2(bufferFrames, 0.2);
-  std::vector<double> sacOption3(bufferFrames, 0.4);
+  constexpr double switchLevel2 = 0.2;
+  std::vector<double> sacOption2(bufferFrames, switchLevel2);
+  constexpr double switchLevel3 = 0.4;
+  std::vector<double> sacOption3(bufferFrames, switchLevel3);
   sac->getOutVals().push_back(std::move(sacOption1));
   sac->getOutVals().push_back(std::move(sacOption2));
   sac->getOutVals().push_back(std::move(sacOption3));
@@ -88,31 +98,31 @@ void RtWaveTableCallback::setupPlayersAndControls()
 
 
 
-void RtWaveTableCallback::sendOutput(double *buffer, unsigned int &nBufferFrames, int channels,
+void RtWaveTableCallback::sendOutput(double *buffer, unsigned int &nBufferFrames, unsigned int channels,
                                      std::vector<double> &outChannel, std::vector<unsigned int> colsToSend)
 {
-  for (int frameCount = 0; frameCount < nBufferFrames; frameCount++)
+  for (unsigned int frameCount = 0; frameCount < nBufferFrames; frameCount++)
   {
     for (auto &colToSend : colsToSend)
     {
-      buffer[frameCount * channels + colToSend] = outChannel[frameCount];
+      buffer[frameCount * channels + colToSend] = outChannel[frameCount]; //NOLINT
     }
   }
 }
 
-std::vector<double> RtWaveTableCallback::getInput(double *inBuffer, unsigned int &nBufferFrames, int channels, unsigned int inputToGet)
+std::vector<double> RtWaveTableCallback::getInput(double *inBuffer, unsigned int &nBufferFrames, unsigned int channels, unsigned int inputToGet)
 {
   std::vector<double> inChannel(nBufferFrames, 0);
 
-  for (int frameCount = 0; frameCount < nBufferFrames; frameCount++)
+  for (unsigned int frameCount = 0; frameCount < nBufferFrames; frameCount++)
   {
-    inChannel[frameCount] = inBuffer[frameCount * channels + inputToGet];
+    inChannel[frameCount] = inBuffer[frameCount * channels + inputToGet]; //NOLINT
   }
 
   return inChannel;
 }
 
-void RtWaveTableCallback::scopeLog(double *buffer, unsigned int &nBufferFrames, int channels, int rowsCount,
+void RtWaveTableCallback::scopeLog(double *buffer, unsigned int &nBufferFrames, unsigned int channels, int rowsCount,
                                    std::vector<unsigned int> colsToPrint,
                                    std::ostream &stream)
 {
@@ -121,14 +131,14 @@ void RtWaveTableCallback::scopeLog(double *buffer, unsigned int &nBufferFrames, 
   if (i < rowsCount)
   {
 
-    for (int frameCount = 0; frameCount < nBufferFrames && i < rowsCount; frameCount++)
+    for (unsigned int frameCount = 0; frameCount < nBufferFrames && i < rowsCount; frameCount++)
     {
       stream << i;
-      for (int ch = 0; ch < channels; ch++)
+      for (unsigned int ch = 0; ch < channels; ch++)
       {
         if (std::count(colsToPrint.begin(), colsToPrint.end(), ch))
         {
-          stream << "," << buffer[bufferPosition++];
+          stream << "," << buffer[bufferPosition++]; //NOLINT
         }
       }
       stream << "\n";
@@ -140,9 +150,9 @@ void RtWaveTableCallback::scopeLog(double *buffer, unsigned int &nBufferFrames, 
 int RtWaveTableCallback::render(void *outputBuffer, void *inputBuffer, unsigned int &nBufferFrames,
                                 double &streamTime, RtAudioStreamStatus &status)
 {
-
-  double *outBuffer = (double *)outputBuffer;
-  double *inBuffer = (double *)inputBuffer;
+  (void)streamTime;
+  double *outBuffer = (double *)outputBuffer; //NOLINT
+  double *inBuffer = (double *)inputBuffer; //NOLINT
 
   std::vector<double> outChannel01(nBufferFrames, 0);
   // std::vector<double> outOscContiousPitch(nBufferFrames, 0);
@@ -196,7 +206,8 @@ int RtWaveTableCallback::render(void *outputBuffer, void *inputBuffer, unsigned 
   sendOutput(outBuffer, nBufferFrames, streamOutParameters.nChannels, outChannel01, {0, 1});
   if (doScopelog)
   {
-    scopeLog(outBuffer, nBufferFrames, streamOutParameters.nChannels, 20250, {0, 1});
+    constexpr int rowCount =20250;
+    scopeLog(outBuffer, nBufferFrames, streamOutParameters.nChannels, rowCount, {0, 1});
   }
 
   playheadMarker->incrementMarkerNext();
@@ -207,12 +218,12 @@ void RtWaveTableCallback::setupStreamParameters(RtAudio &audio, int outDeviceId,
 {
   if (outDeviceId == -1)
   {
-    outDeviceId = audio.getDefaultOutputDevice();
+    outDeviceId = (int)audio.getDefaultOutputDevice();
   }
 
   if (inDeviceId == -1)
   {
-    inDeviceId = audio.getDefaultInputDevice();
+    inDeviceId = (int)audio.getDefaultInputDevice();
   }
 
   streamOutParameters.deviceId = outDeviceId;

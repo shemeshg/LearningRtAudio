@@ -14,21 +14,21 @@ namespace RtAudioNs
       {
         oscSineLow = std::make_unique<Components::OscWaveTableAddative>(sampleRate);
         oscSineLow->harmoniesLevels = harmoniesLevels;
-        oscSineLow->gFrequency = lowFreq;
+        oscSineLow->getGFrequency() = lowFreq;
 
         oscSineHi = std::make_unique<Components::OscWaveTableAddative>(sampleRate);
         oscSineHi->harmoniesLevels = harmoniesLevels;
-        oscSineHi->gFrequency = hiFreq;
+        oscSineHi->getGFrequency() = hiFreq;
 
         percussiveEnvelope = std::make_unique<Components::PercussiveEnvelope>();
 
         constexpr unsigned int bitPerSec = 60;
         constexpr float hiBitEvery = 0.5;
 
-        playheadEvent.framesEvery = sampleRate * bitPerSec / playheadMarker.metronomParams.metronomBpm;
-        playheadEvent.framesLen = (int)( (float)playheadEvent.framesEvery * hiBitEvery);
-        playheadEvent.frameStart = 0;
-        playheadEvent.repeatCount = -1;
+        playheadEvent.getFramesEvery() = sampleRate * bitPerSec / playheadMarker.getMetronomParams().metronomBpm;
+        playheadEvent.getFramesLen() = (int)( (float)playheadEvent.getFramesEvery() * hiBitEvery);
+        playheadEvent.getFrameStart() = 0;
+        playheadEvent.getRepeatCount() = -1;
       }
 
       void setupWaveTable()

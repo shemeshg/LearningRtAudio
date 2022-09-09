@@ -34,7 +34,7 @@ set(TestRtAudioLib_SRCS
   Components/PlayheadMarker.h
   Components/PlayheadMarker.cpp
   Components/Envelopes/SimpleAdsrComponent.h
-  Components/Envelopes/SimpleAdsrComponent.cpp
+  #Components/Envelopes/SimpleAdsrComponent.cpp
   Components/Envelopes/PercussiveEnvelope.h
   Components/Envelopes/PercussiveEnvelope.cpp
   Components/Envelopes/AdsrStep.h
@@ -45,15 +45,15 @@ set(TestRtAudioLib_SRCS
   Components/MetronomeComponent.cpp
   Components/DebounceVca.cpp
   Components/Envelopes/ExponentialAdsr.h
-  Components/Envelopes/ExponentialAdsr.cpp
+  #Components/Envelopes/ExponentialAdsr.cpp
   Components/Envelopes/LinearAdsr.h
-  Components/Envelopes/LinearAdsr.cpp
+  #Components/Envelopes/LinearAdsr.cpp
   Components/Envelopes/AdsrStepTimeDomainPower.h
   Components/Envelopes/AdsrStepTimeDomainPower.cpp
   Components/Envelopes/AdsrRender.h
   Components/Envelopes/AdsrRender.cpp
   Components/MidiComponent/MidiComponent.h
-  Components/MidiComponent/MidiComponent.cpp
+  #Components/MidiComponent/MidiComponent.cpp
 )
 
 add_subdirectory(RtAudioLib)

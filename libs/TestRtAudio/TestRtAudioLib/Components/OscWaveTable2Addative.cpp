@@ -22,11 +22,11 @@ namespace RtAudioNs
     {
       float detuneFrequency = (float)customMidiScale.cMidiNoteToFrequency(detuneNoteNumber);
       oscSine1->harmoniesLevels = harmoniesLevels;
-      oscSine1->gFrequency = detuneFrequency + detuneOscsAmount;
+      oscSine1->getGFrequency() = detuneFrequency + detuneOscsAmount;
       oscSine1->render(channelData, cvPitchChange);
       
       oscSine2->harmoniesLevels = harmoniesLevels;
-      oscSine2->gFrequency = detuneFrequency - detuneOscsAmount;
+      oscSine2->getGFrequency() = detuneFrequency - detuneOscsAmount;
       oscSine2->render(channelData, cvPitchChange);
       return 0;
     }

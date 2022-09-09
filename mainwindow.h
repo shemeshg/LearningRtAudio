@@ -13,11 +13,15 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
+    MainWindow(const MainWindow&) = delete;
+    MainWindow& operator=(const MainWindow&)= delete;
+    MainWindow(MainWindow&&) = delete;
+    MainWindow& operator=(MainWindow&&) = delete;
     MainWindow(QWidget *parent = nullptr);
-    ~MainWindow();
+    ~MainWindow() override;
 
 private slots:
-    void on_pushButton_clicked();
+    void onPushButtonClicked();
 
 private:
     Ui::MainWindow *ui;

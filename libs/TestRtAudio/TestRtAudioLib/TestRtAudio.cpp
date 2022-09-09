@@ -50,7 +50,7 @@ void TestRtAudio::coutDevicesInfo()
       std::cout << "    isDefaultInput: " << info.isDefaultInput << "\n";
 
       std::cout << "    sampleRates:";
-      for (int sampleRate : info.sampleRates)
+      for (unsigned int sampleRate : info.sampleRates)
       {
         std::cout << " " << sampleRate;
       }

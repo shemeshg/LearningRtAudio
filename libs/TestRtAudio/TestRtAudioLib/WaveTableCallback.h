@@ -84,12 +84,12 @@ namespace {
 
     unsigned int bufferFrames = defaultStreamBufferFrames;
 
-    void scopeLog(double *buffer, unsigned int &nBufferFrames, int channels, int rowsCount,
+    void scopeLog(double *buffer, unsigned int &nBufferFrames, unsigned int channels, int rowsCount,
                   std::vector<unsigned int> colsToPrint, std::ostream &stream = std::cout);
 
-    std::vector<double> getInput(double *inputBuffer, unsigned int &nBufferFrames, int channels, unsigned int inputToGet);
+    std::vector<double> getInput(double *inputBuffer, unsigned int &nBufferFrames, unsigned int channels, unsigned int inputToGet);
 
-    void sendOutput(double *buffer, unsigned int &nBufferFrames, int channels,
+    void sendOutput(double *buffer, unsigned int &nBufferFrames, unsigned int channels,
                     std::vector<double> &outChannel, std::vector<unsigned int> colsToSend);
 
 
