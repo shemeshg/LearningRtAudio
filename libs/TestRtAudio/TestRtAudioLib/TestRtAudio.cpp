@@ -66,13 +66,13 @@ void TestRtAudio::coutDevicesInfo()
 
 void TestRtAudio::playRtAudioCallback(RtAudioCallback callback, void *userData)
 {
-  RtWaveTableCallback *userDataCasted = (RtWaveTableCallback *)userData;
+  RtWaveTableCallback *userDataCasted = static_cast<RtWaveTableCallback *>(userData);
 
   try
   {
 
-    audio.openStream(&userDataCasted->streamOutParameters, &userDataCasted->streamInParameters, RTAUDIO_FLOAT64,
-                     userDataCasted->getSampleRate(), &userDataCasted->bufferFrames, callback, userData);
+    audio.openStream(&userDataCasted->getStreamOutParameters(), &userDataCasted->getStreamInParameters(), RTAUDIO_FLOAT64,
+                     userDataCasted->getSampleRate(), &userDataCasted->getBufferFrames(), callback, userData);
     audio.startStream();
   }
   catch (RtAudioError &e)

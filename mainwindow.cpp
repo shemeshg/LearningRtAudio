@@ -11,7 +11,7 @@ MainWindow::MainWindow(QWidget *parent)
     tra.coutDevicesInfo();
     tra.setupStreamParameters(2, 2, 1024);
     tra.rtWaveTableCallback.setupPlayersAndControls();
-    tra.rtWaveTableCallback.callbackToUi = [this](std::vector<double> &v)
+    tra.rtWaveTableCallback.getCallbackToUi() = [this](std::vector<double> &v)
     {
         static int i = 0;
         if (!(++i % 50))
@@ -22,8 +22,8 @@ MainWindow::MainWindow(QWidget *parent)
     tra.playWavTable();
     tra.rtWaveTableCallback.setDoScopelog(false);
 
-    for (auto &rts : tra.rtWaveTableCallback.rtGuiSliders) {
-        GuiSlider *g=new GuiSlider(*rts);
+    for (auto &rts : tra.rtWaveTableCallback.getRtGuiSliders()) {
+        GuiSlider *g=new GuiSlider(*rts); //NOLINT
         ui->verticalLayout->addWidget(g);
         g->show();
     }

@@ -21,9 +21,83 @@
 
 namespace RtAudioNs
 { 
+namespace {
+    constexpr  int defaultSampleRate = 48000;
+    constexpr  int defaultOutDeviceId = -1,  defaultInDeviceId = -1;
+    constexpr unsigned int defaultStreamBufferFrames = 1024;
+}
+
   class RtWaveTableCallback
   {
   public:
+
+
+    RtWaveTableCallback();
+
+    virtual ~RtWaveTableCallback() = default;
+    RtWaveTableCallback(const RtWaveTableCallback&) = delete;
+    RtWaveTableCallback& operator=(const RtWaveTableCallback&)= delete;
+    RtWaveTableCallback(RtWaveTableCallback&&) = delete;
+    RtWaveTableCallback& operator=(RtWaveTableCallback&&) = delete;
+
+    int render(void *outputBuffer, void *inputBuffer, unsigned int &nBufferFrames,
+               double &streamTime, RtAudioStreamStatus &status);
+
+    void setupStreamParameters(RtAudio &audio, int outDeviceId = defaultOutDeviceId, int inDeviceId = defaultInDeviceId, unsigned int streamBufferFrames = defaultStreamBufferFrames);
+    void setupPlayersAndControls();
+
+
+
+
+
+    bool const &getDoScopelog() const { return doScopelog; }
+    void setDoScopelog(bool val) { doScopelog = val; }
+
+    unsigned int const &getSampleRate() const { return sampleRate; }
+
+    unsigned int &getBufferFrames(){
+        return bufferFrames;
+    }
+
+
+    RtAudio::StreamParameters &getStreamOutParameters(){
+        return streamOutParameters;
+    }
+
+    RtAudio::StreamParameters &getStreamInParameters(){
+        return streamInParameters;
+    }
+
+    std::function<void(std::vector<double> &v)> &getCallbackToUi(){
+        return callbackToUi;
+    }
+
+    std::vector<std::unique_ptr<Components::RtGuiControl>> &getRtGuiSliders(){
+        return rtGuiSliders;
+    }
+  private:
+    std::function<void(std::vector<double> &v)> callbackToUi = [](std::vector<double> &v) {
+        (void)v;
+    };
+
+    RtAudio::StreamParameters streamOutParameters, streamInParameters;
+
+    unsigned int bufferFrames = defaultStreamBufferFrames;
+
+    void scopeLog(double *buffer, unsigned int &nBufferFrames, int channels, int rowsCount,
+                  std::vector<unsigned int> colsToPrint, std::ostream &stream = std::cout);
+
+    std::vector<double> getInput(double *inputBuffer, unsigned int &nBufferFrames, int channels, unsigned int inputToGet);
+
+    void sendOutput(double *buffer, unsigned int &nBufferFrames, int channels,
+                    std::vector<double> &outChannel, std::vector<unsigned int> colsToSend);
+
+
+
+    unsigned int sampleRate = defaultSampleRate;
+
+    bool doScopelog = false;
+
     std::vector<std::unique_ptr<Components::RtGuiControl>> rtGuiSliders;
     std::vector<std::unique_ptr<Components::OscWaveTable2Addative>> vecOsc2Sine;
     std::vector<std::unique_ptr<Components::VcaContainer>> vecVcas;
@@ -36,46 +110,12 @@ namespace RtAudioNs
     std::unique_ptr<Components::CircularBuffer> circularBuffer;
     std::unique_ptr<Components::SimpleAdsrComponent> simpleAdsrComponent;
     std::unique_ptr<Components::LinearAdsrComponent> linearAdsr;
-    std::unique_ptr<Components::ExponentialAdsr> exponentialAdsr;    
+    std::unique_ptr<Components::ExponentialAdsr> exponentialAdsr;
     std::unique_ptr<Components::PercussiveEnvelope> percussiveEnvelope;
     std::unique_ptr<Components::RampageEnvelope> rampageEnvelope;
     std::unique_ptr<Components::MetronomeComponent> metronomeComponent;
     std::unique_ptr<Components::MidiComponent> midiComponent;
     Components::DebounceVca debounceVca;
 
-    RtWaveTableCallback();
-
-    ~RtWaveTableCallback();
-
-    int render(void *outputBuffer, void *inputBuffer, unsigned int &nBufferFrames,
-               double &streamTime, RtAudioStreamStatus &status);
-
-    void setupStreamParameters(RtAudio &audio, int outDeviceId = -1, int inDeviceId = -1, unsigned int streamBufferFrames = 1024);
-    void setupPlayersAndControls();
-
-    RtAudio::StreamParameters streamOutParameters, streamInParameters;
-
-    std::function<void(std::vector<double> &v)> callbackToUi = [](std::vector<double> &v) {};
-
-    bool const &getDoScopelog() const { return doScopelog; }
-    void setDoScopelog(bool val) { doScopelog = val; }
-
-    unsigned int const &getSampleRate() const { return sampleRate; }
-    unsigned int bufferFrames = 1024;
-
-  private:
-    void scopeLog(double *buffer, unsigned int &nBufferFrames, int channels, int rowsCount,
-                  std::vector<unsigned int> colsToPrint, std::ostream &stream = std::cout);
-
-    std::vector<double> getInput(double *inputBuffer, unsigned int &nBufferFrames, int channels, unsigned int inputToGet);
-
-    void sendOutput(double *buffer, unsigned int &nBufferFrames, int channels,
-                    std::vector<double> &outChannel, std::vector<unsigned int> colsToSend);
-
-
-
-    unsigned int sampleRate = 48000;
-
-    bool doScopelog = false;
   };
 }

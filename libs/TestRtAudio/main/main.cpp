@@ -7,19 +7,21 @@ int main()
   // TestRtAudio::coutListApis();
   RtAudioNs::TestRtAudio tra;
   tra.coutDevicesInfo();
-  tra.setupStreamParameters(2, 2, 1024);
+  const int outDev=2,inDev=2, bufferFrames=1024;
+  tra.setupStreamParameters(outDev, inDev, bufferFrames);
   tra.rtWaveTableCallback.setupPlayersAndControls();
-  tra.rtWaveTableCallback.callbackToUi = [](std::vector<double> &v)
+  tra.rtWaveTableCallback.getCallbackToUi() = [](std::vector<double> &v)
   {
     static int i = 0;
-    if (!(++i % 50))
+    constexpr int  modFrames=50;
+    if (!(++i % modFrames))
     {
       std::cout << "Called back from RTAudio: " << v[0] << " \n";
     }
   };
   tra.playWavTable();
   tra.rtWaveTableCallback.setDoScopelog(false);
-  char input;
+  char input=' ';
   std::cout << "\nPlaying ... press <enter> to quit.\n";
   std::cin.get(input);
   // tra.rtWaveTableCallback.rtGuiSlider.at(0)->setVal(440);

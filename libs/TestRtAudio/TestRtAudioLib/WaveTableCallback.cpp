@@ -86,9 +86,7 @@ void RtWaveTableCallback::setupPlayersAndControls()
   filters.push_back(std::move(filter));
 }
 
-RtWaveTableCallback::~RtWaveTableCallback()
-{
-}
+
 
 void RtWaveTableCallback::sendOutput(double *buffer, unsigned int &nBufferFrames, int channels,
                                      std::vector<double> &outChannel, std::vector<unsigned int> colsToSend)
