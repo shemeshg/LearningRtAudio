@@ -1,44 +1,53 @@
 # Learning RtAudio
 
-My path for learning RtAudio using the excellent Bela.io tutorial:
+A personal learning project following the excellent Bela.io real‑time audio programming tutorials:
 
 https://learn.bela.io/tutorials/c-plus-plus-for-real-time-audio-programming/real-time/
 
-The configuration file that manages the DSP blocks is here. Start by modifying this file:
+The main DSP configuration file is here (start by modifying this one):
 
 https://github.com/shemeshg/LearningRtAudio/blob/master/libs/TestRtAudio/TestRtAudioLib/WaveTableCallback.cpp
 
-For now, I’m developing on my local computer until I have the actual Bela device.
+If you don’t have Qt installed, you can run the project from the command line using:
 
-I use these resources for personal learning, nothing professional.
+https://github.com/shemeshg/LearningRtAudio/blob/master/libs/TestRtAudio/main/main.cpp
 
-* For emulating analog input/output I chose:
-    https://github.com/ExistentialAudio/BlackHole  
-    and  
-    https://vcvrack.com/
-* For Fourier visualization I use a Pandas workbook (running on Anaconda) or a VCV Rack module.
+This project is purely for personal learning.
 
-See the tools folder.
+## Tools & Resources
 
-* I had to remember to run `git submodule update --init` since I'm using DSP-Cpp-filters.
+- **Virtual audio routing:**  
+  - BlackHole — https://github.com/ExistentialAudio/BlackHole  
+  - VCV Rack — https://vcvrack.com/
 
-* For some reason (likely OS security settings), audio inputs produce zeros when running directly from QtCreator.  
-  When running from the build directory in the terminal, it works fine. (Output from QtCreator works fine as well.)
+- **Fourier / signal visualization:**  
+  - Pandas workbook (Anaconda)  
+  - VCV Rack modules  
 
-## Branch lessons
+See the `tools` folder for related utilities.
 
-These follow the course assignments one-to-one, but adapted for desktop development:
+- Remember to run:  
+  `git submodule update --init`  
+  (required for DSP-Cpp-filters)
 
-- Lesson 1–2: Setting up RtAudio, libsndfile, playing recorded samples, playing a sine wave
-- Lesson 3: Wavetables
-- Lesson 4: Parameter control using Qt Widgets
-- Lesson 5: Wavetable harmonies and aliasing
-- Lesson 6: Reading input generated in VCV Rack using BlackHole
-- Lesson 7: Gate, trigger, and switch components to switch between different streams
-- Lesson 8: Filters (I haven’t done the homework assignments, just encapsulated DSP-Cpp-filters)
-- Lesson 9: Time — scheduling events using Gate and Reset concepts
-- Lesson 10: Latency
-- Lesson 11: Circular buffers
-- Lesson 12: Envelopes, linear ADSR in the *time domain*
-- Lesson 13: State machines, DebounceVCA
-- Lesson 14: Exponential ADSR
+- Note: Due to OS security settings, audio *input* returns zeros when running inside QtCreator.  
+  Running the built binary directly from the terminal works correctly.  
+  (Audio output from QtCreator works fine.)
+
+## Branch Overview (Lessons)
+
+These branches follow the Bela course assignments, adapted for desktop development:
+
+- **Lesson 1–2:** RtAudio setup, libsndfile, playing samples, sine wave  
+- **Lesson 3:** Wavetables  
+- **Lesson 4:** Parameter control with Qt Widgets  
+- **Lesson 5:** Wavetable harmonics & aliasing  
+- **Lesson 6:** Input from VCV Rack via BlackHole  
+- **Lesson 7:** Gate, trigger, and switching between streams  
+- **Lesson 8:** Filters (DSP-Cpp-filters wrapper)  
+- **Lesson 9:** Time & event scheduling (Gate + Reset concepts)  
+- **Lesson 10:** Latency  
+- **Lesson 11:** Circular buffers  
+- **Lesson 12:** Envelopes — linear ADSR (time domain)  
+- **Lesson 13:** State machines, DebounceVCA  
+- **Lesson 14:** Exponential ADSR
